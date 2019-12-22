@@ -1,0 +1,65 @@
+﻿@model PrikaziBiciklVM
+@{
+    ViewData["Title"] = "Prikaz bicikala";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form>
+
+
+    <input type="text" name="Pretraga" class="form-control col-md-3" />
+    <button class="btn btn-success">Pretraga</button>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Proizvođač</th>
+            <th>Naziv modela</th>
+            <th>Godina proizvodnje</th>
+            <th>Stanje</th>
+            <th>Cijena</th>
+            <th>Boja</th>
+            <th>Nožna kočnica</th>
+            <th>Akcija</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Bicikla.Count == 0)
+        {
+
+            <tr>
+                <td colspan="3">Nije pronađeno</td>
+            </tr>
+        }
+        @foreach (var item in Model.Bicikla)
+        {
+            <tr>
+                <td>@item.Model.Proizvodjac.Naziv</td>
+                <td>@item.Model.Naziv</td>
+                <td>@item.GodinaProizvodnje</td>
+                <td>@item.Stanje</td>
+                @if (item.Stanje == Stanje.Novo || item.Stanje == Stanje.Polovno)
+                {
+                    <td>@item.Cijena</td>
+                }
+                else
+                {
+                    <td>@item.CijenaPoDanu</td>
+
+                }
+                <td>@item.Boja.Naziv</td>
+                <td>@(item.NoznaKocnica?"Da":"Ne")</td>
+
+                <td>
+                    <a href="/Admin/Bicikl/Obrisi?Id=@item.BiciklId" class="btn btn-danger">Obriši</a> |
+                    <a href="/Admin/Bicikl/Uredi?Id=@item.BiciklId  " class="btn btn-warning">Uredi</a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+
+<a href="/Admin/Bicikl/Dodaj" class="btn btn-primary">Dodaj</a>
