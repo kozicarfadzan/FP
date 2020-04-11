@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FahrradladenPrinzenstraße.Data1\FahrradladenPrinzenstraße.Data.csproj" />
+    <ProjectReference Include="..\FahrradladenPrinzenstraße.Data\FahrradladenPrinzenstraße.Data.csproj" />
   </ItemGroup>
 
 </Project>

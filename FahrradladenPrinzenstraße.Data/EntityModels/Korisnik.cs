@@ -100,6 +100,7 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
 
         public Zaposlenik Zaposlenik { get; set; }
         public Administrator Administrator { get; set; }
+        public Klijent Klijent { get; set; }
         #endregion
     }
 }

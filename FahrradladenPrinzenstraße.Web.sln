@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FahrradladenPrinzenstraße.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile", "Mobile", "{EBEE727A-57FA-43EB-8262-B37B2D0081D8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FahrradladenPrinzenstraße.Data", "FahrradladenPrinzenstraße.Data1\FahrradladenPrinzenstraße.Data.csproj", "{BA5D648D-830B-4E1E-97F9-990ACEE9D33A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FahrradladenPrinzenstraße.Data", "FahrradladenPrinzenstraße.Data\FahrradladenPrinzenstraße.Data.csproj", "{BA5D648D-830B-4E1E-97F9-990ACEE9D33A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
