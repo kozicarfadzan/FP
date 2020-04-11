@@ -1,0 +1,50 @@
+﻿@model FahrradladenPrinzenstraße.Web.ViewModels.LoginVM
+@{
+    ViewData["Title"] = "Login";
+    string error_poruka = (string)TempData["error_poruka"];
+    Layout = "_Layout";
+}
+
+<div class="row">
+
+
+    <div class="col-md-4 col-md-offset-4">
+        <h3>Fahrradladen Prinzenstraße</h3>
+
+        <form asp-action="Login">
+
+            <div class="form-group">
+                <label>Korisničko ime: </label>
+                <div>
+                    <input asp-for="username" class="form-control" />
+                    <span asp-validation-for="username" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Lozinka: </label>
+                <div>
+                    <input asp-for="password" class="form-control" />
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <input type="submit" class="form-control btn btn-primary" value="Login" />
+            
+            <ul class="list-checkbox list-unstyled">
+                <li><label class="checkbox"><input asp-for="ZapamtiPassword" />   Zapamti password</label></li>
+                </ul>
+                
+</form>
+
+        @if (error_poruka != null)
+        {
+            <br />
+            <div class="alert alert-danger">
+                @error_poruka
+            </div>
+        }
+    </div>
+
+</div>

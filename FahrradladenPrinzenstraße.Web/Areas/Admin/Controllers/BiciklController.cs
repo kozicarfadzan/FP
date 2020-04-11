@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using FahrradladenPrinzenstraße.Data;
 using FahrradladenPrinzenstraße.Data.EntityModels;
 using FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using FahrradladenPrinzenstraße.Web.Helper;
 
 namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Autorizacija(administrator: true)]
     public class BiciklController : Controller
     {
         private readonly MyContext db;
@@ -20,32 +24,56 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
         {
             this.db = db;
         }
-        public IActionResult Index()
+        public IActionResult Index(PrikaziBiciklVM VM)
         {
             PrikaziBiciklVM Model = new PrikaziBiciklVM
             {
-                Bicikla = db.Bicikl.Select(
-                   x => new PrikaziBiciklVM.Row
-                   {
-                       BiciklId = x.BiciklId,
-                       Boja = x.Boja,
-                       Cijena = x.Cijena,
-                       CijenaPoDanu = x.CijenaPoDanu,
-                       GodinaProizvodnje = x.GodinaProizvodnje,
-                       Model = new Data.EntityModels.Model
-                       {
-                           Naziv = x.Model.Naziv,
-                           Proizvodjac = x.Model.Proizvodjac
-                       },
-                       NoznaKocnica = x.NoznaKocnica,
-                       Slika = x.Slika,
-                       Stanje = x.Stanje,
-                   }
-                ).ToList()
+                Proizvodjaci = db.Proizvodjac.Select(x => new SelectListItem
+                {
+                    Text = x.Naziv,
+                    Value = x.ProizvodjacId.ToString()
+                }).ToList(),
+                Stanja = Enum.GetValues(typeof(Stanje)).Cast<Stanje>().Select(x => new SelectListItem
+                {
+                    Text = x.ToString(),
+                    Value = ((int)x).ToString()
+                }).ToList()
             };
             return View(Model);
+        }
 
+        public ActionResult UcitajListuBicikala(PrikaziBiciklVM VM)
+        {
+            PrikaziBiciklVM Model = new PrikaziBiciklVM
+            {
+                Bicikla = db.Bicikl
+               .Where(x => VM.Stanje == 0 || VM.Stanje == (int)x.Stanje)
+               .Where(x => VM.ProizvodjacId == 0 || VM.ProizvodjacId == x.Model.ProizvodjacId)
+               .Where(x => VM.Aktivan == x.Aktivan)
+               .Select(
+                  x => new PrikaziBiciklVM.Row
+                  {
+                      BiciklId = x.BiciklId,
+                      Boja = x.Boja,
+                      Cijena = x.Cijena,
+                      CijenaPoDanu = x.CijenaPoDanu,
+                      GodinaProizvodnje = x.GodinaProizvodnje,
+                      Model = new Data.EntityModels.Model
+                      {
+                          Naziv = x.Model.Naziv,
+                          Proizvodjac = x.Model.Proizvodjac
+                      },
+                      NoznaKocnica = x.NoznaKocnica,
+                      Slika = x.Slika,
+                      Stanje = x.Stanje,
+                      Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Count(),
+                      Aktivan = x.Aktivan
+                  }
+               ).ToList()
 
+            };
+
+            return PartialView(Model);
         }
 
 
@@ -53,6 +81,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
         public IActionResult Dodaj()
         {
             DodajBiciklVM vm = new DodajBiciklVM();
+            vm.GodinaProizvodnje = (short)DateTime.Now.Year;
 
             return View("Dodaj", vm);
         }
@@ -75,6 +104,18 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                 };
 
                 db.Bicikl.Add(NoviBicikl);
+
+                if (Slika == null || Slika.Length == 0)
+                    NoviBicikl.Slika = new byte[0];
+                else
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        Slika.CopyTo(ms);
+                        NoviBicikl.Slika = ms.ToArray();
+                    }
+                }
+
                 db.SaveChanges();
 
                 if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Sifre != null)
@@ -102,49 +143,140 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        //[HttpGet]
-        //public IActionResult Uredi(int id)
-        //{
-        //    var korisnik = db.Korisnik.Where(x => x.KorisnikID == id).Include(x => x.Bicikl).FirstOrDefault();
-        //    if (korisnik == null)
-        //        return RedirectToAction("Index");
+        [HttpGet]
+        public IActionResult Uredi(int id)
+        {
+            UrediBiciklVM model = db.Bicikl.Where(x => x.BiciklId == id)
+                .Select(
+                x => new UrediBiciklVM
+                {
+                    BiciklId = x.BiciklId,
+                    BojaId = x.BojaId,
+                    Cijena = x.Cijena,
+                    CijenaPoDanu = x.CijenaPoDanu,
+                    GodinaProizvodnje = x.GodinaProizvodnje,
+                    ModelId = x.ModelId,
+                    Stanje = x.Stanje,
+                    Slika = x.Slika,
+                    NoznaKocnica = x.NoznaKocnica,
+                    BiciklStanje = x.BiciklStanje.Select(y => new BiciklStanje
+                    {
+                        BiciklStanjeId = y.BiciklStanjeId,
+                        LokacijaId = y.LokacijaId,
+                        Sifra = y.Sifra,
+                        Aktivan = y.Aktivan
+                    }).ToList()
+                })
+                .FirstOrDefault();
 
-        //    UrediBiciklaVM model = new UrediBiciklaVM(db, korisnik);
-        //    return View(model);
-        //}
-        //[HttpPost]
-        //public ActionResult Uredi(UrediBiciklaVM model)
-        //{
-        //    var korisnik = db.Korisnik.Where(x => x.KorisnikID == model.KorisnikId).Include(x => x.Bicikl).FirstOrDefault();
+            if (model == null)
+                return RedirectToAction("Index");
 
-        //    bool izmjenaLozinke = false;
-        //    if (!string.IsNullOrEmpty(model.Lozinka) && model.Lozinka.Equals(model.LozinkaPotvrda))
-        //    {
-        //        izmjenaLozinke = true;
-        //    }
+            return View(model);
+        }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        korisnik.Ime = model.Ime;
-        //        korisnik.Prezime = model.Prezime;
-        //        korisnik.AdresaStanovanja = model.AdresaStanovanja;
-        //        korisnik.BrojTelefona = model.BrojTelefona;
-        //        korisnik.Email = model.Email;
-        //        korisnik.KorisnickoIme = model.KorisnickoIme;
-        //        korisnik.Aktivan = model.Aktivan;
-        //        if (izmjenaLozinke)
-        //            korisnik.SetLozinka(model.Lozinka);
+        [HttpGet]
+        public ActionResult DeaktivirajBiciklStanje(int Id)
+        {
+            var stanje = db.BiciklStanje.Find(Id);
+            if (stanje != null && stanje.Aktivan == true)
+            {
+                stanje.Aktivan = false;
+                db.SaveChanges();
+            }
+            return Json("OK");
+        }
+        [HttpGet]
+        public ActionResult AktivirajBiciklStanje(int Id)
+        {
+            var stanje = db.BiciklStanje.Find(Id);
+            if (stanje != null && stanje.Aktivan == false)
+            {
+                stanje.Aktivan = true;
+                db.SaveChanges();
+            }
+            return Json("OK");
+        }
 
-        //        db.SaveChanges();
-        //    }
-        //    else
-        //    {
-        //        model = new UrediBiciklaVM(db, korisnik);
-        //        return View(model);
-        //    }
+        [HttpGet]
+        public ActionResult DeaktivirajBicikl(int Id)
+        {
+            var bicikl = db.Bicikl.Find(Id);
+            if (bicikl != null)
+            {
+                bicikl.Aktivan = false;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult AktivirajBicikl(int Id)
+        {
+            var bicikl = db.Bicikl.Find(Id);
+            if (bicikl != null)
+            {
+                bicikl.Aktivan = true;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
 
-        //    return RedirectToAction("Index");
-        //}
+
+        [HttpPost]
+        public ActionResult Uredi(UrediBiciklVM model, IFormFile Slika)
+        {
+            var bicikl = db.Bicikl.Where(x => x.BiciklId == model.BiciklId).Include(x => x.BiciklStanje).FirstOrDefault();
+
+            bicikl.BojaId = model.BojaId;
+            bicikl.Cijena = model.Cijena;
+            bicikl.CijenaPoDanu = model.CijenaPoDanu;
+            bicikl.GodinaProizvodnje = model.GodinaProizvodnje;
+            bicikl.ModelId = bicikl.ModelId;
+            bicikl.Stanje = bicikl.Stanje;
+            bicikl.NoznaKocnica = bicikl.NoznaKocnica;
+
+            if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Sifre != null)
+            {
+                for (int i = 0; i < model.BiciklStanja_Sifre.Count; i++)
+                {
+                    var novoStanje_Sifra = model.BiciklStanja_Sifre[i];
+                    var novoStanje_LokacijaId = model.BiciklStanja_Lokacije[i];
+
+                    bool pronadjeno = false;
+                    foreach (var postojeceStanje in bicikl.BiciklStanje)
+                    {
+                        if (postojeceStanje.Sifra == novoStanje_Sifra)
+                        {
+                            postojeceStanje.LokacijaId = novoStanje_LokacijaId;
+                            pronadjeno = true;
+                            break;
+                        }
+                    }
+
+                    if (!pronadjeno)
+                        db.BiciklStanje.Add(new BiciklStanje
+                        {
+                            BiciklId = bicikl.BiciklId,
+                            Sifra = novoStanje_Sifra,
+                            LokacijaId = novoStanje_LokacijaId
+                        });
+                }
+            }
+
+
+            if (Slika?.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    Slika.CopyTo(ms);
+                    bicikl.Slika = ms.ToArray();
+                }
+            }
+
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
 
 

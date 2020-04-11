@@ -1,0 +1,19 @@
+﻿@model ModelVM
+<table class="table">
+
+<thead>
+
+    <tr>
+        <td>Proizvodjac</td>
+    </tr>
+</thead>
+    <tbody>
+        @foreach (var x in Model.rows)
+        {
+        <tr>
+            <td>@x.Proizvodjac</td>
+        </tr> }
+        </tbody>
+
+
+</table>

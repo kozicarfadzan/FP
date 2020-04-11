@@ -1,0 +1,57 @@
+﻿@model PrikaziBiciklVM
+@{
+    ViewData["Title"] = "Prikaz bicikala";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div style="position: relative;">
+    <form style="float: left;" id="filterBiciklForma">
+
+        <table>
+            <tr>
+                <td style="width: 110px;">Proizvođač:</td>
+                <td>@Html.DropDownListFor(x => x.ProizvodjacId, Model.Proizvodjaci, "Odaberite", new { @class = "form-control", onchange = "ucitajBicikla();" })</td>
+            </tr>
+            <tr>
+                <td>Stanje:</td>
+                <td>@Html.DropDownListFor(x => x.Stanje, Model.Stanja, "Odaberite", new { @class = "form-control", onchange = "ucitajBicikla();" })</td>
+            </tr>
+        </table>
+    </form>
+
+    <div style="position: absolute; right: 6px; bottom:6px;">
+        @*<a href="/Admin/Bicikl/Dodaj" class="btn btn-primary">Dodaj</a>*@
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<div id="bicikla">
+</div>
+<a hidden asp-action="UcitajListuBicikala" id="url_aktivna_bicikla"></a>
+
+<script>
+
+    function ucitajBicikla() {
+        var forma = $('#filterBiciklForma');
+
+        var filteri = '?' + forma.serialize();
+
+        $.get($('#url_aktivna_bicikla').attr('href') + filteri, function (data) {
+            $('#bicikla').html(data);
+        });
+    }
+
+    $(".tab-content").on('click', '.ajax-btn', function (event) {
+        event.preventDefault();
+
+        $.get($(this).attr('href'), function (data) {
+            ucitajBicikla();
+        });
+    });
+
+    $(function() {
+        ucitajBicikla();
+    });
+</script>

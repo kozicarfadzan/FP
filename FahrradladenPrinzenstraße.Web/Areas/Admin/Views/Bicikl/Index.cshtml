@@ -5,61 +5,75 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<form>
+<div style="position: relative;">
+    <form style="float: left;" id="filterBiciklForma">
 
-
-    <input type="text" name="Pretraga" class="form-control col-md-3" />
-    <button class="btn btn-success">Pretraga</button>
-</form>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Proizvođač</th>
-            <th>Naziv modela</th>
-            <th>Godina proizvodnje</th>
-            <th>Stanje</th>
-            <th>Cijena</th>
-            <th>Boja</th>
-            <th>Nožna kočnica</th>
-            <th>Akcija</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Bicikla.Count == 0)
-        {
-
+        <table>
             <tr>
-                <td colspan="3">Nije pronađeno</td>
+                <td style="width: 110px;">Proizvođač:</td>
+                <td>@Html.DropDownListFor(x => x.ProizvodjacId, Model.Proizvodjaci, "Odaberite", new { @class = "form-control", onchange = "ucitajBicikla();" })</td>
             </tr>
-        }
-        @foreach (var item in Model.Bicikla)
-        {
             <tr>
-                <td>@item.Model.Proizvodjac.Naziv</td>
-                <td>@item.Model.Naziv</td>
-                <td>@item.GodinaProizvodnje</td>
-                <td>@item.Stanje</td>
-                @if (item.Stanje == Stanje.Novo || item.Stanje == Stanje.Polovno)
-                {
-                    <td>@item.Cijena</td>
-                }
-                else
-                {
-                    <td>@item.CijenaPoDanu</td>
-
-                }
-                <td>@item.Boja.Naziv</td>
-                <td>@(item.NoznaKocnica?"Da":"Ne")</td>
-
-                <td>
-                    <a href="/Admin/Bicikl/Obrisi?Id=@item.BiciklId" class="btn btn-danger">Obriši</a> |
-                    <a href="/Admin/Bicikl/Uredi?Id=@item.BiciklId  " class="btn btn-warning">Uredi</a>
-                </td>
+                <td>Stanje:</td>
+                <td>@Html.DropDownListFor(x => x.Stanje, Model.Stanja, "Odaberite", new { @class = "form-control", onchange = "ucitajBicikla();" })</td>
             </tr>
+        </table>
+    </form>
 
-        }
-    </tbody>
-</table>
+    <div style="position: absolute; right: 6px; bottom:6px;">
+        <a href="/Admin/Bicikl/Dodaj" class="btn btn-primary">Dodaj</a>
 
-<a href="/Admin/Bicikl/Dodaj" class="btn btn-primary">Dodaj</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<div class="panel with-nav-tabs panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_aktivna" data-toggle="tab">Aktivna</a></li>
+            <li><a href="#tab_neaktivna" data-toggle="tab">Neaktivna</a></li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab_aktivna">
+
+               
+            </div>
+            <div class="tab-pane fade" id="tab_neaktivna">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<a hidden asp-action="UcitajListuBicikala" asp-route-Aktivan="True" id="url_aktivna_bicikla"></a>
+<a hidden asp-action="UcitajListuBicikala" asp-route-Aktivan="False" id="url_neaktivna_bicikla"></a>
+
+<script>
+
+    function ucitajBicikla() {
+        var forma = $('#filterBiciklForma');
+
+        var filteri = '&' + forma.serialize();
+
+        $.get($('#url_aktivna_bicikla').attr('href') + filteri, function (data) {
+            $('#tab_aktivna').html(data);
+        });
+        $.get($('#url_neaktivna_bicikla').attr('href') + filteri, function (data) {
+            $('#tab_neaktivna').html(data);
+        });
+    }
+
+    $(".tab-content").on('click', '.ajax-btn', function (event) {
+        event.preventDefault();
+
+        $.get($(this).attr('href'), function (data) {
+            ucitajBicikla();
+        });
+    });
+
+    $(function() {
+        ucitajBicikla();
+    });
+</script>

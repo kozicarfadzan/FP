@@ -1,4 +1,5 @@
 ﻿using FahrradladenPrinzenstraße.Data.EntityModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,11 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels
         public string Pretraga { get; set; }
 
         public List<Row> Bicikla { get; set; }
+        public List<SelectListItem> Proizvodjaci { get; set; }
+        public int ProizvodjacId { get; set; }
+        public List<SelectListItem> Stanja { get; set; }
+        public int Stanje { get; set; }
+        public bool Aktivan { get; set; }
 
         public class Row
         {
@@ -19,13 +25,13 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels
             public string PuniNaziv => Model.Tip + " " + Model.Naziv;
             public short GodinaProizvodnje { get; set; }
             public Stanje Stanje { get; set; }
-            public string Slika { get; set; }
+            public byte[] Slika { get; set; }
             public double? CijenaPoDanu { get; set; }
             public double? Cijena { get; set; }
             public Boja Boja { get; set; }
             public bool NoznaKocnica { get; set; }
-
-
+            public int Kolicina { get; internal set; }
+            public bool Aktivan { get; set; }
         }
     }
 }

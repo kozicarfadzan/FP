@@ -15,6 +15,10 @@ namespace FahrradladenPrinzenstraße.Data
 
         }
 
+        public MyContext()
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -36,6 +40,26 @@ namespace FahrradladenPrinzenstraße.Data
                                 .WithOne(p => p.Administrator)
                                 .HasForeignKey<Administrator>(d => d.Id);
             });
+
+            modelBuilder.Entity<Klijent>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.HasOne(d => d.Korisnik)
+                                .WithOne(p => p.Klijent)
+                                .HasForeignKey<Klijent>(d => d.Id);
+            });
+
+            modelBuilder.Entity<Bicikl>(entity =>
+            {
+                entity.Property(e => e.Aktivan)
+                .HasDefaultValue(true);
+            });
+            modelBuilder.Entity<BiciklStanje>(entity =>
+            {
+                entity.Property(e => e.Aktivan)
+                .HasDefaultValue(true);
+            });
         }
 
 
@@ -50,10 +74,20 @@ namespace FahrradladenPrinzenstraße.Data
         public DbSet<BiciklStanje> BiciklStanje { get; set; }
         public DbSet<Bicikl> Bicikl { get; set; }
         public DbSet<Korisnik> Korisnik { get; set; }
+        public DbSet<Klijent> Klijent { get; set; }
         public DbSet<Zaposlenik> Zaposlenik { get; set; }
         public DbSet<Boja> Boja { get; set; }
         public DbSet<Model> Modeli { get; set; }
         public DbSet<Proizvodjac> Proizvodjac { get; set; }
+        public DbSet<Rezervacija> Rezervacija { get; set; }
+        public DbSet<RezervacijaIznajmljenaBicikla> RezervacijaIznajmljenaBicikla { get; set; }
+        public DbSet<RezervacijaProdajaBicikla> RezervacijaProdajaBicikla { get; set; }
+        public DbSet<RezervacijaProdajaDio> RezervacijaProdajaDio { get; set; }
+        public DbSet<RezervacijaProdajaOprema> RezervacijaProdajaOprema { get; set; }
+        public DbSet<Servis> Servis { get; set; }
+        public DbSet<Dio> Dio { get; set; }
+        public DbSet<Oprema> Oprema { get; set; }
+        public DbSet<RezervacijaServis> RezervacijaServis { get; set; }
         public DbSet<StarosnaGrupa> StarosnaGrupa { get; set; }
         public DbSet<VelicinaOkvira> VelicinaOkvira { get; set; }
         public DbSet<Lokacija> Lokacija { get; set; }

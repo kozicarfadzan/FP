@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace FahrradladenPrinzenstraße.Data.EntityModels
@@ -17,12 +18,14 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public string PuniNaziv =>  Model.Tip + " " + Model.Naziv;
         public short GodinaProizvodnje { get; set; }
         public Stanje Stanje { get; set; }
-        public string Slika { get; set; }
+        public byte[] Slika { get; set; }
         public double? CijenaPoDanu { get; set; }
         public double? Cijena { get; set; }
         public int BojaId { get; set; }
         public Boja Boja { get; set; }
         public bool NoznaKocnica { get; set; }
+        [DefaultValue(true)]
+        public bool Aktivan { get; set; } = true;
 
         public IEnumerable<BiciklStanje> BiciklStanje { get; set; }
     }

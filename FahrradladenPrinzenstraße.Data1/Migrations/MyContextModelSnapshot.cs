@@ -15,7 +15,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -53,6 +53,10 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Aktivan")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
                     b.Property<int>("BojaId");
 
                     b.Property<double?>("Cijena");
@@ -65,7 +69,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
 
                     b.Property<bool>("NoznaKocnica");
 
-                    b.Property<string>("Slika");
+                    b.Property<byte[]>("Slika");
 
                     b.Property<int>("Stanje");
 
@@ -84,7 +88,13 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Aktivan")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
                     b.Property<int>("BiciklId");
+
+                    b.Property<int?>("KupacId");
 
                     b.Property<int>("LokacijaId");
 
@@ -93,6 +103,8 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasKey("BiciklStanjeId");
 
                     b.HasIndex("BiciklId");
+
+                    b.HasIndex("KupacId");
 
                     b.HasIndex("LokacijaId");
 
@@ -112,6 +124,27 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.ToTable("Boja");
                 });
 
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Dio", b =>
+                {
+                    b.Property<int>("DioId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Cijena");
+
+                    b.Property<string>("Naziv");
+
+                    b.Property<string>("Opis");
+
+                    b.Property<int>("ProizvodjacID");
+
+                    b.HasKey("DioId");
+
+                    b.HasIndex("ProizvodjacID");
+
+                    b.ToTable("Dio");
+                });
+
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Grad", b =>
                 {
                     b.Property<int>("GradID")
@@ -123,6 +156,17 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasKey("GradID");
 
                     b.ToTable("Grad");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<DateTime>("DatumRegistracije");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Klijent");
                 });
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Korisnik", b =>
@@ -223,6 +267,27 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.ToTable("Modeli");
                 });
 
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", b =>
+                {
+                    b.Property<int>("OpremaId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Cijena");
+
+                    b.Property<string>("Naziv");
+
+                    b.Property<string>("Opis");
+
+                    b.Property<int>("ProizvodjacID");
+
+                    b.HasKey("OpremaId");
+
+                    b.HasIndex("ProizvodjacID");
+
+                    b.ToTable("Oprema");
+                });
+
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Proizvodjac", b =>
                 {
                     b.Property<int>("ProizvodjacId")
@@ -234,6 +299,143 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasKey("ProizvodjacId");
 
                     b.ToTable("Proizvodjac");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", b =>
+                {
+                    b.Property<int>("RezervacijaId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("DatumRezervacije");
+
+                    b.Property<int>("KlijentId");
+
+                    b.HasKey("RezervacijaId");
+
+                    b.HasIndex("KlijentId");
+
+                    b.ToTable("Rezervacija");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaIznajmljenaBicikla", b =>
+                {
+                    b.Property<int>("RezervacijaIznajmljenaBiciklaID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BiciklStanjeId");
+
+                    b.Property<DateTime>("DatumPreuzimanja");
+
+                    b.Property<DateTime>("DatumVracanja");
+
+                    b.Property<int>("RezervacijaId");
+
+                    b.HasKey("RezervacijaIznajmljenaBiciklaID");
+
+                    b.HasIndex("BiciklStanjeId");
+
+                    b.HasIndex("RezervacijaId");
+
+                    b.ToTable("RezervacijaIznajmljenaBicikla");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaBicikla", b =>
+                {
+                    b.Property<int>("RezervacijaProdajaBiciklaID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BiciklStanjeId");
+
+                    b.Property<int>("RezervacijaId");
+
+                    b.HasKey("RezervacijaProdajaBiciklaID");
+
+                    b.HasIndex("BiciklStanjeId");
+
+                    b.HasIndex("RezervacijaId");
+
+                    b.ToTable("RezervacijaProdajaBicikla");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaDio", b =>
+                {
+                    b.Property<int>("RezervacijaProdajaDioId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DioId");
+
+                    b.Property<int>("RezervacijaId");
+
+                    b.HasKey("RezervacijaProdajaDioId");
+
+                    b.HasIndex("DioId");
+
+                    b.HasIndex("RezervacijaId");
+
+                    b.ToTable("RezervacijaProdajaDio");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaOprema", b =>
+                {
+                    b.Property<int>("RezervacijaProdajaOpremaId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("OpremaId");
+
+                    b.Property<int>("RezervacijaId");
+
+                    b.HasKey("RezervacijaProdajaOpremaId");
+
+                    b.HasIndex("OpremaId");
+
+                    b.HasIndex("RezervacijaId");
+
+                    b.ToTable("RezervacijaProdajaOprema");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaServis", b =>
+                {
+                    b.Property<int>("RezervacijaServisId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DatumServisiranja");
+
+                    b.Property<bool>("IsOdobreno");
+
+                    b.Property<int>("RezervacijaId");
+
+                    b.Property<int>("ServisId");
+
+                    b.HasKey("RezervacijaServisId");
+
+                    b.HasIndex("RezervacijaId");
+
+                    b.HasIndex("ServisId");
+
+                    b.ToTable("RezervacijaServis");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Servis", b =>
+                {
+                    b.Property<int>("ServisId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Cijena");
+
+                    b.Property<string>("Naziv");
+
+                    b.Property<string>("Opis");
+
+                    b.HasKey("ServisId");
+
+                    b.ToTable("Servis");
                 });
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.StarosnaGrupa", b =>
@@ -307,9 +509,29 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasForeignKey("BiciklId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Kupac")
+                        .WithMany()
+                        .HasForeignKey("KupacId");
+
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Lokacija", "Lokacija")
                         .WithMany()
                         .HasForeignKey("LokacijaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Dio", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Proizvodjac", "Proizvodjac")
+                        .WithMany()
+                        .HasForeignKey("ProizvodjacID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Korisnik", "Korisnik")
+                        .WithOne("Klijent")
+                        .HasForeignKey("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -340,6 +562,87 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.VelicinaOkvira", "VelicinaOkvira")
                         .WithMany()
                         .HasForeignKey("VelicinaOkviraId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Proizvodjac", "Proizvodjac")
+                        .WithMany()
+                        .HasForeignKey("ProizvodjacID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Klijent")
+                        .WithMany()
+                        .HasForeignKey("KlijentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaIznajmljenaBicikla", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.BiciklStanje", "BiciklStanje")
+                        .WithMany("RezervacijaIznajmljenaBicikla")
+                        .HasForeignKey("BiciklStanjeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", "Rezervacija")
+                        .WithMany("RezervacijaIznajmljenaBicikla")
+                        .HasForeignKey("RezervacijaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaBicikla", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.BiciklStanje", "BiciklStanje")
+                        .WithMany("RezervacijaProdajaBicikla")
+                        .HasForeignKey("BiciklStanjeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", "Rezervacija")
+                        .WithMany("RezervacijaProdajaBicikla")
+                        .HasForeignKey("RezervacijaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaDio", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Dio", "Dio")
+                        .WithMany()
+                        .HasForeignKey("DioId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", "Rezervacija")
+                        .WithMany("RezervacijaProdajaDio")
+                        .HasForeignKey("RezervacijaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaOprema", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", "Oprema")
+                        .WithMany()
+                        .HasForeignKey("OpremaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", "Rezervacija")
+                        .WithMany("RezervacijaProdajaOprema")
+                        .HasForeignKey("RezervacijaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaServis", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", "Rezervacija")
+                        .WithMany("RezervacijaServis")
+                        .HasForeignKey("RezervacijaId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Servis", "Servis")
+                        .WithMany()
+                        .HasForeignKey("ServisId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

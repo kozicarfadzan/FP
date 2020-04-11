@@ -18,7 +18,7 @@ namespace FahrradladenPrinzenstraße.Web.Helper
 
         private const string LogiraniKorisnik = "logirani_korisnik";
 
-        public static void SetLogiraniKorisnik(this HttpContext context, Korisnik korisnik, bool snimiUCookie = false)
+        public static void SetLogiraniKorisnik(this HttpContext context, Korisnik korisnik, bool zapamtiSesiju = false)
         {
 
             MyContext db = context.RequestServices.GetService<MyContext>();
@@ -45,7 +45,8 @@ namespace FahrradladenPrinzenstraße.Web.Helper
                     VrijemeEvidentiranja = DateTime.Now
                 });
                 db.SaveChanges();
-                context.Response.SetCookieJson(LogiraniKorisnik, token);
+                context.Response.SetCookieJson(LogiraniKorisnik, token, zapamtiSesiju);
+
             }
         }
 
@@ -65,8 +66,9 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             return db.AutorizacijskiToken
                 .Where(x => x.Vrijednost == token)
                 .Select(s => s.Korisnik)
-                .Include(x=>x.Zaposlenik)
-                .Include(x=>x.Administrator)
+                .Include(x => x.Zaposlenik)
+                .Include(x => x.Administrator)
+                .Include(x => x.Klijent)
                 .SingleOrDefault();
 
         }

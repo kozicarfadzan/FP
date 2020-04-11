@@ -1,0 +1,35 @@
+﻿@model DodajServisVM
+@{
+    ViewData["Title"] = "Dodaj servis";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form action="/Admin/Servis/Dodaj" method="post">
+
+    <table>
+        <tbody>
+            <tr>
+                <td>Naziv:</td>
+                <td>@Html.TextBoxFor(x => x.Naziv, new { @class = "form-control" })</td>
+                <td>@Html.ValidationMessageFor(x => x.Naziv)</td>
+            </tr>
+            <tr>
+                <td>Opis:</td>
+                <td>@Html.TextAreaFor(x => x.Opis, new { @class = "form-control" })</td>
+                <td>@Html.ValidationMessageFor(x => x.Opis)</td>
+            </tr>
+            <tr>
+                <td>Cijena:</td>
+                <td>@Html.TextBoxFor(x => x.Cijena, new { @class = "form-control" })</td>
+                <td>@Html.ValidationMessageFor(x => x.Cijena)</td>
+            </tr>
+            
+
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Snimi</button>
+</form>
+
+

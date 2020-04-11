@@ -1,0 +1,68 @@
+﻿@model PrikaziBiciklVM
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Slika</th>
+            <th>Proizvođač</th>
+            <th>Naziv modela</th>
+            <th>Godina proizvodnje</th>
+            <th>Stanje</th>
+            <th>Cijena</th>
+            <th>Boja</th>
+            <th>Nožna kočnica</th>
+            <th>Količina</th>
+            <th>Akcija</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Bicikla.Count == 0)
+        {
+
+            <tr>
+                <td colspan="3">Nije pronađeno</td>
+            </tr>
+        }
+        @foreach (var item in Model.Bicikla.ToList())
+        {
+            <tr>
+                <td>
+                    @if (item.Slika == null || item.Slika.Length < 1000)
+                    {
+                        <img src="~/images/default_FP.png" style="max-width: 250px" />
+                    }
+                    else
+                    {
+                        <img src="data:image/png;base64,@Convert.ToBase64String(item.Slika)" style="max-width: 250px" />
+                    }
+                </td>
+                <td>@item.Model.Proizvodjac.Naziv</td>
+                <td>@item.Model.Naziv</td>
+                <td>@item.GodinaProizvodnje</td>
+                <td>@item.Stanje</td>
+                @if (item.Stanje == Stanje.Novo || item.Stanje == Stanje.Polovno)
+                {
+                    <td>@item.Cijena?.ToString("0.00") KM</td>
+                }
+                else
+                {
+                    <td>@item.CijenaPoDanu?.ToString("0.00") KM po danu</td>
+
+                }
+                <td>@item.Boja.Naziv</td>
+                <td>@(item.NoznaKocnica ? "Da" : "Ne")</td>
+                <td>@item.Kolicina</td>
+
+                <td>
+                    @if (item.Aktivan)
+                    {
+                        <a asp-action="KupiBiciklo" asp-route-id="@item.BiciklId" class="btn btn-success">Kupi</a>
+                    }
+
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

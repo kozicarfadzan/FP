@@ -1,9 +1,11 @@
 ﻿@model PrikaziZaposlenikVM
 @using FahrradladenPrinzenstraße.Data.EntityModels
 
+@{
+    ViewData["Title"] = "Prikaz zaposlenika";
+}
 
-
-<h2>Prikaz zaposlenika</h2>
+<h2>@ViewData["Title"]</h2>
 <table class="table table-striped">
     <tr>
         <th> Ime</th>
@@ -15,6 +17,7 @@
         <th>Broj telefona</th>
         <th>Email</th>
         <th>Spol</th>
+        <th>Akcija</th>
     </tr>
 
 

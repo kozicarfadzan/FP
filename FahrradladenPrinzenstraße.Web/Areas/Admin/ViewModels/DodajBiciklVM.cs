@@ -18,7 +18,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels
         [DisplayName("Godina proizvodnje")]
         public short GodinaProizvodnje { get; set; }
         public Stanje Stanje { get; set; }
-        public string Slika { get; set; }
+        public byte[] Slika { get; set; }
         [DisplayName("Cijena po danu")]
         public double? CijenaPoDanu { get; set; }
         public double? Cijena { get; set; }

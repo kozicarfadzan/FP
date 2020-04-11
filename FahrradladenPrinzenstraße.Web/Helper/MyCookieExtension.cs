@@ -17,7 +17,7 @@ namespace FahrradladenPrinzenstraße.Web.Helper
                 : JsonConvert.DeserializeObject<T>(strValue);
         }
 
-        public static void SetCookieJson(this HttpResponse response, string key, object value, int? expireTime = null)
+        public static void SetCookieJson(this HttpResponse response, string key, object value, bool zapamtiSesiju = false)
         {
             if (value == null)
             {
@@ -26,9 +26,7 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             }
 
             CookieOptions option = new CookieOptions();
-            if (expireTime.HasValue)
-                option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
-            else
+            if(zapamtiSesiju)
                 option.Expires = DateTime.Now.AddDays(7);
 
 

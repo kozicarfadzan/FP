@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using FahrradladenPrinzenstraße.Data;
 using FahrradladenPrinzenstraße.Data.EntityModels;
+using FahrradladenPrinzenstraße.Web.Helper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")] [Autorizacija(administrator:true)]
     public class BojaController : Controller
     {
 

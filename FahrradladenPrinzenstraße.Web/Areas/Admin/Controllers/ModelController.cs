@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using FahrradladenPrinzenstraße.Data;
 using FahrradladenPrinzenstraße.Data.EntityModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using FahrradladenPrinzenstraße.Web.Helper;
 
 namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")] [Autorizacija(administrator:true)]
     public class ModelController : Controller
     {
 
@@ -28,6 +30,21 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                  .Where(x => x.Naziv.Contains(Pretraga) || Pretraga == null)
                  .ToList();
 
+            return View(vm);
+        }
+
+
+        public IActionResult Detalji(int Id, int partial)
+        {
+            Model vm = db.Modeli
+                 .Where(x => x.ModelId == Id)
+                 .Include(x=>x.MaterijalOkvira)
+                 .Include(x=>x.StarosnaGrupa)
+                 .Include(x=>x.Proizvodjac)
+                 .Include(x=>x.VelicinaOkvira)
+                 .FirstOrDefault();
+            if (partial == 1)
+                return PartialView(vm);
             return View(vm);
         }
 

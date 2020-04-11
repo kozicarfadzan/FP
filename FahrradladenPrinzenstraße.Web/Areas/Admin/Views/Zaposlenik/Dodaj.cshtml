@@ -1,4 +1,7 @@
 ﻿@model DodajZaposlenikaVM
+@{
+    ViewData["Title"] = "Dodaj zaposlenika";
+}
 
 <h2>@ViewData["Title"]</h2>
 
@@ -38,7 +41,9 @@
             <tr>
                 <td>Spol:</td>
                 <td>
-                    @Html.DropDownListFor(x => x.Spol, Model.Spolovi, "Odaberite spol", new { @class ="form-control"
+                    @Html.DropDownListFor(x => x.Spol, Model.Spolovi, "Odaberite spol", new
+                    {
+                        @class = "form-control"
                 })
                 </td>
                 <td>@Html.ValidationMessageFor(x => x.Spol)</td>
@@ -65,7 +70,9 @@
             <tr>
                 <td>Grad:</td>
                 <td>
-                    @Html.DropDownListFor(x=>x.GradId, Model.Gradovi, "Odaberite grad:", new { @class = "form-control"
+                    @Html.DropDownListFor(x => x.GradId, Model.Gradovi, "Odaberite grad:", new
+                    {
+                        @class = "form-control"
             })
                 </td>
                 <td>@Html.ValidationMessageFor(x => x.GradId)</td>

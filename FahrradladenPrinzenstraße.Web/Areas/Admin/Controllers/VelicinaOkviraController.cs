@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using FahrradladenPrinzenstraße.Data;
 using FahrradladenPrinzenstraße.Data.EntityModels;
 using Microsoft.AspNetCore.Mvc;
+using FahrradladenPrinzenstraße.Web.Helper;
 
 namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")] [Autorizacija(administrator:true)]
     public class VelicinaOkviraController : Controller
     {
         private readonly MyContext db;

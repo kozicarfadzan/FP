@@ -1,0 +1,46 @@
+﻿@model PrikaziServiseVM
+@using FahrradladenPrinzenstraße.Data.EntityModels
+
+@{
+    ViewData["Title"] = "Prikaz servise";
+}
+
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped">
+    <tr>
+        <th> Naziv</th>
+        <th>Opis</th>
+        <th>Cijena</th>
+        <th>Akcija</th>
+    </tr>
+
+
+    @foreach (Servis z in Model.Servisi)
+    {
+        <tr>
+
+            <td> @z.Naziv</td>
+            <td>  @z.Opis</td>
+            <td>  @z.Cijena</td>
+          
+
+            <td>
+                @Html.ActionLink("Uredi", "Uredi", new { id = z.ServisId }, new { @class = "btn btn-default" })
+
+
+
+           
+
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+<p>
+    @Html.ActionLink("Dodaj", "Dodaj", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+</p>
+<div>
+    @Html.ActionLink("Vrati na početnu", "Index")
+</div>

@@ -19,12 +19,12 @@
             <tr>
                 <td>@Html.LabelFor(x=>x.Proizvodjac)</td>
                 <td>@(Html.DropDownListFor(x=>x.ProizvodjacId, listProizvodjac, "Odaberite"))</td>
-                <td>@Html.ValidationMessageFor(x => x.Proizvodjac)</td>
+                <td>@Html.ValidationMessageFor(x => x.ProizvodjacId)</td>
             </tr>
             <tr>
                 <td>@Html.LabelFor(x=>x.SpolBicikl)</td>
                 <td>@Html.DropDownListFor(x=>x.SpolBicikl, DropdownHelper.GetEnumSelectList<SpolBicikl>(), "Odaberite")</td>
-                <td>@Html.ValidationMessageFor(x => x.Naziv)</td>
+                <td>@Html.ValidationMessageFor(x => x.SpolBicikl)</td>
             </tr>
         </tbody>
     </table>

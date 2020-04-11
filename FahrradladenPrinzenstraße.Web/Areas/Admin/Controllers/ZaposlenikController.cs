@@ -12,7 +12,7 @@ using FahrradladenPrinzenstraße.Data.EntityModels;
 
 namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin")] [Autorizacija(administrator:true)]
     public class ZaposlenikController : Controller
     {
         private readonly MyContext db;
