@@ -30,7 +30,7 @@ namespace FahrradladenPrinzenstraße.Web
                 x.UseSqlServer(Configuration.GetConnectionString("localDB")));
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddMvc();
+            services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession();
 

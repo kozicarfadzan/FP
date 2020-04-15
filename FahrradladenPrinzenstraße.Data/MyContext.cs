@@ -88,6 +88,7 @@ namespace FahrradladenPrinzenstraße.Data
         public DbSet<Dio> Dio { get; set; }
         public DbSet<Oprema> Oprema { get; set; }
         public DbSet<RezervacijaServis> RezervacijaServis { get; set; }
+        public DbSet<MaterijalOkvira> MaterijalOkvira { get; set; }
         public DbSet<StarosnaGrupa> StarosnaGrupa { get; set; }
         public DbSet<VelicinaOkvira> VelicinaOkvira { get; set; }
         public DbSet<Lokacija> Lokacija { get; set; }

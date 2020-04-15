@@ -1,6 +1,7 @@
 ﻿@using FahrradladenPrinzenstraße.Web.Helper;
 @{
     Korisnik korisnik = Context.GetLogiraniKorisnik();
+    string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -142,14 +143,14 @@
                                                 <div class="col-md-6 col-sm-6">
                                                     <span class="megamenu-title">Kupovina</span>
                                                     <ul class="menu-items">
-                                                        <li><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-stanje="Nova">Novi&nbsp;bicikli</a></li>
-                                                        <li><a  asp-area="" asp-controller="Home" asp-action="Index" asp-route-stanje="Polovna">Polovni&nbsp;bicikli</a></li>
+                                                        <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Novo">Novi&nbsp;bicikli</a></li>
+                                                        <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Polovno">Polovni&nbsp;bicikli</a></li>
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-6 col-sm-6">
                                                     <span class="megamenu-title">Iznajmljivanje</span>
                                                     <ul class="menu-items">
-                                                        <li><a href="index.php?page=category">Rezerviši&nbsp;termin</a></li>
+                                                        <li><a asp-area="" asp-controller="Termini" asp-action="Rezervisi">Rezerviši&nbsp;termin</a></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -278,12 +279,21 @@
         </div><!-- /.modal -->
         <!-- ============================================================= MODAL : END ============================================================= -->
         <div class="content">
-
-            <div class="container">
-                <!-- ========================================= CONTENT ========================================= -->
+            @if (controllerName == "Home")
+            {
                 @RenderBody()
-                <!-- ========================================= CONTENT : END  ========================================= -->
-            </div><!-- /.container -->
+
+            }
+            else
+            {
+                <div class="container">
+                    <!-- ========================================= CONTENT ========================================= -->
+
+                    @RenderBody()
+                    <!-- ========================================= CONTENT : END  ========================================= -->
+
+                </div><!-- /.container -->
+            }
         </div><!-- /.content -->
         <!-- ============================================================= FOOTER ============================================================= -->
         <footer class="footer">

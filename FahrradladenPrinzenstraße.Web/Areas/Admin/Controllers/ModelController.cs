@@ -67,6 +67,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                 novi = db.Modeli.Where(x => x.ModelId == vm.ModelId).FirstOrDefault();
             }
             novi.Naziv = vm.Naziv;
+            novi.ProizvodjacId = vm.ProizvodjacId;
 
             db.SaveChanges();
             return RedirectToAction("Index");

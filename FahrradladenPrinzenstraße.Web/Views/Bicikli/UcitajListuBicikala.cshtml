@@ -1,68 +1,72 @@
-﻿@model PrikaziBiciklVM
+﻿@model FahrradladenPrinzenstraße.Web.ViewModels.PrikaziBiciklVM
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Slika</th>
-            <th>Proizvođač</th>
-            <th>Naziv modela</th>
-            <th>Godina proizvodnje</th>
-            <th>Stanje</th>
-            <th>Cijena</th>
-            <th>Boja</th>
-            <th>Nožna kočnica</th>
-            <th>Količina</th>
-            <th>Akcija</th>
+@if (Model.Bicikla.Count == 0)
+{
+    <div>Nije pronađeno</div>
+}
+@foreach (var item in Model.Bicikla)
+{
 
-        </tr>
-    </thead>
-    <tbody>
-        @if (Model.Bicikla.Count == 0)
-        {
+    <div class="product-item-column col-md-4 col-sm-4 col-xs-12 col-lg-4">
+        <div class="product-item-grid-view">
+            <div class="product-item">
+                <div class="product-image">
+                    <a href="index.php?page=detail">
 
-            <tr>
-                <td colspan="3">Nije pronađeno</td>
-            </tr>
-        }
-        @foreach (var item in Model.Bicikla.ToList())
-        {
-            <tr>
-                <td>
-                    @if (item.Slika == null || item.Slika.Length < 1000)
-                    {
-                        <img src="~/images/default_FP.png" style="max-width: 250px" />
-                    }
-                    else
-                    {
-                        <img src="data:image/png;base64,@Convert.ToBase64String(item.Slika)" style="max-width: 250px" />
-                    }
-                </td>
-                <td>@item.Model.Proizvodjac.Naziv</td>
-                <td>@item.Model.Naziv</td>
-                <td>@item.GodinaProizvodnje</td>
-                <td>@item.Stanje</td>
-                @if (item.Stanje == Stanje.Novo || item.Stanje == Stanje.Polovno)
-                {
-                    <td>@item.Cijena?.ToString("0.00") KM</td>
-                }
-                else
-                {
-                    <td>@item.CijenaPoDanu?.ToString("0.00") KM po danu</td>
+                        @if (item.Slika == null || item.Slika.Length < 1000)
+                        {
 
-                }
-                <td>@item.Boja.Naziv</td>
-                <td>@(item.NoznaKocnica ? "Da" : "Ne")</td>
-                <td>@item.Kolicina</td>
+                            <img src="/images/default_FP.png" width="262" height="202" alt="Product" class="center-block img-responsive">
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(item.Slika)" class="center-block img-responsive" />
+                        }
 
-                <td>
-                    @if (item.Aktivan)
-                    {
-                        <a asp-action="KupiBiciklo" asp-route-id="@item.BiciklId" class="btn btn-success">Kupi</a>
-                    }
 
-                </td>
-            </tr>
+                    </a>
+                </div><!-- /.product-image -->
+                <div class="product-detail text-md-center">
+                    <h3 class="product-name"><a href="index.php?page=detail">@item.Model.Naziv</a></h3>
+                    <p class="product-price">
+                        @if (item.Stanje == Stanje.Novo || item.Stanje == Stanje.Polovno)
+                        {
+                            <span class="price">
+                                @item.Cijena?.ToString("0.00") KM
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="price">
+                                @item.CijenaPoDanu?.ToString("0.00") KM po danu
+                            </span>
 
-        }
-    </tbody>
-</table>
+                        }
+                    </p>
+                </div><!-- /.product-detail -->
+            </div><!-- /.product-item -->
+        </div><!-- /.product-item-grid-view -->
+    </div><!-- /.product-item-column -->
+
+    @*<tr>
+        <td>
+        </td>
+        <td>@item.Model.Proizvodjac.Naziv</td>
+        <td></td>
+        <td>@item.GodinaProizvodnje</td>
+        <td>@item.Stanje</td>
+
+        <td>@item.Boja.Naziv</td>
+        <td>@(item.NoznaKocnica ? "Da" : "Ne")</td>
+        <td>@item.Kolicina</td>
+
+        <td>
+            @if (item.Aktivan)
+            {
+                <a asp-action="KupiBiciklo" asp-route-id="@item.BiciklId" class="btn btn-success">Kupi</a>
+            }
+
+        </td>
+    </tr>*@
+
+}

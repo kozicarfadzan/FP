@@ -7,7 +7,6 @@ using System.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using FahrradladenPrinzenstraße.Data;
 
@@ -63,13 +62,20 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             if (token == null)
                 return null;
 
-            return db.AutorizacijskiToken
+            int KorisnikId = db.AutorizacijskiToken
                 .Where(x => x.Vrijednost == token)
-                .Select(s => s.Korisnik)
+                .Select(s => s.KorisnikId).FirstOrDefault();
+            if(KorisnikId != 0)
+            {
+                return db.Korisnik
                 .Include(x => x.Zaposlenik)
                 .Include(x => x.Administrator)
                 .Include(x => x.Klijent)
+                .Where(x=>x.KorisnikID == KorisnikId)
                 .SingleOrDefault();
+            }
+
+            return null;
 
         }
     }

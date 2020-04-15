@@ -18,6 +18,8 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public Tip Tip { get; set; }
 
         public MaterijalOkvira MaterijalOkvira { get; set; }
+        public int MaterijalOkviraId { get; set; }
+
 
         public int StarosnaGrupaId { get; set; }
         public StarosnaGrupa StarosnaGrupa { get; set; }

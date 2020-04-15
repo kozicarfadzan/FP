@@ -135,6 +135,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                 korisnik.Email = model.Email;
                 korisnik.KorisnickoIme = model.KorisnickoIme;
                 korisnik.Aktivan = model.Aktivan;
+                korisnik.Spol = model.Spol;
+                korisnik.GradID = model.GradID;
                 if (izmjenaLozinke)
                     korisnik.SetLozinka(model.Lozinka);
 
