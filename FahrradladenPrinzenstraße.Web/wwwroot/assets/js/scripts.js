@@ -1,6 +1,23 @@
 (function($) {
     "use strict";
 
+    $(document).ready(function () {
+        var header_placeholder = $("#admin_header_placeholder");
+        if (header_placeholder.length) {
+            var page_heading = $('.content .container :header:first');
+            header_placeholder.text(page_heading.text());
+            page_heading.remove();
+        }
+    });
+
+
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+
+
     /*===================================================================================*/
     /*  WOW 
     /*===================================================================================*/

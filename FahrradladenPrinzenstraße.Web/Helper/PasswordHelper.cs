@@ -18,6 +18,9 @@ namespace FahrradladenPrinzenstraße.Web.Helper
 
         public static string GenerateHash(string salt, string password)
         {
+            if (salt == null || password == null)
+                return null;
+
             byte[] src = Convert.FromBase64String(salt);
             byte[] bytes = Encoding.Unicode.GetBytes(password);
             byte[] dst = new byte[src.Length + bytes.Length];

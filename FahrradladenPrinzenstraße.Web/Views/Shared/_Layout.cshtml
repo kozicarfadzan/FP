@@ -2,6 +2,8 @@
 @{
     Korisnik korisnik = Context.GetLogiraniKorisnik();
     string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
+    bool AdminOrZaposlenik = korisnik?.Administrator != null || korisnik.Zaposlenik != null;
+    bool IsHome = controllerName == "Home";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +27,10 @@
     <link rel="stylesheet" href="/assets/css/animate.min.css">
     <link href="/assets/css/orange.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
+    @if (korisnik?.Administrator != null || korisnik.Zaposlenik != null)
+    {
+        <link rel="stylesheet" href="~/css/sidebar.css" />
+    }
 
 
     <!-- Fonts -->
@@ -35,6 +41,9 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script src="/assets/js/jquery-1.11.0.min.js"></script>
 
@@ -47,353 +56,444 @@
 <body>
 
 
-    <div class="wrapper">
+    <div class="wrapper" style="@((AdminOrZaposlenik && !IsHome) ? "display: flex; width: 100%; align-items: stretch;" : "")">
+        @if (AdminOrZaposlenik && !IsHome)
+        {
+            <nav id="sidebar">
+
+                <div class="custom-menu">
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+                </div>
+
+                <div class="sidebar-header">
+                    <div class="logo text-md-center">
+                        <a asp-area="" asp-controller="Home" asp-action="Index">
+                            <img style="height: 100px; margin-right: 10px; margin-left: 15px;" src="/assets/images/logo.png" /><div style="display: inline-block">
+                                FP
+                            </div>
+                        </a>
+                    </div><!-- /.logo -->
+
+                </div>
+
+                <ul class="list-unstyled components">
+                    <p>Admin Panel</p>
+
+                    <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Admin/Bicikl/Index">Bicikl</a></li>
+                    <li class="@(controllerName == "Boja" ? "active":  "")"><a href="/Admin/Boja/Index">Boja</a></li>
+                    <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Admin/Dio/Index">Dio</a></li>
+                    <li class="@(controllerName == "Grad" ? "active":  "")"><a href="/Admin/Grad/Index">Grad</a></li>
+                    <li class="@(controllerName == "Lokacija" ? "active":  "")"><a href="/Admin/Lokacija/Index">Lokacija</a></li>
+                    <li class="@(controllerName == "Model" ? "active":  "")"><a href="/Admin/Model/Index">Model</a></li>
+                    <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Admin/Oprema/Index">Oprema</a></li>
+                    <li class="@(controllerName == "Proizvodjac" ? "active":  "")"><a href="/Admin/Proizvodjac/Index">Proizvođač</a></li>
+                    <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Admin/Servis/Index">Servis</a></li>
+                    <li class="@(controllerName == "StarosnaGrupa" ? "active":  "")"><a href="/Admin/StarosnaGrupa/Index">Starosna Grupa</a></li>
+                    <li class="@(controllerName == "VelicinaOkvira" ? "active":  "")"><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
+                    <li class="@(controllerName == "Zaposlenik" ? "active":  "")"><a href="/Admin/Zaposlenik/Index">Zaposlenik</a></li>
+
+                    @*<li class="active">
+                        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Bicikl</a>
+                        <ul class="collapse list-unstyled" id="homeSubmenu">
+                            <li>
+                                <a href="#">Home 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 2</a>
+                            </li>
+                            <li>
+                                <a href="#">Home 3</a>
+                            </li>
+                        </ul>
+                    </li>*@
+
+                </ul>
+            </nav>
+        }
+
         <!-- ============================================================= HEADER ============================================================= -->
-        <header class="header">
+        <div style="width: 100%;">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-5 col-sm-5 col-xs-12">
-                        <!-- ============================================================= LOGO ============================================================= -->
-                        <h3>
-                            <div class="logo text-md-center" style="margin-top: 8px; margin-bottom: 8px;">
-                                <a asp-area="" asp-controller="Home" asp-action="Index">
-                                    <img style="height: 80px; margin-right: 10px;" src="/assets/images/logo.png" /><div style="display: inline-block">
-                                        Fahrradladen Prinzenstraße
-                                    </div>
-                                </a>
-                            </div><!-- /.logo -->
+            <header class="header">
 
-                        </h3>
-                        <!-- ============================================================= LOGO : END ============================================================= -->
-                    </div><!-- /.col -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-5 col-sm-5 col-xs-12">
+                            <!-- ============================================================= LOGO ============================================================= -->
+                            @if (IsHome || !AdminOrZaposlenik)
+                            {
 
-                    <div class="col-md-3 col-sm-3 col-xs-12">
-                        <!-- ============================================================= SEARCH BAR ============================================================= -->
-                        <form role="form" class="block-search">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search..">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary-very-light search-button" type="button"><span class="icon glyphicon glyphicon-search"></span></button>
-                                </span>
-                            </div><!-- /input-group -->
-                        </form><!-- /block-search -->
-                        <!-- ============================================================= SEARCH BAR : END  ============================================================= -->
-                    </div><!-- /.col -->
+                            <h3>
+                                <div class="logo text-md-center" style="margin-top: 8px; margin-bottom: 8px;">
+                                    <a asp-area="" asp-controller="Home" asp-action="Index">
+                                        <img style="height: 80px; margin-right: 10px;" src="/assets/images/logo.png" /><div style="display: inline-block">
+                                            Fahrradladen Prinzenstraße
+                                        </div>
+                                    </a>
+                                </div><!-- /.logo -->
 
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <!-- ============================================================= BLOCK HEADER LINKS ============================================================= -->
-                        <div class="block-header-links">
-                            <ul class="nav nav-header-link pull-right">
-                                @if (korisnik != null)
-                                {
-                                    <li><a href="#">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a></li>
+                            </h3>
+                            }
+                            else {
+                                <h2 id="admin_header_placeholder" style="margin-top: 43px;"></h2>
+                            }
+                            <!-- ============================================================= LOGO : END ============================================================= -->
+                        </div><!-- /.col -->
 
-                                    <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
-                                }
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <!-- ============================================================= SEARCH BAR ============================================================= -->
+                            <form role="form" class="block-search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search..">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary-very-light search-button" type="button"><span class="icon glyphicon glyphicon-search"></span></button>
+                                    </span>
+                                </div><!-- /input-group -->
+                            </form><!-- /block-search -->
+                            <!-- ============================================================= SEARCH BAR : END  ============================================================= -->
+                        </div><!-- /.col -->
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <!-- ============================================================= BLOCK HEADER LINKS ============================================================= -->
+                            <div class="block-header-links">
+                                <ul class="nav nav-header-link pull-right">
+                                    @if (korisnik != null)
+                                    {
+                                        <li><a href="#">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a></li>
+
+                                        <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+                                    }
+                                    @if (korisnik?.Administrator != null)
+                                    {
+
+                                    }
+                                    else if (korisnik?.Zaposlenik != null)
+                                    {
+
+                                    }
+                                    else if (korisnik?.Klijent != null)
+                                    {
+                                        <li><a href="index.php?page=cart">Wishlist</a></li>
+                                        <li><a href="index.php?page=cart">Total: <span class="total-cart-amount">$200.00</span></a></li>
+                                    }
+                                    else
+                                    {
+
+                                        <li><a asp-area="" asp-controller="Registracija" asp-action="Index"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
+                                        <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
+                                    }
+                                </ul><!-- /.nav-header-link -->
+                            </div><!-- /.block-header-links -->
+                            <!-- ============================================================= BLOCK HEADER LINKS : END ============================================================= -->
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                    @if (korisnik?.Klijent != null)
+                    {
+                        <a class="btn-shopping-cart hidden-xs" href="#" data-toggle="modal" data-target=".myCart-modal-lg"><img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /><span class="cart-items-count">5</span></a>
+                    }
+                </div><!-- /.container -->
+                <!-- ============================================================= NAVBAR PRIMARY ============================================================= -->
+                <nav class="yamm navbar navbar-primary animate-dropdown" role="navigation" style="@(IsHome || !AdminOrZaposlenik ? "" : "display: none;")">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <button id="btn-navbar-primary-collapse" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-primary-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div><!-- /.navbar-header -->
+                        <div class="collapse navbar-collapse" id="navbar-primary-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a asp-area="" asp-controller="Home" asp-action="Index">Početna</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Bicikli</a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Kupovina</span>
+                                                        <ul class="menu-items">
+                                                            <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Novo">Novi&nbsp;bicikli</a></li>
+                                                            <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Polovno">Polovni&nbsp;bicikli</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Iznajmljivanje</span>
+                                                        <ul class="menu-items">
+                                                            <li><a asp-area="" asp-controller="Termini" asp-action="Rezervisi">Rezerviši&nbsp;termin</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Servisi</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Termini</span>
+                                                        <ul class="menu-items">
+
+                                                            <li><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-stanje="Polovna">Rezerviši&nbsp;termin</a></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="hidden-sm"><a href="index.php?page=category">Dijelovi</a></li>
+                                <li><a href="index.php?page=category">Oprema</a></li>
+                                <li class="dropdown">
+                                    <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Pages</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="index.php?page=home">Home Page</a></li>
+                                        <li><a href="index.php?page=category">Category</a></li>
+                                        <li><a href="index.php?page=detail">Individual Product</a></li>
+                                        <li><a href="index.php?page=cart">Cart Summary</a></li>
+                                        <li><a href="index.php?page=checkout">Checkout</a></li>
+                                        <li><a href="index.php?page=404">404</a></li>
+                                        <li><a href="index.php?page=contact">Contact</a></li>
+                                    </ul>
+                                </li>
                                 @if (korisnik?.Administrator != null)
                                 {
+                                    <li class="dropdown">
+                                        <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Admin</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/Admin/Bicikl/Index">Bicikl</a></li>
+                                            <li><a href="/Admin/Boja/Index">Boja</a></li>
+                                            <li><a href="/Admin/Dio/Index">Dio</a></li>
+                                            <li><a href="/Admin/Grad/Index">Grad</a></li>
+                                            <li><a href="/Admin/Lokacija/Index">Lokacija</a></li>
+                                            <li><a href="/Admin/Model/Index">Model</a></li>
+                                            <li><a href="/Admin/Oprema/Index">Oprema</a></li>
+                                            <li><a href="/Admin/Proizvodjac/Index">Proizvođač</a></li>
+                                            <li><a href="/Admin/Servis/Index">Servis</a></li>
+                                            <li><a href="/Admin/StarosnaGrupa/Index">Starosna Grupa</a></li>
+                                            <li><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
+                                            <li><a href="/Admin/Zaposlenik/Index">Zaposlenik</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            </ul><!-- /.nav -->
+                            @*<div class="navbar-right user-options">
+                                <div class="btn-group">
+                                    <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">USD <b class="caret"></b></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">EUR</a></li>
+                                        <li><a href="#">INR</a></li>
+                                    </ul>
+                                </div><!-- /.btn-group -->
+                                <div class="btn-group">
+                                    <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">EN <b class="caret"></b></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">DE</a></li>
+                                        <li><a href="#">TA</a></li>
+                                    </ul>
+                                </div><!-- /.btn-group -->
+                            </div><!-- /.navbar-right -->*@
+                        </div><!-- /.collapse navbar-collapse -->
+                    </div><!-- /.container -->
+                </nav><!-- /.yamm -->
+                <!-- ============================================================= NAVBAR PRIMARY : END ============================================================= -->
+            </header><!-- /.header -->
+            <!-- ============================================================= HEADER : END ============================================================= -->
+            <!-- ============================================================= MODAL ============================================================= -->
+            <div class="modal fade myCart-modal-lg" id="myCart" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content cart-modal-content">
+                        <div class="modal-header">
+                            <a class="close close-icon" data-dismiss="modal"><span data-icon="M"></span></a>
+                            <h2 class="modal-title"><span class="icon glyphicon glyphicon-shopping-cart"></span>your cart-4 items</h2>
+                        </div><!-- /.modal-header -->
+                        <div class="modal-body">
+                            <ul class="list-unstyled">
+                                <li>
+                                    <div class="basket-item">
+                                        <div class="row">
+                                            <div class="col-md-3 col-sm-3">
+                                                <div class="selected-item">@*<img src="/assets/images/products/product-small-01.jpg" alt="">*@</div>
+                                                <div class="selected-item-price">$1000.00</div>
+                                            </div><!-- /.col-->
+                                            <div class="col-md-8 col-sm-8">
+                                                <h4>Adipiscing Elit,Sed do Eiusmod</h4>
+                                                <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do  eiusmod tempor incididunt ut labore</p>
+                                            </div><!-- /.col -->
+                                            <div class="col-md-1 col-sm-1">
+                                                <a class="cart-item-remove" title="cancel" href="#">
+                                                    <span data-icon="M"></span>
+                                                </a>
+                                            </div><!-- /.col -->
+                                        </div><!-- /.row -->
+                                    </div><!-- /.basket-item -->
+                                </li>
 
-                                }
-                                else if (korisnik?.Zaposlenik != null)
-                                {
+                                <li>
+                                    <div class="basket-item">
+                                        <div class="row">
+                                            <div class="col-md-3 col-sm-3">
+                                                <div class="selected-item">@*<img src="/assets/images/products/product-small-02.jpg" alt="">*@</div>
+                                                <div class="selected-item-price">$1000.00</div>
+                                            </div><!-- /.col -->
+                                            <div class="col-md-8 col-sm-8">
+                                                <h4>Do euismod tempor incididunt ut</h4>
+                                                <p> tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud</p>
+                                            </div><!-- /.col -->
+                                            <div class="col-md-1 col-sm-1">
+                                                <a class="cart-item-remove" title="cancel" href="#">
+                                                    <span data-icon="M"></span>
+                                                </a>
+                                            </div><!-- /.col -->
+                                        </div><!-- /.row -->
+                                    </div><!-- /.basket-item -->
+                                </li>
+                            </ul><!-- /.list-unstyled -->
 
-                                }
-                                else if (korisnik?.Klijent != null)
-                                {
-                                    <li><a href="index.php?page=cart">Wishlist</a></li>
-                                    <li><a href="index.php?page=cart">Total: <span class="total-cart-amount">$200.00</span></a></li>
-                                }
-                                else
-                                {
+                            <div class="row">
+                                <div class="product-actions">
+                                    <a href="index.php?page=detail" class="btn btn-secondary btn-ky">Total:$2000.00</a>
+                                    <a href="index.php?page=checkout" class="btn btn-inverse btn-ky">Continued to checkout</a>
+                                </div><!-- /.product-actions -->
+                            </div><!-- /.row -->
+                        </div><!-- /.modal-body -->
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            <!-- ============================================================= MODAL : END ============================================================= -->
+            <div class="content">
 
-                                    <li><a asp-area="" asp-controller="Registracija" asp-action="Index"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
-                                    <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
-                                }
-                            </ul><!-- /.nav-header-link -->
-                        </div><!-- /.block-header-links -->
-                        <!-- ============================================================= BLOCK HEADER LINKS : END ============================================================= -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-                @if (korisnik?.Klijent != null)
+                @if (controllerName == "Home")
                 {
-                <a class="btn-shopping-cart hidden-xs" href="#" data-toggle="modal" data-target=".myCart-modal-lg"><img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /><span class="cart-items-count">5</span></a>
-                }
-            </div><!-- /.container -->
-            <!-- ============================================================= NAVBAR PRIMARY ============================================================= -->
-            <nav class="yamm navbar navbar-primary animate-dropdown" role="navigation">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button id="btn-navbar-primary-collapse" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-primary-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                    </div><!-- /.navbar-header -->
-                    <div class="collapse navbar-collapse" id="navbar-primary-collapse">
-                        <ul class="nav navbar-nav">
-                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Početna</a></li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Bicikli</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <div class="yamm-content">
-                                            <div class="row">
-                                                <div class="col-md-6 col-sm-6">
-                                                    <span class="megamenu-title">Kupovina</span>
-                                                    <ul class="menu-items">
-                                                        <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Novo">Novi&nbsp;bicikli</a></li>
-                                                        <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Polovno">Polovni&nbsp;bicikli</a></li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-md-6 col-sm-6">
-                                                    <span class="megamenu-title">Iznajmljivanje</span>
-                                                    <ul class="menu-items">
-                                                        <li><a asp-area="" asp-controller="Termini" asp-action="Rezervisi">Rezerviši&nbsp;termin</a></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Servisi</a>
-
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <div class="yamm-content">
-                                            <div class="row">
-                                                <div class="col-md-6 col-sm-6">
-                                                    <span class="megamenu-title">Termini</span>
-                                                    <ul class="menu-items">
-                                                       
-                                                        <li><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-stanje="Polovna">Rezerviši&nbsp;termin</a></li>
-                                                    </ul>
-                                                </div>
-                                                
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-
-<li class="hidden-sm"><a href="index.php?page=category">Dijelovi</a></li>
-                            <li><a href="index.php?page=category">Oprema</a></li>
-                            <li class="dropdown">
-                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Pages</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="index.php?page=home">Home Page</a></li>
-                                    <li><a href="index.php?page=category">Category</a></li>
-                                    <li><a href="index.php?page=detail">Individual Product</a></li>
-                                    <li><a href="index.php?page=cart">Cart Summary</a></li>
-                                    <li><a href="index.php?page=checkout">Checkout</a></li>
-                                    <li><a href="index.php?page=404">404</a></li>
-                                    <li><a href="index.php?page=contact">Contact</a></li>
-                                </ul>
-                            </li>
-                        </ul><!-- /.nav -->
-                        @*<div class="navbar-right user-options">
-            <div class="btn-group">
-                <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">USD <b class="caret"></b></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">EUR</a></li>
-                    <li><a href="#">INR</a></li>
-                </ul>
-            </div><!-- /.btn-group -->
-            <div class="btn-group">
-                <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">EN <b class="caret"></b></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">DE</a></li>
-                    <li><a href="#">TA</a></li>
-                </ul>
-            </div><!-- /.btn-group -->
-        </div><!-- /.navbar-right -->*@
-                    </div><!-- /.collapse navbar-collapse -->
-                </div><!-- /.container -->
-            </nav><!-- /.yamm -->
-            <!-- ============================================================= NAVBAR PRIMARY : END ============================================================= -->
-        </header><!-- /.header -->
-        <!-- ============================================================= HEADER : END ============================================================= -->
-        <!-- ============================================================= MODAL ============================================================= -->
-        <div class="modal fade myCart-modal-lg" id="myCart" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content cart-modal-content">
-                    <div class="modal-header">
-                        <a class="close close-icon" data-dismiss="modal"><span data-icon="M"></span></a>
-                        <h2 class="modal-title"><span class="icon glyphicon glyphicon-shopping-cart"></span>your cart-4 items</h2>
-                    </div><!-- /.modal-header -->
-                    <div class="modal-body">
-                        <ul class="list-unstyled">
-                            <li>
-                                <div class="basket-item">
-                                    <div class="row">
-                                        <div class="col-md-3 col-sm-3">
-                                            <div class="selected-item">@*<img src="/assets/images/products/product-small-01.jpg" alt="">*@</div>
-                                            <div class="selected-item-price">$1000.00</div>
-                                        </div><!-- /.col-->
-                                        <div class="col-md-8 col-sm-8">
-                                            <h4>Adipiscing Elit,Sed do Eiusmod</h4>
-                                            <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do  eiusmod tempor incididunt ut labore</p>
-                                        </div><!-- /.col -->
-                                        <div class="col-md-1 col-sm-1">
-                                            <a class="cart-item-remove" title="cancel" href="#">
-                                                <span data-icon="M"></span>
-                                            </a>
-                                        </div><!-- /.col -->
-                                    </div><!-- /.row -->
-                                </div><!-- /.basket-item -->
-                            </li>
-
-                            <li>
-                                <div class="basket-item">
-                                    <div class="row">
-                                        <div class="col-md-3 col-sm-3">
-                                            <div class="selected-item">@*<img src="/assets/images/products/product-small-02.jpg" alt="">*@</div>
-                                            <div class="selected-item-price">$1000.00</div>
-                                        </div><!-- /.col -->
-                                        <div class="col-md-8 col-sm-8">
-                                            <h4>Do euismod tempor incididunt ut</h4>
-                                            <p> tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud</p>
-                                        </div><!-- /.col -->
-                                        <div class="col-md-1 col-sm-1">
-                                            <a class="cart-item-remove" title="cancel" href="#">
-                                                <span data-icon="M"></span>
-                                            </a>
-                                        </div><!-- /.col -->
-                                    </div><!-- /.row -->
-                                </div><!-- /.basket-item -->
-                            </li>
-                        </ul><!-- /.list-unstyled -->
-
-                        <div class="row">
-                            <div class="product-actions">
-                                <a href="index.php?page=detail" class="btn btn-secondary btn-ky">Total:$2000.00</a>
-                                <a href="index.php?page=checkout" class="btn btn-inverse btn-ky">Continued to checkout</a>
-                            </div><!-- /.product-actions -->
-                        </div><!-- /.row -->
-                    </div><!-- /.modal-body -->
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
-        <!-- ============================================================= MODAL : END ============================================================= -->
-        <div class="content">
-            @if (controllerName == "Home")
-            {
-                @RenderBody()
-
-            }
-            else
-            {
-                <div class="container">
-                    <!-- ========================================= CONTENT ========================================= -->
-
                     @RenderBody()
-                    <!-- ========================================= CONTENT : END  ========================================= -->
 
-                </div><!-- /.container -->
-            }
-        </div><!-- /.content -->
+                }
+                else
+                {
+                    <div class="container">
+                        <!-- ========================================= CONTENT ========================================= -->
+                        @RenderBody()
+                        <!-- ========================================= CONTENT : END  ========================================= -->
+                    </div><!-- /.container -->
+                }
+            </div><!-- /.content -->
+
+        </div>
         <!-- ============================================================= FOOTER ============================================================= -->
-        <footer class="footer">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-4 col-sm-12 col-xs-12">
-                        <!-- ============================================================= FOLLOW US FOOTER ============================================================= -->
-                        <div class="module widget">
-                            <div class="module-header">
-                                <h4 class="module-title text-md-center">Follow Us</h4>
-                            </div><!-- /.module-header -->
-                            <div class="module-body text-md-center">
-                                <div class="row">
-                                    <div class="col-md-12 col-sm-6">
-                                        <p>Lorem ipsum dolor sit amet</p>
-                                        <ul class="list-social-icons">
-                                            <li><a href="https://facebook.com/transvelo"><span data-icon="&#xe093;"></span></a></li>
-                                            <li><a href="#"><span data-icon="&#xe094;"></span></a></li>
-                                            <li><a href="#"><span data-icon="&#xe095;"></span></a></li>
-                                            <li><a href="#"><span data-icon="&#xe096;"></span></a></li>
-                                            <li><a href="#"><span data-icon="&#xe09b;"></span></a></li>
-                                        </ul><!-- /.list-social-icons -->
-                                    </div><!-- /.col -->
-                                    <div class="col-md-12 col-sm-6">
-                                        <address>
-                                            Lorem ipsum dolor sit amet<br />
-                                            <strong>KYBully PSD</strong><br />
-                                            108 ABC, New York, USA <br />
-                                            (+00)-000-0000-000
-                                        </address>
-                                    </div><!-- /.col -->
-                                </div><!-- /.row -->
-                            </div><!-- /.module-body -->
-                        </div><!-- /.module -->
-                        <!-- ============================================================= FOLLOW US FOOTER : END ============================================================= -->
-                    </div><!-- /.col -->
+        @if (IsHome || !AdminOrZaposlenik)
+        {
+            <footer class="footer">
 
-                    <div class="col-md-4 col-sm-12 col-xs-12">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-6">
-                                <!-- ============================================================= NEWSLETTER FOOTER ============================================================= -->
-                                <div class="module block-newsletter">
-                                    <div class="module-header">
-                                        <h4 class="module-title text-md-center">Newsletter</h4>
-                                    </div><!-- /.module-header -->
-                                    <div class="module-body text-md-center">
-                                        <p>Lorem ipsum dolor sit amet</p>
-                                        <form role="form">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" placeholder="yourname@email.com" autocomplete="off">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-default" type="button"><span data-icon="&#x45;"></span></button>
-                                                </span>
-                                            </div><!-- /input-group -->
-                                        </form>
-                                    </div><!-- /.module-body -->
-                                </div><!-- /.module -->
-                                <!-- ============================================================= NEWSLETTER FOOTER : END ============================================================= -->
-                            </div><!-- /.col -->
-                        </div><!-- /.row -->
-                    </div><!-- /.col -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <!-- ============================================================= FOLLOW US FOOTER ============================================================= -->
+                            <div class="module widget">
+                                <div class="module-header">
+                                    <h4 class="module-title text-md-center">Follow Us</h4>
+                                </div><!-- /.module-header -->
+                                <div class="module-body text-md-center">
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-6">
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                            <ul class="list-social-icons">
+                                                <li><a href="https://facebook.com/transvelo"><span data-icon="&#xe093;"></span></a></li>
+                                                <li><a href="#"><span data-icon="&#xe094;"></span></a></li>
+                                                <li><a href="#"><span data-icon="&#xe095;"></span></a></li>
+                                                <li><a href="#"><span data-icon="&#xe096;"></span></a></li>
+                                                <li><a href="#"><span data-icon="&#xe09b;"></span></a></li>
+                                            </ul><!-- /.list-social-icons -->
+                                        </div><!-- /.col -->
+                                        <div class="col-md-12 col-sm-6">
+                                            <address>
+                                                Lorem ipsum dolor sit amet<br />
+                                                <strong>KYBully PSD</strong><br />
+                                                108 ABC, New York, USA <br />
+                                                (+00)-000-0000-000
+                                            </address>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+                                </div><!-- /.module-body -->
+                            </div><!-- /.module -->
+                            <!-- ============================================================= FOLLOW US FOOTER : END ============================================================= -->
+                        </div><!-- /.col -->
 
-                    <div class="col-md-4 col-sm-12 col-xs-12">
-                        <!-- ============================================================= SHIPPING DELIVERY FOOTER ============================================================= -->
-                        <div class="module">
-                            <div class="module-header">
-                                <h4 class="module-title text-md-center">Shipping &amp; Delivery</h4>
-                            </div><!-- /.module-header -->
-                            <div class="module-body text-md-center">
-                                <p>Lorem ipsum dolor sit amet</p>
-                                <ul class="list-link">
-                                    <li><a href="index.php?page=category">Consectetur adipisicing elit, sed do eiusmod</a></li>
-                                    <li><a href="index.php?page=category">Tempor incididunt ut labore et dolore</a></li>
-                                    <li><a href="index.php?page=category">Magna aliqua. Ut enim ad minim</a></li>
-                                    <li><a href="index.php?page=category">Veniam, quis nostrud exercitation</a></li>
-                                    <li><a href="index.php?page=category">Ullamco laboris nisi ut aliquip ex ea</a></li>
-                                </ul><!-- /.list-link -->
-                            </div><!-- /.module-body -->
-                        </div><!-- /.module -->
-                        <!-- ============================================================= SHIPPING DELIVERY FOOTER :END ============================================================= -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container -->
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-6">
+                                    <!-- ============================================================= NEWSLETTER FOOTER ============================================================= -->
+                                    <div class="module block-newsletter">
+                                        <div class="module-header">
+                                            <h4 class="module-title text-md-center">Newsletter</h4>
+                                        </div><!-- /.module-header -->
+                                        <div class="module-body text-md-center">
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                            <form role="form">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" placeholder="yourname@email.com" autocomplete="off">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default" type="button"><span data-icon="&#x45;"></span></button>
+                                                    </span>
+                                                </div><!-- /input-group -->
+                                            </form>
+                                        </div><!-- /.module-body -->
+                                    </div><!-- /.module -->
+                                    <!-- ============================================================= NEWSLETTER FOOTER : END ============================================================= -->
+                                </div><!-- /.col -->
+                            </div><!-- /.row -->
+                        </div><!-- /.col -->
 
-            <div class="navbar navbar-footer">
-                <!-- ============================================================= NAVBAR FOOTER ============================================================= -->
-                <div class="container text-md-center">
-                    <ul class="navbar-nav nav hidden-sm hidden-xs">
-                        <li><a href="index.php?page=home">Home</a></li>
-                        <li><a href="index.php?page=contact">Contact</a></li>
-                        <li><a href="index.php?page=checkout">Shipping</a></li>
-                        <li><a href="index.php?page=contact">FAQs</a></li>
-                    </ul><!-- /.navbar-nav -->
-                    <p class="navbar-text pull-right text-md-center copyright-text">copyright &copy; 2020 FP</p>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <!-- ============================================================= SHIPPING DELIVERY FOOTER ============================================================= -->
+                            <div class="module">
+                                <div class="module-header">
+                                    <h4 class="module-title text-md-center">Shipping &amp; Delivery</h4>
+                                </div><!-- /.module-header -->
+                                <div class="module-body text-md-center">
+                                    <p>Lorem ipsum dolor sit amet</p>
+                                    <ul class="list-link">
+                                        <li><a href="index.php?page=category">Consectetur adipisicing elit, sed do eiusmod</a></li>
+                                        <li><a href="index.php?page=category">Tempor incididunt ut labore et dolore</a></li>
+                                        <li><a href="index.php?page=category">Magna aliqua. Ut enim ad minim</a></li>
+                                        <li><a href="index.php?page=category">Veniam, quis nostrud exercitation</a></li>
+                                        <li><a href="index.php?page=category">Ullamco laboris nisi ut aliquip ex ea</a></li>
+                                    </ul><!-- /.list-link -->
+                                </div><!-- /.module-body -->
+                            </div><!-- /.module -->
+                            <!-- ============================================================= SHIPPING DELIVERY FOOTER :END ============================================================= -->
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
                 </div><!-- /.container -->
-                <!-- ============================================================= NAVBAR FOOTER : END ============================================================= -->
-            </div><!-- /.navbar -->
 
-        </footer>
+                <div class="navbar navbar-footer">
+                    <!-- ============================================================= NAVBAR FOOTER ============================================================= -->
+                    <div class="container text-md-center">
+                        <ul class="navbar-nav nav hidden-sm hidden-xs">
+                            <li><a href="index.php?page=home">Home</a></li>
+                            <li><a href="index.php?page=contact">Contact</a></li>
+                            <li><a href="index.php?page=checkout">Shipping</a></li>
+                            <li><a href="index.php?page=contact">FAQs</a></li>
+                        </ul><!-- /.navbar-nav -->
+                        <p class="navbar-text pull-right text-md-center copyright-text">copyright &copy; 2020 FP</p>
+                    </div><!-- /.container -->
+                    <!-- ============================================================= NAVBAR FOOTER : END ============================================================= -->
+                </div><!-- /.navbar -->
+
+            </footer>
+        }
         <!-- ============================================================= FOOTER END  ============================================================= -->
     </div><!-- /.wrapper -->
     <!-- JavaScripts placed at the end of the document so the pages load faster -->
