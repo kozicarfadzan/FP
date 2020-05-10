@@ -65,17 +65,63 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             int KorisnikId = db.AutorizacijskiToken
                 .Where(x => x.Vrijednost == token)
                 .Select(s => s.KorisnikId).FirstOrDefault();
-            if(KorisnikId != 0)
+            if (KorisnikId != 0)
             {
                 return db.Korisnik
                 .Include(x => x.Zaposlenik)
                 .Include(x => x.Administrator)
                 .Include(x => x.Klijent)
-                .Where(x=>x.KorisnikID == KorisnikId)
+                .Where(x => x.KorisnikID == KorisnikId)
                 .SingleOrDefault();
             }
 
             return null;
+
+        }
+
+        public static double GetUkupnoKosarica(this HttpContext context)
+        {
+            Korisnik korisnik = context.GetLogiraniKorisnik();
+            MyContext db = context.RequestServices.GetService<MyContext>();
+
+            double ukupno = 0;
+            if (korisnik != null && korisnik.Klijent != null)
+            {
+                var stavke = db.KorpaStavka
+                    .Include(x => x.Bicikl)
+                    .Include(x => x.Oprema)
+                    .Include(x => x.Dio)
+                    .Where(x => x.KlijentId == korisnik.Klijent.Id)
+                    .ToList();
+                foreach (var stavka in stavke)
+                {
+                    double cijena = 0;
+                    if (stavka.Bicikl != null)
+                        cijena = stavka.Bicikl.Cijena.Value;
+                    else if (stavka.Oprema != null)
+                        cijena = stavka.Oprema.Cijena;
+                    else if (stavka.Dio != null)
+                        cijena = stavka.Dio.Cijena;
+
+                    ukupno += cijena * stavka.Kolicina;
+                }
+
+            }
+            return ukupno;
+
+        }
+        public static int GetBrojStavkiKosarica(this HttpContext context)
+        {
+            Korisnik korisnik = context.GetLogiraniKorisnik();
+            MyContext db = context.RequestServices.GetService<MyContext>();
+
+            int broj_stavki = 0;
+            if (korisnik != null && korisnik.Klijent != null)
+            {
+                broj_stavki = db.KorpaStavka
+                    .Count(x => x.KlijentId == korisnik.Klijent.Id);
+            }
+            return broj_stavki;
 
         }
     }

@@ -67,7 +67,7 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
             }
             if (korisnik.Klijent != null)
             {
-                return Redirect("/Klijent/KupiBicikl/Index");
+                return Redirect("/");
             }
 
             return RedirectToAction("Index", "Home");

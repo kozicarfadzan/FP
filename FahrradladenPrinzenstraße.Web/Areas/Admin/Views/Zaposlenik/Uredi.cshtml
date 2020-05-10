@@ -40,14 +40,14 @@
     <div class="form-group">
         @Html.LabelFor(model => model.Lozinka, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.Lozinka, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.PasswordFor(model => model.Lozinka, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Lozinka, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.LozinkaPotvrda, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.LozinkaPotvrda, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.PasswordFor(model => model.LozinkaPotvrda, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.LozinkaPotvrda, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -97,7 +97,7 @@
     <div class="form-group">
         @Html.LabelFor(model => model.GradID, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.DropDownListFor(model => model.GradID, Model.Gradovi, "---", htmlAttributes: new { @class = "form-control" })
+            @Html.DropDownListFor(model => model.GradID, Model.Gradovi, "Odaberite grad", htmlAttributes: new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.GradID, "", new { @class = "text-danger" })
         </div>
     </div>

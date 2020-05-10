@@ -2,9 +2,8 @@
     min-width: 250px;
     max-width: 250px;
     min-height: 100vh;
-
-    background: #778899;
-    color: #fff;
+    background: #e7e7e7;
+    color: #000;
     -webkit-transition: all .3s;
     -o-transition: all .3s;
     transition: all .3s;
@@ -40,7 +39,8 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    position: relative
+    position: relative;
+    color: #000;
 }
 
     #sidebar .custom-menu .btn i {
@@ -64,7 +64,7 @@
             -webkit-transform: rotate(45deg);
             -ms-transform: rotate(45deg);
             transform: rotate(45deg);
-            background: #778899;
+            background: #e7e7e7;
             border-radius: 10px
         }
 
@@ -80,10 +80,10 @@ button:focus {
     outline: 0 !important;
 }
 
-        #sidebar .custom-menu .btn.btn-primary:hover, #sidebar .custom-menu .btn.btn-primary:focus {
-            background: 0 0 !important;
-            border-color: transparent !important
-        }
+#sidebar .custom-menu .btn.btn-primary:hover, #sidebar .custom-menu .btn.btn-primary:focus {
+    background: 0 0 !important;
+    border-color: transparent !important
+}
 
 
 a[data-toggle="collapse"] {
@@ -126,7 +126,7 @@ a, a:hover, a:focus {
     }
 
     #sidebar ul p {
-        color: #fff;
+        color: #000;
         padding: 10px;
     }
 
@@ -138,16 +138,15 @@ a, a:hover, a:focus {
 
         #sidebar ul li a:hover {
             color: #fff;
-            background: slategrey;
+            background: lightslategrey;
         }
 
 #sidebar ul li.active > a, a[aria-expanded="true"] {
     color: #fff;
-    background: darkslategrey;
+    background: slategrey;
 }
 
-ul ul a {
+#sidebar ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #6d7fcc;
 }

@@ -16,7 +16,16 @@
         <thead>
             <tr>
                 <th>Naziv</th>
-                <th>Akcija</th>
+                <th>Proizvođač</th>
+                <th>Vrsta rama</th>
+                <th>Tip</th>
+                <th>Starosna grupa</th>
+                <th>Veličina okvira</th>
+                <th>Materijal okvira</th>
+                <th>Suspenzija</th>
+                <th>Broj brzina</th>
+
+
             </tr>
         </thead>
         <tbody>
@@ -29,14 +38,22 @@
             }
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>@item.Naziv</td>
+        <tr>
+            <td>@item.Naziv</td>
+            <td>@item.Proizvodjac.Naziv</td>
+            <td>@item.SpolBicikl</td>
+            <td>@item.Tip</td>
+            <td>@item.StarosnaGrupa.Naziv</td>
+            <td>@item.VelicinaOkvira.Naziv</td>
+            <td>@item.MaterijalOkvira.Naziv</td>
+            <td>@item.Suspenzija</td>
+            <td>@item.Brzina</td>
 
-                    <td>
-                        <a href="/Admin/Model/Obrisi?Id=@item.ModelId" class="btn btn-danger">Obriši</a> |
-                        <a href="/Admin/Model/Uredi?Id=@item.ModelId" class="btn btn-warning">Uredi</a>
-                    </td>
-                </tr>
+            <td>
+                <a href="/Admin/Model/Obrisi?Id=@item.ModelId" class="btn btn-danger">Obriši</a> |
+                <a href="/Admin/Model/Uredi?Id=@item.ModelId" class="btn btn-warning">Uredi</a>
+            </td>
+        </tr>
 
             }
         </tbody>

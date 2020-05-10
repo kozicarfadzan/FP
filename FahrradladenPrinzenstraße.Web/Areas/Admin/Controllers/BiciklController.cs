@@ -47,7 +47,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
             PrikaziBiciklVM Model = new PrikaziBiciklVM
             {
                 Bicikla = db.Bicikl
-               .Where(x => VM.Stanje == 0 || VM.Stanje == (int)x.Stanje)
+               .Where(x => VM.Stanje == 0 || (Stanje)VM.Stanje == x.Stanje)
                .Where(x => VM.ProizvodjacId == 0 || VM.ProizvodjacId == x.Model.ProizvodjacId)
                .Where(x => VM.Aktivan == x.Aktivan)
                .Select(

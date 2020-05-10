@@ -2,8 +2,12 @@
 @{
     Korisnik korisnik = Context.GetLogiraniKorisnik();
     string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
-    bool AdminOrZaposlenik = korisnik?.Administrator != null || korisnik.Zaposlenik != null;
+    string actionName = ViewContext.RouteData.Values["Action"].ToString();
+    bool AdminOrZaposlenik = korisnik?.Administrator != null || korisnik?.Zaposlenik != null;
     bool IsHome = controllerName == "Home";
+    bool Klijent = korisnik?.Klijent != null;
+    double CijenaStavki = Klijent ? Context.GetUkupnoKosarica() : 0;
+    int BrojStavki = Klijent ? Context.GetBrojStavkiKosarica() : 0;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +31,7 @@
     <link rel="stylesheet" href="/assets/css/animate.min.css">
     <link href="/assets/css/orange.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" />
-    @if (korisnik?.Administrator != null || korisnik.Zaposlenik != null)
+    @if (AdminOrZaposlenik)
     {
         <link rel="stylesheet" href="~/css/sidebar.css" />
     }
@@ -42,7 +46,7 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="/assets/images/favicon.ico">
 
-    
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <script src="/assets/js/jquery-1.11.0.min.js"></script>
@@ -53,8 +57,71 @@
     <script src="/assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
-<body>
+<body class="@((AdminOrZaposlenik && !IsHome) ? "has-navbar " : "")">
+    @if (AdminOrZaposlenik && !IsHome)
+    {
 
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img style="height: 50px; margin-right: 10px; margin-left: 15px;" src="/assets/images/logo.png" /><div style="display: inline-block">
+                            Fahrradladen Prinzenstraße
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    <ul class="nav navbar-nav nav-header-link navbar-right">
+                        @if (korisnik != null)
+                        {
+                            <li><a href="#">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a></li>
+
+                            <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+                        }
+                        @if (korisnik?.Administrator != null)
+                        {
+
+                        }
+                        else if (korisnik?.Zaposlenik != null)
+                        {
+
+                        }
+                        else if (korisnik?.Klijent != null)
+                        {
+                            <li><a href="index.php?page=cart">Wishlist</a></li>
+                            <li><a href="index.php?page=cart">Total: <span class="total-cart-amount">$200.00</span></a></li>
+                        }
+                        else
+                        {
+
+                            <li><a asp-area="" asp-controller="Registracija" asp-action="Index"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
+                            <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
+                        }
+                    </ul>
+
+
+
+
+
+
+
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+    }
 
     <div class="wrapper" style="@((AdminOrZaposlenik && !IsHome) ? "display: flex; width: 100%; align-items: stretch;" : "")">
         @if (AdminOrZaposlenik && !IsHome)
@@ -68,16 +135,17 @@
                     </button>
                 </div>
 
-                <div class="sidebar-header">
-                    <div class="logo text-md-center">
-                        <a asp-area="" asp-controller="Home" asp-action="Index">
-                            <img style="height: 100px; margin-right: 10px; margin-left: 15px;" src="/assets/images/logo.png" /><div style="display: inline-block">
-                                FP
-                            </div>
-                        </a>
-                    </div><!-- /.logo -->
+                @*
+                    <div class="sidebar-header">
+                        <div class="logo text-md-center">
+                            <a asp-area="" asp-controller="Home" asp-action="Index">
+                                <img style="height: 100px; margin-right: 10px; margin-left: 15px;" src="/assets/images/logo.png" /><div style="display: inline-block">
+                                    FP
+                                </div>
+                            </a>
+                        </div><!-- /.logo -->
 
-                </div>
+                    </div> *@
 
                 <ul class="list-unstyled components">
                     <p>Admin Panel</p>
@@ -95,20 +163,23 @@
                     <li class="@(controllerName == "VelicinaOkvira" ? "active":  "")"><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
                     <li class="@(controllerName == "Zaposlenik" ? "active":  "")"><a href="/Admin/Zaposlenik/Index">Zaposlenik</a></li>
 
-                    @*<li class="active">
-                        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Bicikl</a>
-                        <ul class="collapse list-unstyled" id="homeSubmenu">
-                            <li>
-                                <a href="#">Home 1</a>
-                            </li>
-                            <li>
-                                <a href="#">Home 2</a>
-                            </li>
-                            <li>
-                                <a href="#">Home 3</a>
-                            </li>
-                        </ul>
-                    </li>*@
+                    @*
+                                dropdown exam
+
+                            <li class="active">
+                            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Bicikl</a>
+                            <ul class="collapse list-unstyled" id="homeSubmenu">
+                                <li>
+                                    <a href="#">Home 1</a>
+                                </li>
+                                <li>
+                                    <a href="#">Home 2</a>
+                                </li>
+                                <li>
+                                    <a href="#">Home 3</a>
+                                </li>
+                            </ul>
+                        </li>*@
 
                 </ul>
             </nav>
@@ -121,82 +192,58 @@
 
                 <div class="container">
                     <div class="row">
+                        @if (IsHome || !AdminOrZaposlenik)
+                        {
+                            <div class="col-md-3 col-sm-3 hidden-xs site-name">
+                                Fahrradladen Prinzenstraße
+                            </div>
+                        }
                         <div class="col-md-5 col-sm-5 col-xs-12">
                             <!-- ============================================================= LOGO ============================================================= -->
                             @if (IsHome || !AdminOrZaposlenik)
                             {
 
-                            <h3>
-                                <div class="logo text-md-center" style="margin-top: 8px; margin-bottom: 8px;">
-                                    <a asp-area="" asp-controller="Home" asp-action="Index">
-                                        <img style="height: 80px; margin-right: 10px;" src="/assets/images/logo.png" /><div style="display: inline-block">
-                                            Fahrradladen Prinzenstraße
-                                        </div>
-                                    </a>
-                                </div><!-- /.logo -->
+                                <h3 style="margin: 0;">
+                                    <div class="logo text-md-center">
+                                        <a asp-area="" asp-controller="Home" asp-action="Index">
+                                            <img src="/assets/images/logo_FP.png" />
+                                        </a>
+                                    </div><!-- /.logo -->
 
-                            </h3>
+                                </h3>
                             }
-                            else {
-                                <h2 id="admin_header_placeholder" style="margin-top: 43px;"></h2>
+                            else
+                            {
+                                <h2 id="admin_header_placeholder"></h2>
                             }
                             <!-- ============================================================= LOGO : END ============================================================= -->
                         </div><!-- /.col -->
 
-                        <div class="col-md-3 col-sm-3 col-xs-12">
-                            <!-- ============================================================= SEARCH BAR ============================================================= -->
-                            <form role="form" class="block-search">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search..">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-primary-very-light search-button" type="button"><span class="icon glyphicon glyphicon-search"></span></button>
-                                    </span>
-                                </div><!-- /input-group -->
-                            </form><!-- /block-search -->
-                            <!-- ============================================================= SEARCH BAR : END  ============================================================= -->
-                        </div><!-- /.col -->
+                        @if (!AdminOrZaposlenik || IsHome)
+                        {
+                            @*<div class="col-md-3 col-sm-3 col-xs-12">
+                                    <!-- ============================================================= SEARCH BAR ============================================================= -->
 
-                        <div class="col-md-4 col-sm-4 col-xs-12">
-                            <!-- ============================================================= BLOCK HEADER LINKS ============================================================= -->
-                            <div class="block-header-links">
-                                <ul class="nav nav-header-link pull-right">
-                                    @if (korisnik != null)
-                                    {
-                                        <li><a href="#">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a></li>
+                                    <form role="form" class="block-search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="Pretraga" placeholder="Search..">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary-very-light search-button" type="button"><span class="icon glyphicon glyphicon-search"></span></button>
+                                            </span>
+                                        </div><!-- /input-group -->
+                                    </form><!-- /block-search -->
+                                    <!-- ============================================================= SEARCH BAR : END  ============================================================= -->
+                                </div>*@<!-- /.col -->
 
-                                        <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
-                                    }
-                                    @if (korisnik?.Administrator != null)
-                                    {
-
-                                    }
-                                    else if (korisnik?.Zaposlenik != null)
-                                    {
-
-                                    }
-                                    else if (korisnik?.Klijent != null)
-                                    {
-                                        <li><a href="index.php?page=cart">Wishlist</a></li>
-                                        <li><a href="index.php?page=cart">Total: <span class="total-cart-amount">$200.00</span></a></li>
-                                    }
-                                    else
-                                    {
-
-                                        <li><a asp-area="" asp-controller="Registracija" asp-action="Index"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
-                                        <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
-                                    }
-                                </ul><!-- /.nav-header-link -->
-                            </div><!-- /.block-header-links -->
-                            <!-- ============================================================= BLOCK HEADER LINKS : END ============================================================= -->
-                        </div><!-- /.col -->
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <!-- ============================================================= BLOCK HEADER LINKS ============================================================= -->
+                                <!-- ============================================================= BLOCK HEADER LINKS : END ============================================================= -->
+                            </div><!-- /.col -->
+                        }
                     </div><!-- /.row -->
-                    @if (korisnik?.Klijent != null)
-                    {
-                        <a class="btn-shopping-cart hidden-xs" href="#" data-toggle="modal" data-target=".myCart-modal-lg"><img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /><span class="cart-items-count">5</span></a>
-                    }
                 </div><!-- /.container -->
                 <!-- ============================================================= NAVBAR PRIMARY ============================================================= -->
-                <nav class="yamm navbar navbar-primary animate-dropdown" role="navigation" style="@(IsHome || !AdminOrZaposlenik ? "" : "display: none;")">
+                <nav class="yamm navbar navbar-primary animate-dropdown" id="main-navbar" role=" navigation" style="@(IsHome || !AdminOrZaposlenik ? "" : "display: none;")">
                     <div class="container">
                         <div class="navbar-header">
                             <button id="btn-navbar-primary-collapse" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-primary-collapse">
@@ -256,18 +303,6 @@
 
                                 <li class="hidden-sm"><a href="index.php?page=category">Dijelovi</a></li>
                                 <li><a href="index.php?page=category">Oprema</a></li>
-                                <li class="dropdown">
-                                    <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Pages</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="index.php?page=home">Home Page</a></li>
-                                        <li><a href="index.php?page=category">Category</a></li>
-                                        <li><a href="index.php?page=detail">Individual Product</a></li>
-                                        <li><a href="index.php?page=cart">Cart Summary</a></li>
-                                        <li><a href="index.php?page=checkout">Checkout</a></li>
-                                        <li><a href="index.php?page=404">404</a></li>
-                                        <li><a href="index.php?page=contact">Contact</a></li>
-                                    </ul>
-                                </li>
                                 @if (korisnik?.Administrator != null)
                                 {
                                     <li class="dropdown">
@@ -289,22 +324,61 @@
                                     </li>
                                 }
                             </ul><!-- /.nav -->
-                            @*<div class="navbar-right user-options">
-                                <div class="btn-group">
-                                    <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">USD <b class="caret"></b></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">EUR</a></li>
-                                        <li><a href="#">INR</a></li>
-                                    </ul>
-                                </div><!-- /.btn-group -->
-                                <div class="btn-group">
-                                    <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">EN <b class="caret"></b></button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">DE</a></li>
-                                        <li><a href="#">TA</a></li>
-                                    </ul>
-                                </div><!-- /.btn-group -->
-                            </div><!-- /.navbar-right -->*@
+                            <div class="navbar-right user-options">
+                                @*<div class="btn-group">
+                                        <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">USD <b class="caret"></b></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">EUR</a></li>
+                                            <li><a href="#">INR</a></li>
+                                        </ul>
+                                    </div>*@<!-- /.btn-group -->
+                                @*<div class="btn-group">
+                                        <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">EN <b class="caret"></b></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">DE</a></li>
+                                            <li><a href="#">TA</a></li>
+                                        </ul>
+                                    </div>*@<!-- /.btn-group -->
+
+                                <div class="block-header-links">
+                                    <ul class="nav nav-header-link pull-right">
+
+
+
+                                        @if (korisnik?.Klijent != null)
+                                        {
+                                            <li>
+                                                <a href="/Klijent/Korpa/Stavke">Ukupno: <span class="total-cart-amount">@CijenaStavki.ToString("0.00") KM </span> </a>
+                                            </li>
+                                            <li>
+                                                <a href="/Klijent/Korpa/Stavke" data-disable-toggle="modal" data-target=".myCart-modal-lg">
+                                                    <img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /> <span class="cart-items-count">@BrojStavki</span>
+                                                </a>
+                                            </li>
+                                        }
+
+                                        @if (korisnik != null)
+                                        {
+                                            
+                                            <li class="dropdown">
+                                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="/Klijent/Profil">Profil</a></li>
+                                                    <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+                                                </ul>
+                                            </li>
+                                        }
+                                        else
+                                        {
+
+                                            <li><a asp-area="" asp-controller="Registracija" asp-action="Index"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
+                                            <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
+                                        }
+
+                                    </ul><!-- /.nav-header-link -->
+                                </div><!-- /.block-header-links -->
+
+                            </div><!-- /.navbar-right -->
                         </div><!-- /.collapse navbar-collapse -->
                     </div><!-- /.container -->
                 </nav><!-- /.yamm -->

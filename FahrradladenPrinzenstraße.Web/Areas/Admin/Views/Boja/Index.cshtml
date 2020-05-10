@@ -6,12 +6,15 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<form>
-
-
-    <input type="text" name="Pretraga" class="form-control col-md-3" />
-    <button class="btn btn-success">Pretraga</button>
+<form class="navbar-form navbar-left">
+    <div class="input-group">
+        <input type="text" class="form-control" name="Pretraga" placeholder="Naziv..">
+        <span class="input-group-btn">
+            <button class="btn search-button" type="submit"><span class="icon glyphicon glyphicon-search"></span></button>
+        </span>
+    </div>
 </form>
+
 <table class="table table-light">
     <thead>
         <tr>

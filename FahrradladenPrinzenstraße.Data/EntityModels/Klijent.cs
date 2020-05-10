@@ -13,5 +13,7 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public Korisnik Korisnik { get; set; }
 
         public DateTime DatumRegistracije { get; set; }
+
+        public List<KorpaStavka> KorpaStavke { get; set; }
     }
 }

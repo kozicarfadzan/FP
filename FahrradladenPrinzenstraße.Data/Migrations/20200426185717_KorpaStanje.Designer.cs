@@ -4,14 +4,16 @@ using FahrradladenPrinzenstraße.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FahrradladenPrinzenstraße.Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20200426185717_KorpaStanje")]
+    partial class KorpaStanje
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,13 +260,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<int?>("BiciklId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DioId")
-                        .HasColumnType("int");
-
                     b.Property<int>("KlijentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Kolicina")
                         .HasColumnType("int");
 
                     b.Property<int?>("OpremaId")
@@ -273,8 +269,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasKey("KorpaStavkaId");
 
                     b.HasIndex("BiciklId");
-
-                    b.HasIndex("DioId");
 
                     b.HasIndex("KlijentId");
 
@@ -688,10 +682,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Bicikl", "Bicikl")
                         .WithMany()
                         .HasForeignKey("BiciklId");
-
-                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Dio", "Dio")
-                        .WithMany()
-                        .HasForeignKey("DioId");
 
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Klijent")
                         .WithMany()

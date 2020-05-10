@@ -26,7 +26,10 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
 
         public IActionResult Index(string Pretraga)
         {
-            List<Model> vm = db.Modeli
+            List<Model> vm = db.Modeli.Include(x => x.MaterijalOkvira)
+                 .Include(x => x.StarosnaGrupa)
+                 .Include(x => x.Proizvodjac)
+                 .Include(x => x.VelicinaOkvira)
                  .Where(x => x.Naziv.Contains(Pretraga) || Pretraga == null)
                  .ToList();
 
@@ -68,6 +71,14 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
             }
             novi.Naziv = vm.Naziv;
             novi.ProizvodjacId = vm.ProizvodjacId;
+            novi.MaterijalOkviraId = vm.MaterijalOkviraId;
+            novi.StarosnaGrupaId = vm.StarosnaGrupaId;
+            novi.VelicinaOkviraId = vm.VelicinaOkviraId;
+            novi.Tip = vm.Tip;
+            novi.Suspenzija = vm.Suspenzija;
+            novi.Brzina = vm.Brzina;
+                novi.SpolBicikl = vm.SpolBicikl;
+            
 
             db.SaveChanges();
             return RedirectToAction("Index");

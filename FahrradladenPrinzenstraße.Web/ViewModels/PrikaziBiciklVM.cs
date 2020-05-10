@@ -1,4 +1,5 @@
 ﻿using FahrradladenPrinzenstraße.Data.EntityModels;
+using FahrradladenPrinzenstraße.Web.Helper;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,8 @@ namespace FahrradladenPrinzenstraße.Web.ViewModels
         public int? Poredak { get; set; }
         public bool PrikaziKaoListu { get; set; }
 
-        public List<Row> Bicikla { get; set; }
+        public PagedResult<Row> PagedResult { get; set; }
+        public int Page { get; set; } = 1;
 
         /* checkbox db object */
         public List<Proizvodjac> Proizvodjaci { get; set; }

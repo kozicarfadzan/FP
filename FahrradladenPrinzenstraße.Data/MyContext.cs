@@ -64,9 +64,7 @@ namespace FahrradladenPrinzenstraße.Data
 
 
 
-        #region Tables
-
-
+  
         public DbSet<Grad> Grad { get; set; }
 
         public DbSet<Administrator> Administrator { get; set; }
@@ -92,6 +90,6 @@ namespace FahrradladenPrinzenstraße.Data
         public DbSet<StarosnaGrupa> StarosnaGrupa { get; set; }
         public DbSet<VelicinaOkvira> VelicinaOkvira { get; set; }
         public DbSet<Lokacija> Lokacija { get; set; }
-        #endregion
+        public DbSet<KorpaStavka> KorpaStavka { get; set; }
     }
 }

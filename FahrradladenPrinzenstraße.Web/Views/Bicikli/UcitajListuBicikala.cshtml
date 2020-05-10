@@ -1,17 +1,17 @@
 ﻿@model FahrradladenPrinzenstraße.Web.ViewModels.PrikaziBiciklVM
 
-@if (Model.Bicikla.Count == 0)
+@if (Model.PagedResult.RowCount == 0)
 {
     <div>Nije pronađeno</div>
 }
-@foreach (var item in Model.Bicikla)
+@foreach (var item in Model.PagedResult.Results)
 {
 
     <div class="product-item-column col-md-4 col-sm-4 col-xs-12 col-lg-4">
         <div class="product-item-grid-view">
             <div class="product-item">
                 <div class="product-image">
-                    <a href="index.php?page=detail">
+                    <a href="/Klijent/Bicikl/KupiBicikl/@item.BiciklId">
 
                         @if (item.Slika == null || item.Slika.Length < 1000)
                         {
@@ -27,7 +27,7 @@
                     </a>
                 </div><!-- /.product-image -->
                 <div class="product-detail text-md-center">
-                    <h3 class="product-name"><a href="index.php?page=detail">@item.Model.Naziv</a></h3>
+                    <h3 class="product-name"><a href="/Klijent/Bicikl/KupiBicikl/@item.BiciklId">@item.Model.Naziv</a></h3>
                     <p class="product-price">
                         @if (item.Stanje == Stanje.Novo || item.Stanje == Stanje.Polovno)
                         {
@@ -43,30 +43,80 @@
 
                         }
                     </p>
+                    <div class="product-actions">
+                        <div class="btn-group">
+                            <a href="/Klijent/KupiBicikl/@item.BiciklId" data-id="@item.BiciklId" class="btn btn-secondary strong uppercase btn-add-to-cart"><img src="assets/images/icon-cart.png" alt="" class="icon-btn" /> Dodaj u košaricu</a>
+                            <a href="index.php?page=cart" class="btn btn-inverse strong uppercase btn-wishlist"><span data-icon="&#xe030;"></span></a>
+                        </div>
+
+                    </div><!-- /.product-actions -->
                 </div><!-- /.product-detail -->
             </div><!-- /.product-item -->
         </div><!-- /.product-item-grid-view -->
     </div><!-- /.product-item-column -->
 
     @*<tr>
-        <td>
-        </td>
-        <td>@item.Model.Proizvodjac.Naziv</td>
-        <td></td>
-        <td>@item.GodinaProizvodnje</td>
-        <td>@item.Stanje</td>
+            <td>
+            </td>
+            <td>@item.Model.Proizvodjac.Naziv</td>
+            <td></td>
+            <td>@item.GodinaProizvodnje</td>
+            <td>@item.Stanje</td>
 
-        <td>@item.Boja.Naziv</td>
-        <td>@(item.NoznaKocnica ? "Da" : "Ne")</td>
-        <td>@item.Kolicina</td>
+            <td>@item.Boja.Naziv</td>
+            <td>@(item.NoznaKocnica ? "Da" : "Ne")</td>
+            <td>@item.Kolicina</td>
 
-        <td>
-            @if (item.Aktivan)
-            {
-                <a asp-action="KupiBiciklo" asp-route-id="@item.BiciklId" class="btn btn-success">Kupi</a>
-            }
+            <td>
+                @if (item.Aktivan)
+                {
+                    <a asp-action="KupiBiciklo" asp-route-id="@item.BiciklId" class="btn btn-success">Kupi</a>
+                }
 
-        </td>
-    </tr>*@
+            </td>
+        </tr>*@
 
+}
+
+@if (Model.PagedResult.RowCount > 0)
+{
+    <div style="clear: both;">
+        <div class="page-section clearfix">
+            <ul class="pagination">
+                @if (Model.PagedResult.CurrentPage > 1)
+                {
+                    <li><a href="@Url.Action("Index", new { Page = Model.PagedResult.CurrentPage - 1 })" data-page="@(Model.PagedResult.CurrentPage - 1)">&laquo;</a></li>
+                }
+                else
+                {
+                    <li><a href="#">&laquo;</a></li>
+                }
+
+                @for (var p = 1; p <= Model.PagedResult.PageCount; p++)
+                {
+                    @if (p == Model.PagedResult.CurrentPage)
+                    {
+                        <li class="active">
+                            <a href="@Url.Action("Index", new { Page = p })" data-page="@p">@p</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", new { Page = p })" data-page="@p">@p</a>
+                        </li>
+                    }
+                }
+
+                @if (Model.PagedResult.CurrentPage < Model.PagedResult.PageCount)
+                {
+                    <li><a href="@Url.Action("Index", new { Page = Model.PagedResult.PageCount })" data-page="@Model.PagedResult.PageCount">&raquo;</a></li>
+                }
+                else
+                {
+                    <li><a href="#">&raquo;</a></li>
+                }
+            </ul><!-- /.pagination -->
+        </div><!-- /.pagination holder-->
+    </div>
 }

@@ -56,20 +56,25 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels
         public string Prezime { get; set; }
 
         [Required]
+        [Display(Name = "Korisničko Ime")]
         public string KorisnickoIme { get; set; }
 
         public string Lozinka { get; set; }
+        [Display(Name = "Potvrda Lozinke")]
         public string LozinkaPotvrda { get; set; }
 
-        [Required]
         public bool Aktivan { get; set; }
 
+        [Display(Name = "Adresa Stanovanja")]
         public string AdresaStanovanja { get; set; }
+        [Display(Name = "Broj Telefona")]
         public string BrojTelefona { get; set; }
+        [Display(Name = "Email Adresa")]
         public string Email { get; set; }
         public string Spol { get; set; }
         public List<SelectListItem> Spolovi { get; set; }
 
+        [Display(Name = "Grad")]
         public int GradID { get; set; }
         public List<SelectListItem> Gradovi { get; set; }
  

@@ -41,11 +41,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Klijent\Controllers\" />
-    <Folder Include="Areas\Klijent\ViewModels\" />
     <Folder Include="wwwroot\assets\css\" />
     <Folder Include="wwwroot\assets\js\" />
-    <Folder Include="wwwroot\assets\images\" />
   </ItemGroup>
 
 </Project>

@@ -163,7 +163,7 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
                 }
             }
 
-            Model.Bicikla = BiciklaQry.Select(
+            Model.PagedResult = BiciklaQry.Select(
                x => new PrikaziBiciklVM.Row
                {
                    BiciklId = x.BiciklId,
@@ -182,7 +182,7 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
                    Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Count(),
                    Aktivan = x.Aktivan /*&& (x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Count() - HttpContext.GetLogiraniKorisnik() > 0)*/
                }
-            ).ToList();
+            ).GetPaged(VM.Page, 6);
 
             if (VM.PrikaziKaoListu)
                 return PartialView("UcitajListuBicikalaLista", Model);

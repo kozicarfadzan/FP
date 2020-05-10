@@ -15,7 +15,7 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public int BiciklId { get; set; }
         public int ModelId { get; set; }
         public Model Model { get; set; }
-        public string PuniNaziv =>  Model.Tip + " " + Model.Naziv;
+        public string PuniNaziv =>  Model.Proizvodjac?.Naziv + " " + Model.Naziv;
         public short GodinaProizvodnje { get; set; }
         public Stanje Stanje { get; set; }
         public byte[] Slika { get; set; }

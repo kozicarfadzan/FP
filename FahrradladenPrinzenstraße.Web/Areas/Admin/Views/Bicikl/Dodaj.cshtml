@@ -58,7 +58,11 @@
 
                 <tr>
                     <td>@Html.LabelFor(x => x.NoznaKocnica)</td>
-                    <td>@Html.CheckBoxFor(x => x.NoznaKocnica)</td>
+                    <td>
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(model => model.NoznaKocnica)
+                        </div>
+                    </td>
                 </tr>
 
                 <tr>

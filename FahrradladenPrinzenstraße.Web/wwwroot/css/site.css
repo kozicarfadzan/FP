@@ -1,7 +1,8 @@
-﻿/*body {
+﻿body.has-navbar {
     padding-top: 50px;
-    padding-bottom: 20px;
 }
+
+/*
 
 .body-content {
     padding-left: 15px;
@@ -27,6 +28,10 @@
     }
 }*/
 
+/* customizations start */
+a.navbar-brand {
+    padding: 5px 0;
+}
 
 .field-validation-error {
     color: red;
@@ -37,7 +42,52 @@
     border: 1px solid red;
 }
 
+.navbar {
+    min-height: 60px;
+}
 
+@media (min-width: 768px) {
+    .navbar-nav > li > a {
+        padding-top: 20px;
+        padding-bottom: 20px
+    }
+}
+
+.content .navbar-form {
+    padding-left: 0;
+}
+
+.content .input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group {
+    margin-left: 0;
+}
+
+nav.navbar-default .nav-header-link > li > a,
+nav.navbar-default .nav-header-link > li > a:hover,
+nav.navbar-default .nav-header-link > li > a:focus,
+nav.navbar-default .nav-header-link > li > a:active {
+    color: #b5520b;
+}
+
+nav.navbar-default .nav-header-link > li:after {
+    border-right: 3px solid #f7ad78;
+}
+
+nav.navbar-default .nav-header-link .total-cart-amount {
+    color: #f27a24;
+}
+
+nav.navbar-default .nav-header-link > li > a {
+    text-transform: uppercase
+}
+
+#admin_header_placeholder {
+    margin-top: 20px;
+}
+
+.table thead tr th {
+    font-size: 12px;
+}
+/* customizations end */
 .content select.form-control,
 .content input.form-control {
     margin-top: 5px;
@@ -47,6 +97,7 @@
 .yamm .megamenu-title {
     margin-bottom: 0px;
 }
+
 .yamm .menu-items {
     padding-left: 10px;
 }
@@ -344,7 +395,7 @@
         background-color: #a94442; /* active bg color */
     }
 
-    /********** BOOTSTRAP TABS END*/
+/********** BOOTSTRAP TABS END*/
 
 
 /******** BOOTSTRAP DROPDOWN CART */

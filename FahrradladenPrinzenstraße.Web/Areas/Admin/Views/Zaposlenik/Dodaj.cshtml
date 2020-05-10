@@ -3,85 +3,114 @@
     ViewData["Title"] = "Dodaj zaposlenika";
 }
 
-<h2>@ViewData["Title"]</h2>
 
-<form action="/Admin/Zaposlenik/Dodaj" method="post">
+<h2>@ViewData["Title"]:</h2>
 
-    <table>
-        <tbody>
-            <tr>
-                <td>Ime:</td>
-                <td>@Html.TextBoxFor(x => x.Ime, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.Ime)</td>
-            </tr>
-            <tr>
-                <td>Prezime:</td>
-                <td>@Html.TextBoxFor(x => x.Prezime, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.Prezime)</td>
-            </tr>
-            <tr>
-                <td>Korisnicko ime:</td>
-                <td>@Html.TextBoxFor(x => x.KorisnickoIme, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.KorisnickoIme)</td>
-            </tr>
-            <tr>
-                <td>Lozinka:</td>
-                <td>@Html.PasswordFor(x => x.Lozinka, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.Lozinka)</td>
-            </tr>
-            <tr>
-                <td>Lozinka:</td>
-                <td>@Html.PasswordFor(x => x.LozinkaPotvrda, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.LozinkaPotvrda)</td>
-            </tr>
-            <tr>
-                <td>Aktivan:</td>
-                <td>@Html.CheckBoxFor(x => x.Aktivan)</td>
-            </tr>
-            <tr>
-                <td>Spol:</td>
-                <td>
-                    @Html.DropDownListFor(x => x.Spol, Model.Spolovi, "Odaberite spol", new
-                    {
-                        @class = "form-control"
-                })
-                </td>
-                <td>@Html.ValidationMessageFor(x => x.Spol)</td>
-            </tr>
+@using (Html.BeginForm())
+{
 
-            <tr>
-                <td>Telefon: </td>
-                <td>@Html.TextBoxFor(x => x.BrojTelefona, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.BrojTelefona)</td>
-            </tr>
-            <tr>
-                <td>Email: </td>
-                <td>@Html.TextBoxFor(x => x.Email, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.Email)</td>
-            </tr>
-            <tr>
-                <td>Adresa:</td>
-                <td>@Html.TextBoxFor(x => x.AdresaStanovanja, new { @class = "form-control" })</td>
-                <td>@Html.ValidationMessageFor(x => x.AdresaStanovanja)</td>
-            </tr>
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Ime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Ime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Ime, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.Prezime, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Prezime, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Prezime, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.KorisnickoIme, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.KorisnickoIme, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.KorisnickoIme, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-            <tr>
-                <td>Grad:</td>
-                <td>
-                    @Html.DropDownListFor(x => x.GradId, Model.Gradovi, "Odaberite grad:", new
-                    {
-                        @class = "form-control"
+        <div class="form-group">
+            @Html.LabelFor(model => model.Lozinka, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(model => model.Lozinka, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Lozinka, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.LozinkaPotvrda, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.PasswordFor(model => model.LozinkaPotvrda, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.LozinkaPotvrda, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Aktivan, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.CheckBoxFor(model => model.Aktivan)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AdresaStanovanja, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AdresaStanovanja, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.AdresaStanovanja, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BrojTelefona, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BrojTelefona, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.BrojTelefona, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Spol, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(x => x.Spol, Model.Spolovi, "Odaberite spol", new
+                {
+                    @class = "form-control"
             })
-                </td>
-                <td>@Html.ValidationMessageFor(x => x.GradId)</td>
-            </tr>
 
-        </tbody>
-    </table>
+                @Html.ValidationMessageFor(model => model.Spol, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-    <button type="submit" class="btn btn-success">Snimi</button>
-</form>
+        <div class="form-group">
+            @Html.LabelFor(model => model.GradId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.GradId, Model.Gradovi, "Odaberite grad", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GradId, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Snimi" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
 
+<div>
+    @Html.ActionLink("Vrati na početnu", "Index")
+</div>
