@@ -7,7 +7,9 @@
     bool IsHome = controllerName == "Home";
     bool Klijent = korisnik?.Klijent != null;
     double CijenaStavki = Klijent ? Context.GetUkupnoKosarica() : 0;
+    double CijenaTermina = Klijent ? Context.GetUkupnaCijenaTermina() : 0;
     int BrojStavki = Klijent ? Context.GetBrojStavkiKosarica() : 0;
+    int BrojTermina = Klijent ? Context.GetBrojTerminaKosarica() : 0;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -34,6 +36,10 @@
     @if (AdminOrZaposlenik)
     {
         <link rel="stylesheet" href="~/css/sidebar.css" />
+    }
+    @if (Klijent)
+    {
+        <link rel="stylesheet" href="~/css/datepicker.css" />
     }
 
 
@@ -129,7 +135,7 @@
             <nav id="sidebar">
 
                 <div class="custom-menu">
-                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                    <button type="button" id="sidebarCollapse" style="z-index: 100" class="btn btn-primary">
                         <i class="fa fa-bars"></i>
                         <span class="sr-only">Toggle Menu</span>
                     </button>
@@ -148,20 +154,37 @@
                     </div> *@
 
                 <ul class="list-unstyled components">
-                    <p>Admin Panel</p>
+                    @if (korisnik?.Administrator != null)
+                    {
 
-                    <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Admin/Bicikl/Index">Bicikl</a></li>
-                    <li class="@(controllerName == "Boja" ? "active":  "")"><a href="/Admin/Boja/Index">Boja</a></li>
-                    <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Admin/Dio/Index">Dio</a></li>
-                    <li class="@(controllerName == "Grad" ? "active":  "")"><a href="/Admin/Grad/Index">Grad</a></li>
-                    <li class="@(controllerName == "Lokacija" ? "active":  "")"><a href="/Admin/Lokacija/Index">Lokacija</a></li>
-                    <li class="@(controllerName == "Model" ? "active":  "")"><a href="/Admin/Model/Index">Model</a></li>
-                    <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Admin/Oprema/Index">Oprema</a></li>
-                    <li class="@(controllerName == "Proizvodjac" ? "active":  "")"><a href="/Admin/Proizvodjac/Index">Proizvođač</a></li>
-                    <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Admin/Servis/Index">Servis</a></li>
-                    <li class="@(controllerName == "StarosnaGrupa" ? "active":  "")"><a href="/Admin/StarosnaGrupa/Index">Starosna Grupa</a></li>
-                    <li class="@(controllerName == "VelicinaOkvira" ? "active":  "")"><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
-                    <li class="@(controllerName == "Zaposlenik" ? "active":  "")"><a href="/Admin/Zaposlenik/Index">Zaposlenik</a></li>
+                        <p>Admin Panel</p>
+
+                        <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Admin/Bicikl/Index">Bicikl</a></li>
+                        <li class="@(controllerName == "Boja" ? "active":  "")"><a href="/Admin/Boja/Index">Boja</a></li>
+                        <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Admin/Dio/Index">Dijelovi</a></li>
+                        <li class="@(controllerName == "Grad" ? "active":  "")"><a href="/Admin/Grad/Index">Grad</a></li>
+                        <li class="@(controllerName == "Lokacija" ? "active":  "")"><a href="/Admin/Lokacija/Index">Lokacija</a></li>
+                        <li class="@(controllerName == "Model" ? "active":  "")"><a href="/Admin/Model/Index">Model</a></li>
+                        <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Admin/Oprema/Index">Oprema</a></li>
+                        <li class="@(controllerName == "Proizvodjac" ? "active":  "")"><a href="/Admin/Proizvodjac/Index">Proizvođač</a></li>
+                        <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Admin/Servis/Index">Servis</a></li>
+                        <li class="@(controllerName == "StarosnaGrupa" ? "active":  "")"><a href="/Admin/StarosnaGrupa/Index">Starosna Grupa</a></li>
+                        <li class="@(controllerName == "VelicinaOkvira" ? "active":  "")"><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
+                        <li class="@(controllerName == "Zaposlenik" ? "active":  "")"><a href="/Admin/Zaposlenik/Index">Zaposlenik</a></li>
+                    }
+
+                    @if (korisnik?.Zaposlenik != null)
+                    {
+
+                        <p>Zaposlenik Panel</p>
+
+                        <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Zaposlenik/Servis/Index">Servis</a></li>
+                        <li class="@(controllerName == "Termini" ? "active":  "")"><a href="/Zaposlenik/Termini/Index">Termini</a></li>
+                        <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Zaposlenik/Bicikl/Index">Bicikl</a></li>
+                        <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Zaposlenik/Dio/Index">Dijelovi</a></li>
+                        <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Zaposlenik/Oprema/Index">Oprema</a></li>
+                    }
+
 
                     @*
                                 dropdown exam
@@ -243,7 +266,7 @@
                     </div><!-- /.row -->
                 </div><!-- /.container -->
                 <!-- ============================================================= NAVBAR PRIMARY ============================================================= -->
-                <nav class="yamm navbar navbar-primary animate-dropdown" id="main-navbar" role=" navigation" style="@(IsHome || !AdminOrZaposlenik ? "" : "display: none;")">
+                <nav class="yamm navbar navbar-primary animate-dropdown" id="main-navbar" role="navigation" style="@(IsHome || !AdminOrZaposlenik ? "" : "display: none;")">
                     <div class="container">
                         <div class="navbar-header">
                             <button id="btn-navbar-primary-collapse" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-primary-collapse">
@@ -272,7 +295,7 @@
                                                     <div class="col-md-6 col-sm-6">
                                                         <span class="megamenu-title">Iznajmljivanje</span>
                                                         <ul class="menu-items">
-                                                            <li><a asp-area="" asp-controller="Termini" asp-action="Rezervisi">Rezerviši&nbsp;termin</a></li>
+                                                            <li><a asp-area="" asp-controller="Iznajmljivanje" asp-action="Index">Rezerviši&nbsp;termin</a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
@@ -291,7 +314,7 @@
                                                         <span class="megamenu-title">Termini</span>
                                                         <ul class="menu-items">
 
-                                                            <li><a asp-area="" asp-controller="Home" asp-action="Index" asp-route-stanje="Polovna">Rezerviši&nbsp;termin</a></li>
+                                                            <li><a asp-area="" asp-controller="Servisi" asp-action="Index">Rezerviši&nbsp;termin</a></li>
                                                         </ul>
                                                     </div>
 
@@ -301,8 +324,49 @@
                                     </ul>
                                 </li>
 
-                                <li class="hidden-sm"><a href="index.php?page=category">Dijelovi</a></li>
-                                <li><a href="index.php?page=category">Oprema</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Dijelovi</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Kupovina</span>
+                                                        <ul class="menu-items">
+
+                                                            <li><a asp-area="" asp-controller="Dijelovi" asp-action="Index">Kupovina&nbsp;dijelova</a></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Oprema</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Kupovina</span>
+                                                        <ul class="menu-items">
+
+                                                            <li><a asp-area="" asp-controller="Oprema" asp-action="Index">Kupovina&nbsp;opreme</a></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
                                 @if (korisnik?.Administrator != null)
                                 {
                                     <li class="dropdown">
@@ -347,21 +411,38 @@
 
                                         @if (korisnik?.Klijent != null)
                                         {
-                                            <li>
-                                                <a href="/Klijent/Korpa/Stavke">Ukupno: <span class="total-cart-amount">@CijenaStavki.ToString("0.00") KM </span> </a>
-                                            </li>
+                                        <li>
+                                            <a href="/Klijent/Korpa/Stavke">
+                                                Ukupno: <span class="total-cart-amount">
+                                                    @if (controllerName == "Termin")
+                                                    {
+                                                        <span>@CijenaTermina.ToString("0.00") KM</span>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@CijenaStavki.ToString("0.00") KM</span>
+                                                    }
+                                                </span>
+                                            </a>
+                                        </li>
                                             <li>
                                                 <a href="/Klijent/Korpa/Stavke" data-disable-toggle="modal" data-target=".myCart-modal-lg">
                                                     <img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /> <span class="cart-items-count">@BrojStavki</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/Klijent/Termin/Stavke">
+                                                    <img src="/assets/images/icon-calendar.png" class="icon-calendar" width="24" height="24" alt="Calendar Icon" /> <span class="calendar-items-count">@BrojTermina</span>
                                                 </a>
                                             </li>
                                         }
 
                                         @if (korisnik != null)
                                         {
-                                            
+
                                             <li class="dropdown">
-                                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a>
+                                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime</a>
                                                 <ul class="dropdown-menu">
                                                     <li><a href="/Klijent/Profil">Profil</a></li>
                                                     <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
@@ -585,6 +666,13 @@
 
     <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
     <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+
+    @if (Klijent)
+    {
+        <script src="~/js/datepicker.js"></script>
+        <script src="~/js/datepicker.en.js"></script>
+    }
 
     @RenderSection("Scripts", required: false)
 </body>

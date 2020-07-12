@@ -1,0 +1,46 @@
+﻿@model PrikaziTermineVM
+
+@{
+    ViewData["Title"] = "Prikaz termina";
+}
+
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped">
+    <tr>
+        <th>Datum i satnica termina</th>
+        <th>Tip Servisa</th>
+        <th>Klijent</th>
+        <th>Trajanje</th>
+        <th>Završeno</th>
+        <th>Akcija</th>
+    </tr>
+
+
+    @foreach (RezervacijaServis z in Model.Termini)
+    {
+        <tr>
+
+            <td> @z.DatumServisiranja</td>
+            <td>  @z.Servis.Naziv</td>
+            <td>  @z.Rezervacija.Klijent.Korisnik.Ime @z.Rezervacija.Klijent.Korisnik.Prezime</td>
+            <td>  @z.Servis.Trajanje.ToString("0.0") sati</td>
+            <td>
+                <div class="checkbox">
+                    @if (z.IsZavrseno)
+                    {
+                        <input type="checkbox" class="termin-zavrseno" value="@z.RezervacijaServisId" checked />
+                    }
+                    else
+                    {
+                        <input type="checkbox" class="termin-zavrseno" value="@z.RezervacijaServisId" />
+                    }
+                </div>
+            </td>
+            <td>
+                @Html.ActionLink("Detalji", "Detalji", new { id = z.RezervacijaServisId }, new { @class = "btn btn-default" })
+            </td>
+        </tr>
+    }
+
+</table>
+

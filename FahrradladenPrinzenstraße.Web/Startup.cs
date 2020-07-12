@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Stripe;
 
 namespace FahrradladenPrinzenstraße.Web
 {
@@ -30,7 +31,11 @@ namespace FahrradladenPrinzenstraße.Web
                 x.UseSqlServer(Configuration.GetConnectionString("localDB")));
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddMvc(option => option.EnableEndpointRouting = false);
+            services.AddMvc(options =>
+            {
+                options.EnableEndpointRouting = false;
+                options.Filters.Add(new ResponseCacheAttribute() { NoStore = true, Location = ResponseCacheLocation.None });
+            });
             services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             services.AddSession();
 
@@ -40,6 +45,8 @@ namespace FahrradladenPrinzenstraße.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            StripeConfiguration.ApiKey = "sk_test_51GtZFeLtVZ5smQUiowBnySeFMXtWtRd8cjejdu71JpHjpwBb2AiE5ZI3CURlv9zK9Qr2w3heajsrPjCJSCbr4sal00RKdS0Mtm";
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,6 +1,6 @@
 ﻿@model DodajBiciklVM
 @{
-    ViewData["Title"] = (Model.ModelId == 0 ? "Dodaj" : "Uredi") + " bicikl";
+    ViewData["Title"] = (Model.BiciklId == 0 ? "Dodaj" : "Uredi") + " bicikl";
     var listModel = Context.GetEntitySelectList<Model>("ModelId", "Naziv");
     var listBoje = Context.GetEntitySelectList<Boja>("BojaId", "Naziv");
     var listLokacije = Context.GetEntitySelectList<Lokacija>("LokacijaId", "Naziv");
@@ -67,7 +67,7 @@
 
                 <tr>
                     <td>@Html.LabelFor(x => x.Slika)</td>
-                    <td><input type="file" name="Slika" id="Slika"/></td>
+                    <td><input type="file" name="Slika" id="Slika" accept="image/*"/></td>
                 </tr>
 
                 <tr>

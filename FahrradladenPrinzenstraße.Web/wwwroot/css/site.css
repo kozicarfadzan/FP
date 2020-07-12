@@ -61,6 +61,11 @@ a.navbar-brand {
     margin-left: 0;
 }
 
+#odabir-termina[readonly] {
+    background-color: #fff;
+    cursor: pointer;
+}
+
 nav.navbar-default .nav-header-link > li > a,
 nav.navbar-default .nav-header-link > li > a:hover,
 nav.navbar-default .nav-header-link > li > a:focus,

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using FahrradladenPrinzenstraße.Data;
 using FahrradladenPrinzenstraße.Data.EntityModels;
 using FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels;
 using FahrradladenPrinzenstraße.Web.Helper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,57 +26,98 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
         }
         public IActionResult Index(string pretraga)
         {
-            PrikaziOpremuVM vm = new PrikaziOpremuVM();
-            vm.Oprema = db.Oprema.Include(x=>x.Proizvodjac).Where(x => x.Naziv.Contains(pretraga) || pretraga == null).ToList();
-        
-
-            return View(vm);
-        }
-
-        private void PripremiStavke(DodajOpremuVM Model)
-        {
-            
-            Model.Proizvodjaci = new List<SelectListItem>();
-            Model.Proizvodjaci.AddRange(db.Proizvodjac.Select(x => new SelectListItem()
+            PrikaziOpremuVM Model = new PrikaziOpremuVM
             {
-                Value = x.ProizvodjacId.ToString(),
-                Text = x.Naziv
-            }));
+                Proizvodjaci = db.Proizvodjac.Select(x => new SelectListItem
+                {
+                    Text = x.Naziv,
+                    Value = x.ProizvodjacId.ToString()
+                }).ToList()
+            };
 
-
+            return View(Model);
         }
+
+        public ActionResult UcitajListuOpreme(PrikaziOpremuVM VM)
+        {
+            PrikaziOpremuVM Model = new PrikaziOpremuVM
+            {
+                Oprema = db.Oprema
+               .Where(x => VM.ProizvodjacId == 0 || VM.ProizvodjacId == x.ProizvodjacID)
+               .Where(x => VM.Aktivan == x.Aktivan)
+               .Where(x => x.Naziv.Contains(VM.Pretraga) || VM.Pretraga == null)
+               .Select(
+                  x => new PrikaziOpremuVM.Row
+                  {
+                      OpremaId = x.OpremaId,
+                      Naziv = x.Naziv,
+                      Cijena = x.Cijena,
+                      Proizvodjac = x.Proizvodjac.Naziv,
+                      Slika = x.Slika,
+                      Kolicina = x.OpremaStanje.Where(y => y.Aktivan && y.KupacId == null).Count(),
+                      Aktivan = x.Aktivan
+                  }
+               ).ToList()
+
+            };
+
+            return PartialView(Model);
+        }
+
         [HttpGet]
         public IActionResult Dodaj()
         {
             DodajOpremuVM vm = new DodajOpremuVM();
 
-            PripremiStavke(vm);
-
             return View("Dodaj", vm);
         }
 
         [HttpPost]
-        public IActionResult Dodaj(DodajOpremuVM model)
+        public IActionResult Dodaj(DodajOpremuVM model, IFormFile Slika)
         {
             if (ModelState.IsValid)
             {
-                Oprema oprema = new Oprema()
+                Oprema Oprema = new Oprema()
                 {
                     Naziv = model.Naziv,
                     Opis = model.Opis,
                     Cijena = model.Cijena,
-                    ProizvodjacID = model.ProizvodjacId
-
+                    ProizvodjacID = model.ProizvodjacId,
                 };
-                
 
-                db.Oprema.Add(oprema);
+                if (Slika == null || Slika.Length == 0)
+                    Oprema.Slika = new byte[0];
+                else
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        Slika.CopyTo(ms);
+                        Oprema.Slika = ms.ToArray();
+                    }
+                }
+
+
+                db.Oprema.Add(Oprema);
                 db.SaveChanges();
+                if (model.OpremaStanja_Lokacije != null && model.OpremaStanja_Sifre != null)
+                {
+                    for (int i = 0; i < model.OpremaStanja_Lokacije.Count; i++)
+                    {
+                        OpremaStanje stanje = new OpremaStanje
+                        {
+                            OpremaId = Oprema.OpremaId,
+                            LokacijaId = model.OpremaStanja_Lokacije[i],
+                            Sifra = model.OpremaStanja_Sifre[i]
+                        };
+                        db.OpremaStanje.Add(stanje);
+                    }
+                    db.SaveChanges();
+                }
+
+
             }
             else
             {
-                PripremiStavke(model);
-
                 return View("Dodaj", model);
             }
 
@@ -85,38 +128,150 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Uredi(int id)
         {
-            var oprema = db.Oprema.Where(x => x.OpremaId == id).FirstOrDefault();
-            if (oprema == null)
+            DodajOpremuVM model = db.Oprema.Where(x => x.OpremaId == id)
+                .Select(
+                x => new DodajOpremuVM
+                {
+                    OpremaId = x.OpremaId,
+                    Naziv = x.Naziv,
+                    Cijena = x.Cijena,
+                    Opis = x.Opis,
+                    ProizvodjacId = x.ProizvodjacID,
+                    Slika = x.Slika,
+                    OpremaStanje = x.OpremaStanje.Select(y => new OpremaStanje
+                    {
+                        OpremaStanjeId = y.OpremaStanjeId,
+                        LokacijaId = y.LokacijaId,
+                        Sifra = y.Sifra,
+                        KupacId = y.KupacId,
+                        Aktivan = y.Aktivan
+                    }).ToList()
+                })
+                .FirstOrDefault();
+
+            if (model == null)
                 return RedirectToAction("Index");
 
-            UrediOpremuVM model = new UrediOpremuVM(db, oprema);
-            return View(model);
+            return View("Dodaj", model);
+
         }
 
-       
+
 
         [HttpPost]
-        public ActionResult Uredi(UrediOpremuVM model)
+        public ActionResult Uredi(UrediOpremuVM model, IFormFile Slika)
         {
-            var oprema = db.Oprema.Where(x => x.OpremaId == model.OpremaId).FirstOrDefault();
+            var Oprema = db.Oprema.Where(x => x.OpremaId == model.OpremaId).Include(x => x.OpremaStanje).FirstOrDefault();
 
-           
+            Oprema.Naziv = model.Naziv;
+            Oprema.Cijena = model.Cijena;
+            Oprema.Opis = model.Opis;
+            Oprema.ProizvodjacID = model.ProizvodjacId;
 
-            if (ModelState.IsValid)
+            if (model.OpremaStanja_Lokacije != null && model.OpremaStanja_Sifre != null)
             {
-                oprema.Naziv = model.Naziv;
-                oprema.Opis = model.Opis;
-                oprema.Cijena = model.Cijena;
-              
+                for (int i = 0; i < model.OpremaStanja_Sifre.Count; i++)
+                {
+                    var novoStanje_Sifra = model.OpremaStanja_Sifre[i];
+                    var novoStanje_LokacijaId = model.OpremaStanja_Lokacije[i];
 
+                    bool pronadjeno = false;
+                    foreach (var postojeceStanje in Oprema.OpremaStanje)
+                    {
+                        if (postojeceStanje.Sifra == novoStanje_Sifra)
+                        {
+                            postojeceStanje.LokacijaId = novoStanje_LokacijaId;
+                            pronadjeno = true;
+                            break;
+                        }
+                    }
+
+                    if (!pronadjeno)
+                        db.OpremaStanje.Add(new OpremaStanje
+                        {
+                            OpremaId = Oprema.OpremaId,
+                            Sifra = novoStanje_Sifra,
+                            LokacijaId = novoStanje_LokacijaId
+                        });
+                }
+            }
+
+
+            if (Slika?.Length > 0)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    Slika.CopyTo(ms);
+                    Oprema.Slika = ms.ToArray();
+                }
+            }
+
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        [HttpGet]
+        public ActionResult DeaktivirajOpremaStanje(int Id)
+        {
+            var stanje = db.OpremaStanje.Find(Id);
+            if (stanje != null && stanje.Aktivan == true)
+            {
+                stanje.Aktivan = false;
                 db.SaveChanges();
             }
-            else
+            return Json("OK");
+        }
+        [HttpGet]
+        public ActionResult AktivirajOpremaStanje(int Id)
+        {
+            var stanje = db.OpremaStanje.Find(Id);
+            if (stanje != null && stanje.Aktivan == false)
             {
-                model = new UrediOpremuVM(db, oprema);
-                return View(model);
+                stanje.Aktivan = true;
+                db.SaveChanges();
             }
+            return Json("OK");
+        }
 
+        [HttpGet]
+        public ActionResult DeaktivirajOpremu(int Id)
+        {
+            var Oprema = db.Oprema.Find(Id);
+            if (Oprema != null)
+            {
+                Oprema.Aktivan = false;
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult IzbrisiOpremu(int Id)
+        {
+            var Oprema = db.Oprema.Find(Id);
+            if (Oprema != null)
+            {
+                if (db.OpremaStanje.Where(x => x.OpremaId == Oprema.OpremaId && x.KupacId != null).Any())
+                {
+                    return new BadRequestResult();
+                }
+
+                db.Oprema.Remove(Oprema);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public ActionResult AktivirajOpremu(int Id)
+        {
+            var Oprema = db.Oprema.Find(Id);
+            if (Oprema != null)
+            {
+                Oprema.Aktivan = true;
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
 

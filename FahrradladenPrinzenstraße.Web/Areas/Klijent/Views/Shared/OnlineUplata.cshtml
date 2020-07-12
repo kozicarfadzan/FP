@@ -1,0 +1,24 @@
+﻿@model Rezervacija 
+@{ 
+    ViewData["Title"] = "Online Uplata";
+}
+
+<link rel="stylesheet" href="~/css/stripe.css" />
+<script src="https://js.stripe.com/v3/"></script>
+<script src="~/js/stripe-client.js" defer></script>
+
+<!-- Display a payment form -->
+<h2>@ViewData["Title"]</h2>
+<form id="payment-form">
+    @Html.HiddenFor(x => x.RezervacijaId)
+    <div id="card-element"><!--Stripe.js injects the Card Element--></div>
+    <button id="submit">
+        <div class="spinner hidden" id="spinner"></div>
+        <span id="button-text">Pay using Stripe</span>
+    </button>
+    <p id="card-errors" role="alert"></p>
+    <p class="result-message hidden">
+        Payment succeeded, see the result in your
+        <a href="" target="_blank">Stripe dashboard.</a> Refresh the page to pay again.
+    </p>
+</form>

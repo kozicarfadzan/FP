@@ -302,3 +302,14 @@ a:active {
     width: 100%;
     z-index: 10000;
 }
+
+.table-cart-summary .media img {
+    max-width: 262px;
+    max-height: 202px;
+}
+
+#sidebar li {
+    position: relative;
+    width: 100%;
+    z-index: 1000;
+}

@@ -35,7 +35,9 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                 .Include(x => x.Model).ThenInclude(x => x.VelicinaOkvira)
                 .Include(x => x.Boja)
                 .Include(x => x.BiciklStanje)
-                .Where(x => x.BiciklId == Id).FirstOrDefault()
+                .Where(x => x.BiciklId == Id)
+                .Where(x => x.Stanje == Stanje.Novo || x.Stanje == Stanje.Polovno)
+                .FirstOrDefault()
             };
 
             if (VM.Bicikl == null)
@@ -59,14 +61,16 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
         {
             Bicikl Bicikl = db.Bicikl
                 .Include(x => x.BiciklStanje)
-                .Where(x => x.BiciklId == Id).FirstOrDefault();
+                .Where(x => x.BiciklId == Id)
+                .Where(x => x.Stanje == Stanje.Novo || x.Stanje == Stanje.Polovno)
+                .FirstOrDefault();
 
             if (Bicikl == null)
             {
                 return new NotFoundResult();// 404
             }
 
-            if(kolicina < 1)
+            if (kolicina < 1)
             {
                 return new BadRequestResult();
             }
@@ -80,9 +84,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                 return new BadRequestResult(); // 400
             }
 
-
             var PostojecaStvaka = db.KorpaStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == Id).FirstOrDefault();
-            if(PostojecaStvaka != null)
+            if (PostojecaStvaka != null)
             {
                 PostojecaStvaka.Kolicina += kolicina;
             }
@@ -99,12 +102,6 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
 
             return new OkResult(); // 200
         }
-
-        public IActionResult KorpaStavke()
-        {
-            return PartialView();
-        }
-
 
 
     }

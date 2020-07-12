@@ -87,7 +87,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                     GradID = model.GradId,
                     KorisnickoIme = model.KorisnickoIme,
                     Spol = model.Spol,
-                    Zaposlenik = new Zaposlenik { }
+                    Zaposlenik = new Data.EntityModels.Zaposlenik { }
                 };
                 zaposlenik.SetLozinka(model.Lozinka);
 

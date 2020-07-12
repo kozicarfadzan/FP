@@ -1,0 +1,132 @@
+﻿@model TerminStavkeVM
+@{
+    ViewData["Title"] = "Odabrani termini";
+}
+
+<h2 class="page-title text-md-center">
+    @ViewData["Title"] -
+    @if (Model.Stavke.Count == 0)
+    {
+        <span>Nema termina</span>
+    }
+    else if (Model.Stavke.Count == 1)
+    {
+        <span>1 termin</span>
+    }
+    else {
+        <span>@Model.Stavke.Count termina</span>
+    }
+</h2>
+<p class="page-subtitle text-md-center">Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim</p>
+
+<div class="page-section">
+    <ul class="order-steps nav nav-pills nav-justified">
+        <li class="active"><a href="#">Pregled Termina</a></li>
+        <li><a href="#">Potvrda Rezervacije</a></li>
+        <li><a href="#">Kraj</a></li>
+    </ul><!-- /.order steps -->
+</div><!-- /.page section -->
+
+<div class="page-section">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table table-cart-summary">
+                    <thead>
+                        <tr>
+                            <th>Bicikl</th>
+                            <th>Opis</th>
+                            <th>Količina</th>
+                            <th>Ukupna cijena</th>
+                            <th></th>
+                        </tr><!-- /tr -->
+                    </thead><!-- /thead -->
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">
+                                @*<form role="form" class="form-coupon-code">
+                                        <label class="control-label">Coupon Code</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="Coupon Code" autocomplete="off">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" type="button">OK</button>
+                                            </span>
+                                        </div>
+                                    </form>*@
+                            </td>
+                            <td colspan="2">
+                                <p class="final-total text-right">
+                                    <span class="final-total-text">Total:</span>
+                                    <span class="final-total-value">@Context.GetUkupnaCijenaTermina().ToString("0.00") KM</span>
+                                </p>
+                            </td>
+                            <td></td>
+                        </tr><!-- /tr -->
+                    </tfoot><!-- /tfoot -->
+                    <tbody>
+                        @foreach (var stavka in Model.Stavke)
+                        {
+
+                            <tr>
+                                <td colspan="2">
+                                    <div class="media">
+                                        @if (stavka.Bicikl != null)
+                                        {
+                                            <a class="pull-left" href="/Klijent/Bicikl/KupiBicikl/@stavka.Bicikl.BiciklId">
+                                                @if (stavka.Bicikl.Slika == null || stavka.Bicikl.Slika.Length < 1000)
+                                                {
+
+                                                    <img src="/assets/images/default_FP.png" width="262" height="202" alt="Product" class="center-block img-responsive">
+                                                }
+                                                else
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(stavka.Bicikl.Slika)" class="center-block img-responsive" />
+                                                }
+                                            </a>
+
+                                            <div class="media-body">
+                                                <h4 class="product-title">@stavka.Bicikl.PuniNaziv</h4>
+                                                <p class="price">@stavka.Bicikl.CijenaPoDanu.Value.ToString("0.00") KM po danu</p>
+                                            </div><!-- /.media-body -->
+                                        }
+
+                                    </div><!-- /.media -->
+                                </td>
+                                <td>
+                                    <div class="cart-item-quantity">
+                                        <div class="input-group">
+                                            <span>@stavka.Kolicina</span>
+                                        </div><!-- /.input-group -->
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="unit-price">
+                                        @if (stavka.Bicikl != null)
+                                        {
+                                            @((stavka.Bicikl.CijenaPoDanu.Value * stavka.BrojDana * stavka.Kolicina).ToString("0.00") + " KM")
+                                        }
+                                    </span>
+                                </td>
+                                <td><a href="/Klijent/Termin/Obrisi/@stavka.TerminStavkaId" data-url="/Klijent/Termin/Obrisi/@stavka.TerminStavkaId" class="termin-item-remove"><span data-icon="&#x4d;"></span></a></td>
+                            </tr><!-- /tr -->
+
+                        }
+                    </tbody><!-- /tbody -->
+                </table><!-- /.table -->
+            </div><!-- /.table responsive -->
+        </div>
+        <div class="col-md-4 authentication">
+            <div class="page-section">
+                @if (Model.Stavke.Count > 0)
+                {
+
+                    <form role="form" action="/Klijent/Termin/PotvrdaNarudzbe" method="get">
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-block btn-lg" type="submit">Continue Checkout</button>
+                        </div><!-- /.form-group -->
+                    </form>
+                }
+            </div><!-- /.page section -->
+        </div>
+    </div><!-- /.row-->
+</div><!-- /.page-section -->

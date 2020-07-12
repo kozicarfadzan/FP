@@ -85,7 +85,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                 servis.Naziv = model.Naziv;
                 servis.Opis = model.Opis;
                 servis.Cijena = model.Cijena;
-
+                servis.Trajanje = model.Trajanje;
 
                 db.SaveChanges();
             }

@@ -282,7 +282,7 @@
 
         xhr1 = $.get($('#url_aktivna_bicikla').attr('href') + filteri, function (data) {
             $('#tab_bicikla_grid .row').html(data);
-        }); eri = '?' + forma.serialize();
+        });
 
 
         xhr2 = $.get($('#url_aktivna_bicikla').attr('href') + filteri + '&PrikaziKaoListu=true', function (data) {
@@ -319,7 +319,7 @@
 
         xhr1 = $.get($('#url_aktivna_bicikla').attr('href') + filteri, function (data) {
             $('#tab_bicikla_grid .row').html(data);
-        }); eri = '?' + forma.serialize();
+        });
 
 
         xhr2 = $.get($('#url_aktivna_bicikla').attr('href') + filteri + '&PrikaziKaoListu=true', function (data) {
@@ -347,8 +347,9 @@
                     if (data.match(/Autentifikacija/)) {
                         window.location.href = '/Autentifikacija';
                     }
-                    else
-                        alert('uspjeh');
+                    else {
+                        update_shopping_cart_info();
+                    }
                 },
                 "404": function () {
                     alert('Proizvod nije pronađen')

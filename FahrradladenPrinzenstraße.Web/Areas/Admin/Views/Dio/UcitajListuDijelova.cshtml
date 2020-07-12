@@ -1,0 +1,46 @@
+﻿@model PrikaziDioVM
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Cijena</th>
+            <th>Proizvođač</th>
+            <th>Količina</th>
+            <th>Akcija</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Dijelovi.Count == 0)
+        {
+
+            <tr>
+                <td colspan="5">Nije pronađeno</td>
+            </tr>
+        }
+        @foreach (var item in Model.Dijelovi)
+        {
+            <tr>
+                <td>@item.Naziv</td>
+                <td>@item.Cijena.ToString("0.00") KM</td>
+                <td>@item.Proizvodjac</td>
+                <td>@item.Kolicina</td>
+
+                <td>
+                    @if (item.Aktivan)
+                    {
+                        <a href="/Admin/Dio/Uredi/@item.DioId  " class="btn btn-warning">Uredi</a>
+                        <a href="/Admin/Dio/DeaktivirajDio/@item.DioId" class="btn btn-danger ajax-btn">Deaktiviraj</a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/Dio/AktivirajDio/@item.DioId" class="btn btn-success ajax-btn">Aktiviraj</a>
+                        <a href="/Admin/Dio/IzbrisiDio/@item.DioId" class="btn btn-danger ajax-btn">Izbriši</a>
+                    }
+
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

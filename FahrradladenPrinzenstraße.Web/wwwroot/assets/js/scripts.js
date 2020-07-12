@@ -1,4 +1,4 @@
-(function($) {
+﻿(function ($) {
     "use strict";
 
     $(document).ready(function () {
@@ -33,6 +33,8 @@
             header.classList.remove("navbar-sticky");
         }
     }
+
+    myFunction();
 
     /*===================================================================================*/
     /*  WOW 
@@ -258,4 +260,77 @@
         });
     });
 
+    $('.content').on('click', '.cart-item-remove, .cart-item-increase-count, .cart-item-decrease-count', function () {
+        event.preventDefault();
+
+        var url = $(this).data('url');
+
+        $.ajax({
+            method: 'GET',
+            url: url,
+            statusCode: {
+                "200": function (data) {
+                    $('.content > .container').html(data);
+                    update_shopping_cart_info();
+                },
+                "404": function () {
+                    alert('Stavka nije pronađena')
+                },
+                "400": function () {
+                    alert('Proizod nije na stanju u traženoj količini')
+                },
+            }
+        });
+
+    });
+    $('.content').on('click', '.termin-item-remove', function () {
+        event.preventDefault();
+
+        var url = $(this).data('url');
+
+        $.ajax({
+            method: 'GET',
+            url: url,
+            statusCode: {
+                "200": function (data) {
+                    $('.content > .container').html(data);
+                    update_termin_cart_info();
+                },
+                "404": function () {
+                    alert('Stavka nije pronađena')
+                },
+                "400": function () {
+                    alert('Proizod nije na stanju u traženoj količini')
+                },
+            }
+        });
+
+    });
+
 })(jQuery);
+
+function update_shopping_cart_info() {
+    $.get('/Klijent/Korpa/GetUkupnaCijenaIBrojArtikala', function (data) {
+        if ('ukupnoStavki' in data) {
+            var ukupnoStavki = data.ukupnoStavki;
+            $('.cart-items-count').html(ukupnoStavki);
+        }
+        if ('ukupnaCijena' in data) {
+            var ukupnaCijena = data.ukupnaCijena;
+            $('.total-cart-amount').html(ukupnaCijena.toFixed(2) + " KM")
+        }
+    });
+}
+
+function update_termin_cart_info() {
+    $.get('/Klijent/Termin/GetUkupanBrojTermina', function (data) {
+        if ('ukupnoTermina' in data) {
+            var ukupnoTermina = data.ukupnoTermina;
+            $('.calendar-items-count').html(ukupnoTermina);
+        }
+        if ('ukupnaCijena' in data) {
+            var ukupnaCijena = data.ukupnaCijena;
+            $('.total-cart-amount').html(ukupnaCijena.toFixed(2) + " KM")
+        }
+    });
+}

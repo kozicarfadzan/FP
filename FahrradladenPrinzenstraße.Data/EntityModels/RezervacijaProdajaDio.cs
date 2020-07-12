@@ -10,7 +10,7 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public int RezervacijaProdajaDioId { get; set; }
         public int RezervacijaId { get; set; }
         public Rezervacija Rezervacija { get; set; }
-        public int DioId { get; set; }
-        public Dio Dio { get; set; }
+        public int DioStanjeId { get; set; }
+        public DioStanje DioStanje { get; set; }
     }
 }

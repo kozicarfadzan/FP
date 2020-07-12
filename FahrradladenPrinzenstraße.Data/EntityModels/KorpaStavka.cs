@@ -16,5 +16,6 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public int? DioId { get; set; }
         public Dio Dio { get; set; }
         public int Kolicina { get; set; }
+        public DateTime? DatumServisiranja { get; set; }
     }
 }

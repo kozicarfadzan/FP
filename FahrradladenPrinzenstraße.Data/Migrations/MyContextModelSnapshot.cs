@@ -154,6 +154,9 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Aktivan")
+                        .HasColumnType("bit");
+
                     b.Property<double>("Cijena")
                         .HasColumnType("float");
 
@@ -166,11 +169,47 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<int>("ProizvodjacID")
                         .HasColumnType("int");
 
+                    b.Property<byte[]>("Slika")
+                        .HasColumnType("varbinary(max)");
+
                     b.HasKey("DioId");
 
                     b.HasIndex("ProizvodjacID");
 
                     b.ToTable("Dio");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.DioStanje", b =>
+                {
+                    b.Property<int>("DioStanjeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Aktivan")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("DioId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("KupacId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LokacijaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sifra")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("DioStanjeId");
+
+                    b.HasIndex("DioId");
+
+                    b.HasIndex("KupacId");
+
+                    b.HasIndex("LokacijaId");
+
+                    b.ToTable("DioStanje");
                 });
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Grad", b =>
@@ -257,6 +296,9 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
 
                     b.Property<int?>("BiciklId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("DatumServisiranja")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("DioId")
                         .HasColumnType("int");
@@ -360,9 +402,9 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.ToTable("Modeli");
                 });
 
-            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", b =>
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.NacinOtpreme", b =>
                 {
-                    b.Property<int>("OpremaId")
+                    b.Property<int>("NacinOtpremeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -376,14 +418,74 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<string>("Opis")
                         .HasColumnType("nvarchar(max)");
 
+                    b.HasKey("NacinOtpremeId");
+
+                    b.ToTable("NacinOtpreme");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", b =>
+                {
+                    b.Property<int>("OpremaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Aktivan")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Cijena")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Naziv")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Opis")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ProizvodjacID")
                         .HasColumnType("int");
+
+                    b.Property<byte[]>("Slika")
+                        .HasColumnType("varbinary(max)");
 
                     b.HasKey("OpremaId");
 
                     b.HasIndex("ProizvodjacID");
 
                     b.ToTable("Oprema");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.OpremaStanje", b =>
+                {
+                    b.Property<int>("OpremaStanjeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Aktivan")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("KupacId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LokacijaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OpremaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Sifra")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OpremaStanjeId");
+
+                    b.HasIndex("KupacId");
+
+                    b.HasIndex("LokacijaId");
+
+                    b.HasIndex("OpremaId");
+
+                    b.ToTable("OpremaStanje");
                 });
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Proizvodjac", b =>
@@ -401,6 +503,27 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.ToTable("Proizvodjac");
                 });
 
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RadnoVrijeme", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DanUSedmici")
+                        .HasColumnType("int");
+
+                    b.Property<TimeSpan>("Kraj")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("Pocetak")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RadnoVrijeme");
+                });
+
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", b =>
                 {
                     b.Property<int>("RezervacijaId")
@@ -408,15 +531,71 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("DatumRezervacije")
+                    b.Property<string>("AdresaStanovanja")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BrojTelefona")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DatumRezervacije")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DatumUplate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Država")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Grad")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ime")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("KlijentId")
                         .HasColumnType("int");
 
+                    b.Property<int>("NacinOtpremeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NacinPlacanja")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Osnovica")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Pokrajina")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostanskiKod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Postarina")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Prezime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StanjeRezervacije")
+                        .HasColumnType("int");
+
+                    b.Property<double>("UkupniIznos")
+                        .HasColumnType("float");
+
+                    b.Property<double>("UkupnoPoreza")
+                        .HasColumnType("float");
+
+                    b.Property<double>("UkupnoProizvodi")
+                        .HasColumnType("float");
+
                     b.HasKey("RezervacijaId");
 
                     b.HasIndex("KlijentId");
+
+                    b.HasIndex("NacinOtpremeId");
 
                     b.ToTable("Rezervacija");
                 });
@@ -478,7 +657,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DioId")
+                    b.Property<int>("DioStanjeId")
                         .HasColumnType("int");
 
                     b.Property<int>("RezervacijaId")
@@ -486,7 +665,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
 
                     b.HasKey("RezervacijaProdajaDioId");
 
-                    b.HasIndex("DioId");
+                    b.HasIndex("DioStanjeId");
 
                     b.HasIndex("RezervacijaId");
 
@@ -500,7 +679,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("OpremaId")
+                    b.Property<int>("OpremaStanjeId")
                         .HasColumnType("int");
 
                     b.Property<int>("RezervacijaId")
@@ -508,7 +687,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
 
                     b.HasKey("RezervacijaProdajaOpremaId");
 
-                    b.HasIndex("OpremaId");
+                    b.HasIndex("OpremaStanjeId");
 
                     b.HasIndex("RezervacijaId");
 
@@ -522,16 +701,37 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Boja")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("DatumServisiranja")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DodatniTroskovi")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsOdobreno")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsZavrseno")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Opis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Proizvodjac")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RezervacijaId")
                         .HasColumnType("int");
 
                     b.Property<int>("ServisId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Tip")
                         .HasColumnType("int");
 
                     b.HasKey("RezervacijaServisId");
@@ -559,6 +759,9 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<string>("Opis")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Trajanje")
+                        .HasColumnType("float");
+
                     b.HasKey("ServisId");
 
                     b.ToTable("Servis");
@@ -577,6 +780,37 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasKey("StarosnaGrupaId");
 
                     b.ToTable("StarosnaGrupa");
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.TerminStavka", b =>
+                {
+                    b.Property<int>("TerminStavkaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BiciklId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DatumPreuzimanja")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DatumVracanja")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("KlijentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Kolicina")
+                        .HasColumnType("int");
+
+                    b.HasKey("TerminStavkaId");
+
+                    b.HasIndex("BiciklId");
+
+                    b.HasIndex("KlijentId");
+
+                    b.ToTable("TerminStavka");
                 });
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.VelicinaOkvira", b =>
@@ -665,6 +899,25 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.DioStanje", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Dio", "Dio")
+                        .WithMany("DioStanje")
+                        .HasForeignKey("DioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Kupac")
+                        .WithMany()
+                        .HasForeignKey("KupacId");
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Lokacija", "Lokacija")
+                        .WithMany()
+                        .HasForeignKey("LokacijaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", b =>
                 {
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Korisnik", "Korisnik")
@@ -694,7 +947,7 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasForeignKey("DioId");
 
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Klijent")
-                        .WithMany()
+                        .WithMany("KorpaStavke")
                         .HasForeignKey("KlijentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -740,11 +993,36 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.OpremaStanje", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Kupac")
+                        .WithMany()
+                        .HasForeignKey("KupacId");
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Lokacija", "Lokacija")
+                        .WithMany()
+                        .HasForeignKey("LokacijaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", "Oprema")
+                        .WithMany("OpremaStanje")
+                        .HasForeignKey("OpremaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.Rezervacija", b =>
                 {
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Klijent")
                         .WithMany()
                         .HasForeignKey("KlijentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.NacinOtpreme", "NacinOtpreme")
+                        .WithMany()
+                        .HasForeignKey("NacinOtpremeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -781,9 +1059,9 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaDio", b =>
                 {
-                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Dio", "Dio")
-                        .WithMany()
-                        .HasForeignKey("DioId")
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.DioStanje", "DioStanje")
+                        .WithMany("RezervacijaProdajaDio")
+                        .HasForeignKey("DioStanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -796,9 +1074,9 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.RezervacijaProdajaOprema", b =>
                 {
-                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", "Oprema")
-                        .WithMany()
-                        .HasForeignKey("OpremaId")
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.OpremaStanje", "OpremaStanje")
+                        .WithMany("RezervacijaProdajaOprema")
+                        .HasForeignKey("OpremaStanjeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -820,6 +1098,21 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Servis", "Servis")
                         .WithMany()
                         .HasForeignKey("ServisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.TerminStavka", b =>
+                {
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Bicikl", "Bicikl")
+                        .WithMany()
+                        .HasForeignKey("BiciklId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Klijent")
+                        .WithMany()
+                        .HasForeignKey("KlijentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -9,8 +9,8 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public int RezervacijaProdajaOpremaId { get; set; }
         public int RezervacijaId { get; set; }
         public Rezervacija Rezervacija { get; set; }
-        public int OpremaId { get; set; }
-        public Oprema Oprema { get; set; }
+        public int OpremaStanjeId { get; set; }
+        public OpremaStanje OpremaStanje { get; set; }
      
     }
 }

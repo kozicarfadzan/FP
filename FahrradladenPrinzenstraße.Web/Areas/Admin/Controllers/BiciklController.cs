@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -100,7 +100,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                     ModelId = model.ModelId,
                     NoznaKocnica = model.NoznaKocnica,
                     Slika = model.Slika,
-                    Stanje = model.Stanje
+                    Stanje = model.Stanje,
+                    Aktivan = true
                 };
 
                 db.Bicikl.Add(NoviBicikl);

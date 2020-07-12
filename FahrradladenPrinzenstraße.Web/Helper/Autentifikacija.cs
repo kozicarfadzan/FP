@@ -71,6 +71,7 @@ namespace FahrradladenPrinzenstraße.Web.Helper
                 .Include(x => x.Zaposlenik)
                 .Include(x => x.Administrator)
                 .Include(x => x.Klijent)
+                .Include(x => x.Grad)
                 .Where(x => x.KorisnikID == KorisnikId)
                 .SingleOrDefault();
             }
@@ -110,6 +111,27 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             return ukupno;
 
         }
+        public static double GetUkupnaCijenaTermina(this HttpContext context)
+        {
+            Korisnik korisnik = context.GetLogiraniKorisnik();
+            MyContext db = context.RequestServices.GetService<MyContext>();
+
+            double ukupno = 0;
+            if (korisnik != null && korisnik.Klijent != null)
+            {
+                var stavke = db.TerminStavka
+                    .Include(x => x.Bicikl)
+                    .Where(x => x.KlijentId == korisnik.Klijent.Id)
+                    .ToList();
+                foreach (var stavka in stavke)
+                {
+                    ukupno = stavka.Bicikl.CijenaPoDanu.Value * stavka.BrojDana * stavka.Kolicina;
+                }
+
+            }
+            return ukupno;
+
+        }
         public static int GetBrojStavkiKosarica(this HttpContext context)
         {
             Korisnik korisnik = context.GetLogiraniKorisnik();
@@ -119,7 +141,23 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             if (korisnik != null && korisnik.Klijent != null)
             {
                 broj_stavki = db.KorpaStavka
-                    .Count(x => x.KlijentId == korisnik.Klijent.Id);
+                    .Where(x => x.KlijentId == korisnik.Klijent.Id)
+                    .Sum(x => x.Kolicina);
+            }
+            return broj_stavki;
+
+        }
+        public static int GetBrojTerminaKosarica(this HttpContext context)
+        {
+            Korisnik korisnik = context.GetLogiraniKorisnik();
+            MyContext db = context.RequestServices.GetService<MyContext>();
+
+            int broj_stavki = 0;
+            if (korisnik != null && korisnik.Klijent != null)
+            {
+                broj_stavki = db.TerminStavka
+                    .Where(x => x.KlijentId == korisnik.Klijent.Id)
+                    .Sum(x => x.Kolicina);
             }
             return broj_stavki;
 
