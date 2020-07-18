@@ -6,6 +6,7 @@ using FahrradladenPrinzenstraße.Data;
 using FahrradladenPrinzenstraße.Data.EntityModels;
 using FahrradladenPrinzenstraße.Web.Areas.Klijent.ViewModels;
 using FahrradladenPrinzenstraße.Web.Helper;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,26 +47,82 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
             var ukupno_u_skladistu = VM.Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
-            var ukupno_u_kosarici = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == Id).Sum(x => x.Kolicina);
 
-            VM.KolicinaNaStanju = ukupno_u_skladistu - ukupno_u_kosarici;
+            VM.KolicinaNaStanju = ukupno_u_skladistu;
 
-            VM.RezervisaniTermini = new List<string>();
+            int Kolicina = 1;
+            VM.RezervisaniTermini = GetDaneBezDostupnihTermina(Id, Klijent.Id, Kolicina, ukupno_u_skladistu);
+
+            return View(VM);
+        }
+
+        [HttpGet]
+        public IActionResult GetZauzeteTermine(int Id, int Kolicina)
+        {
+            var Bicikl = db.Bicikl
+                .Include(x => x.BiciklStanje)
+                .Where(x => x.BiciklId == Id && x.Stanje == Stanje.Korišteno)
+                .FirstOrDefault();
+
+            if (Bicikl == null)
+            {
+                return Json(new { error = "Biciklo nije pronađeno" });
+            }
+
+            var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
+
+            var ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+
+            var RezervisaniTermini = GetDaneBezDostupnihTermina(Id, Klijent.Id, Kolicina, ukupno_u_skladistu);
+
+            return Json(new { rezervisani_termini = RezervisaniTermini });
+        }
+
+        private List<string> GetDaneBezDostupnihTermina(int Id, int KlijentId, int Kolicina, int ukupno_u_skladistu)
+        {
+            var rezervisani_termini = new List<string>();
 
             var aktivne_rezervacije = db.RezervacijaIznajmljenaBicikla
                 .Where(x => x.BiciklStanje.BiciklId == Id)
                 .Where(x => x.DatumPreuzimanja.Date >= DateTime.Now.Date || x.DatumVracanja.Date >= DateTime.Now.Date)
                 .ToList();
 
+            Dictionary<DateTime, int> broj_rezervacija_po_danima = new Dictionary<DateTime, int>();
+
             foreach (var item in aktivne_rezervacije)
             {
                 foreach (DateTime date in DateTimeHelper.EachDay(item.DatumPreuzimanja, item.DatumVracanja))
                 {
-                    VM.RezervisaniTermini.Add(date.Month + "/" + date.Day + "/" + date.Year);
+                    if (broj_rezervacija_po_danima.ContainsKey(date))
+                        broj_rezervacija_po_danima[date]++;
+                    else
+                        broj_rezervacija_po_danima[date] = 1;
                 }
             }
 
-            return View(VM);
+            var termini_u_kosarici = db.TerminStavka.Where(x => x.KlijentId == KlijentId && x.BiciklId == Id).ToList();
+            foreach (var termin_u_kosarici in termini_u_kosarici)
+            {
+                foreach (DateTime date in DateTimeHelper.EachDay(termin_u_kosarici.DatumPreuzimanja, termin_u_kosarici.DatumVracanja))
+                {
+                    if (broj_rezervacija_po_danima.ContainsKey(date))
+                        broj_rezervacija_po_danima[date] += termin_u_kosarici.Kolicina;
+                    else
+                        broj_rezervacija_po_danima[date] = termin_u_kosarici.Kolicina;
+                }
+            }
+
+            foreach (var item in broj_rezervacija_po_danima)
+            {
+                DateTime date = item.Key;
+                int broj_rezervacija_za_dan = item.Value;
+                int preostalo_bicikala = ukupno_u_skladistu - broj_rezervacija_za_dan;
+
+                if (preostalo_bicikala < Kolicina)
+                    rezervisani_termini.Add(date.Month + "/" + date.Day + "/" + date.Year);
+            }
+
+            return rezervisani_termini;
         }
 
         [HttpPost]
@@ -89,14 +146,45 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
 
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
-            var ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
-            var ukupno_u_kosarici = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == VM.Id).Sum(x => x.Kolicina);
-            if (VM.Kolicina > ukupno_u_skladistu - ukupno_u_kosarici)
+            int ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            int ukupno_u_kosarici = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == VM.Id)
+                .Where(x =>
+                   (
+                       (x.DatumPreuzimanja.Date >= VM.DatumPreuzimanja.Date && x.DatumPreuzimanja.Date <= VM.DatumVracanja.Date)
+                       || (x.DatumVracanja.Date >= VM.DatumPreuzimanja.Date && x.DatumVracanja.Date <= VM.DatumVracanja.Date)
+                   )
+                   ||
+                   (
+                       (VM.DatumPreuzimanja.Date >= x.DatumPreuzimanja.Date && VM.DatumPreuzimanja.Date <= x.DatumVracanja.Date)
+                       || (VM.DatumVracanja.Date >= x.DatumPreuzimanja.Date && VM.DatumVracanja.Date <= x.DatumVracanja.Date)
+                   ))
+                   .Sum(x => x.Kolicina);
+
+            var broj_termina_kolizija = db.RezervacijaIznajmljenaBicikla
+                .Where(x => x.BiciklStanje.BiciklId == VM.Id)
+                .Where( x =>
+                    (
+                        (x.DatumPreuzimanja.Date >= VM.DatumPreuzimanja.Date && x.DatumPreuzimanja.Date <= VM.DatumVracanja.Date)
+                        || (x.DatumVracanja.Date >= VM.DatumPreuzimanja.Date && x.DatumVracanja.Date <= VM.DatumVracanja.Date)
+                    )
+                    ||
+                    (
+                        (VM.DatumPreuzimanja.Date >= x.DatumPreuzimanja.Date && VM.DatumPreuzimanja.Date <= x.DatumVracanja.Date)
+                        || (VM.DatumVracanja.Date >= x.DatumPreuzimanja.Date && VM.DatumVracanja.Date <= x.DatumVracanja.Date)
+                    )
+                )
+                .ToList();
+
+            int ukupno_dostupno = ukupno_u_skladistu - ukupno_u_kosarici - broj_termina_kolizija.Count();
+            if (VM.Kolicina > ukupno_dostupno)
             {
-                return new BadRequestResult(); // 400
+                if(ukupno_dostupno == 0)
+                    return new BadRequestResult(); // 400
+
+                return new UnauthorizedResult(); // 401
             }
 
-            var PostojecaStvaka = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == VM.Id).FirstOrDefault();
+            var PostojecaStvaka = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == VM.Id && x.DatumPreuzimanja == VM.DatumPreuzimanja && x.DatumVracanja == VM.DatumVracanja).FirstOrDefault();
             if (PostojecaStvaka != null)
             {
                 PostojecaStvaka.Kolicina += VM.Kolicina;

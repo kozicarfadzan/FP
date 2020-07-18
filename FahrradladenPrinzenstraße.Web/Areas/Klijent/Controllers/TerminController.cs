@@ -220,7 +220,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
             return Json(new
             {
                 UkupnoTermina = HttpContext.GetBrojTerminaKosarica(),
-                UkupnoCijena = HttpContext.GetUkupnaCijenaTermina()
+                UkupnaCijena = HttpContext.GetUkupnaCijenaTermina()
             });
         }
 

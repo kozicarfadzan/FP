@@ -78,7 +78,7 @@
 
                                 <div style="display:inline-block" class="product-quantity-container">
                                     <label for="qty" class="control-label">Broj bicikala</label>
-                                    <input name="qty" id="qty" type="number" min="1" step="1" required value="1" class="form-control">
+                                    <input name="qty" id="qty" type="number" min="1" max="@Model.KolicinaNaStanju" step="1" required value="1" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
@@ -89,6 +89,27 @@
 
                                     <script>
                                         $(function () {
+                                            $('#qty').change(function () {
+                                                var Kolicina = $(this).val();
+
+                                                $('#odabir-termina').data('datepicker').destroy();
+                                                $('#odabir-termina').val("").addClass('error');
+                                                $('#buy_online_form input').prop('disabled', true);
+
+                                                $.get('/Klijent/Iznajmi/GetZauzeteTermine/@Model.Bicikl.BiciklId?Kolicina=' + Kolicina, function (data) {
+                                                    if ('error' in data) {
+                                                        alert(data.error);
+                                                        location.reload();
+                                                        return;
+                                                    }
+
+                                                    $('#buy_online_form input').prop('disabled', false);
+                                                    rezervisani_termini = data.rezervisani_termini;
+                                                    initDatePicker();
+                                                });
+                                            });
+
+
                                             var disabledDays = [0];
 
                                             const today = new Date()
@@ -107,73 +128,47 @@
                                                 }
                                             ];
 
-                                            $('#odabir-termina').datepicker({
-                                                language: 'en',
-                                                minDate: tomorrow,
-                                                maxDate: in3months,
-                                                multipleDates: true,
-                                                multipleDatesSeparator: ' - ',
-                                                range: true,
-                                                onRenderCell: function (date, cellType) {
-                                                    if (cellType == 'day') {
-                                                        var day = date.getDay(),
-                                                            isDisabled = disabledDays.indexOf(day) != -1;
+                                            function initDatePicker() {
+                                                $('#odabir-termina').datepicker({
+                                                    language: 'en',
+                                                    minDate: tomorrow,
+                                                    maxDate: in3months,
+                                                    multipleDates: true,
+                                                    multipleDatesSeparator: ' - ',
+                                                    range: true,
+                                                    onRenderCell: function (date, cellType) {
+                                                        if (cellType == 'day') {
+                                                            var day = date.getDay(),
+                                                                isDisabled = disabledDays.indexOf(day) != -1;
 
-                                                        var classes = ""
+                                                            var classes = ""
 
-                                                        if (!isDisabled) {
-                                                            console.log(date);
+                                                            if (!isDisabled) {
 
-                                                            var str = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
-                                                            for (var i in rezervisani_termini) {
-                                                                console.log(str + " -" + rezervisani_termini[i]);
-                                                                if (rezervisani_termini[i] === str) {
-                                                                    isDisabled = true;
-                                                                    classes = 'termin-zauzet';
-                                                                    break;
+                                                                var str = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+                                                                for (var i in rezervisani_termini) {
+                                                                    if (rezervisani_termini[i] === str) {
+                                                                        isDisabled = true;
+                                                                        classes = 'termin-zauzet';
+                                                                        break;
+                                                                    }
                                                                 }
                                                             }
-                                                        }
 
-                                                        return {
-                                                            disabled: isDisabled,
-                                                            classes : classes
-                                                        }
-                                                    }
-                                                },
-
-
-                                                onSelect: function (datum) {
-                                                    @*console.log(datum);
-
-                                                    var servis_id = @Model.Bicikl.BiciklId;
-                                                    var kolicina = parseInt($('#qty').val());
-                                                    var datum_parsed = new Date(datum);
-
-                                                    $.ajax({
-                                                        method: 'POST',
-                                                        url: '/Klijent/Servis/DostupniTermini/' + servis_id,
-                                                        data: { Datum: datum, Kolicina: kolicina },
-                                                        complete: function (xhr) {
-                                                            $('#satnica').empty();
-
-                                                            var termini = xhr.responseJSON;
-                                                            console.log(termini);
-                                                            if (termini.length == 0) {
-                                                                $('#satnica').append('<option value="">Nema dostupnih termina</option>');
-                                                                return;
+                                                            return {
+                                                                disabled: isDisabled,
+                                                                classes: classes
                                                             }
-
-                                                            for(var i in termini)
-                                                                $('#satnica').append('<option value="' + termini[i] + '">' + termini[i] + '</option>');
-
                                                         }
-                                                    });*@
-
-
-                                                },
-                                                autoClose: true
-                                            })
+                                                    },
+                                                    onSelect: function () {
+                                                        $('#odabir-termina').removeClass('error');
+                                                    },
+                                                    autoClose: true
+                                                });
+                                            }
+                                            initDatePicker();
+                                            
                                         });
                                     </script>
 
@@ -233,19 +228,19 @@
                     window.location.href = '/Klijent/Termin/Stavke';
                 },
                 "404": function () {
-                    alert('Biciklo nije pronađeno')
+                    alert('Biciklo nije pronađeno.')
                 },
                 "422": function () {
                     alert('Forma nije ispravno popunjena.')
                 },
                 "400": function () {
-                    alert('Nema dostupnih termina za odabrani dan.')
+                    alert('Nema dostupnih termina za odabrani dan ili vremenski opseg.')
+                },
+                "401": function () {
+                    alert('Biciklo nije dostupno u traženoj količini za odabrani vremenski opseg.')
                 },
             }
         });
     })
 
-    $('#odabir-termina').change(function () {
-        alert($(this).val());
-    });
 </script>

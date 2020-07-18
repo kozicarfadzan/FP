@@ -107,7 +107,6 @@
                                                 },
 
                                                 onSelect: function (datum) {
-                                                    console.log(datum);
 
                                                     var servis_id = @Model.Servis.ServisId;
                                                     var kolicina = parseInt($('#qty').val());
@@ -121,7 +120,6 @@
                                                             $('#satnica').empty();
 
                                                             var termini = xhr.responseJSON;
-                                                            console.log(termini);
                                                             if (termini.length == 0) {
                                                                 $('#satnica').append('<option value="">Nema dostupnih termina</option>');
                                                                 return;

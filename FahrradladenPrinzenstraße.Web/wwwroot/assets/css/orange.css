@@ -313,3 +313,11 @@ a:active {
     width: 100%;
     z-index: 1000;
 }
+
+.error {
+    color: red !important;
+}
+
+input.error {
+    border: 1px solid red !important;
+}

@@ -157,7 +157,7 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             {
                 broj_stavki = db.TerminStavka
                     .Where(x => x.KlijentId == korisnik.Klijent.Id)
-                    .Sum(x => x.Kolicina);
+                    .Count();
             }
             return broj_stavki;
 
