@@ -330,7 +330,7 @@ function update_termin_cart_info() {
         }
         if ('ukupnaCijena' in data) {
             var ukupnaCijena = data.ukupnaCijena;
-            $('.total-cart-amount').html(ukupnaCijena.toFixed(2) + " KM")
+            $('.total-termin-amount').html(ukupnaCijena.toFixed(2) + " KM")
         }
     });
 }

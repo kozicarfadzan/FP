@@ -17,7 +17,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.ViewModels
         public int Kolicina { get; set; }
         [Required]
         public DateTime Datum { get; set; }
-
+        public TimeSpan Satnica { get; set; }
         public double UkupniIznos { get; internal set; }
         public ServisDetalji [] DetaljiServisa { get; set; }
         public int BrojServisStavki { get; set; }
@@ -35,7 +35,6 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.ViewModels
             public string Opis { get; set; }
             [Required]
             public Tip Tip { get; set; }
-            [Required]
             public int DodatniTroskovi { get; set; }
         }
     }

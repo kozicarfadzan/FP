@@ -107,7 +107,6 @@
                         else if (korisnik?.Klijent != null)
                         {
                             <li><a href="index.php?page=cart">Wishlist</a></li>
-                            <li><a href="index.php?page=cart">Total: <span class="total-cart-amount">$200.00</span></a></li>
                         }
                         else
                         {
@@ -412,26 +411,27 @@
                                         @if (korisnik?.Klijent != null)
                                         {
                                         <li>
-                                            <a href="/Klijent/Korpa/Stavke">
-                                                Ukupno: <span class="total-cart-amount">
-                                                    @if (controllerName == "Termin")
-                                                    {
-                                                        <span>@CijenaTermina.ToString("0.00") KM</span>
 
-                                                    }
-                                                    else
-                                                    {
-                                                        <span>@CijenaStavki.ToString("0.00") KM</span>
-                                                    }
+                                            <a href="/Klijent/Korpa/Stavke" style="padding-top: 5px; padding-bottom: 0;">
+                                                Korpa: <span class="total-cart-amount">
+                                                    <span>@CijenaStavki.ToString("0.00") KM</span>
+                                                </span>
+                                            </a>
+                                            <a href="/Klijent/Termin/Stavke" style="padding-top: 0; padding-bottom: 0;">
+                                                Termini: <span class="total-termin-amount">
+                                                    <span>@CijenaTermina.ToString("0.00") KM</span>
                                                 </span>
                                             </a>
                                         </li>
                                             <li>
+
                                                 <a href="/Klijent/Korpa/Stavke" data-disable-toggle="modal" data-target=".myCart-modal-lg">
                                                     <img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /> <span class="cart-items-count">@BrojStavki</span>
                                                 </a>
                                             </li>
                                             <li>
+
+
                                                 <a href="/Klijent/Termin/Stavke">
                                                     <img src="/assets/images/icon-calendar.png" class="icon-calendar" width="24" height="24" alt="Calendar Icon" /> <span class="calendar-items-count">@BrojTermina</span>
                                                 </a>
@@ -445,6 +445,7 @@
                                                 <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime</a>
                                                 <ul class="dropdown-menu">
                                                     <li><a href="/Klijent/Profil">Profil</a></li>
+                                                    <li><a href="/Klijent/Rezervacije">Rezervacije</a></li>
                                                     <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
                                                 </ul>
                                             </li>

@@ -165,9 +165,9 @@ a:active {
 .header .nav-header-link > li:after {
   border-right: 3px solid #f7ad78;
 }
-.header .nav-header-link .total-cart-amount {
-  color: #f59a00;
-}
+    .header .nav-header-link .total-cart-amount, .header .nav-header-link .total-termin-amount {
+        color: #f59a00;
+    }
 .header .btn-shopping-cart {
   background-color: #f59a00;
   color: #FFF;

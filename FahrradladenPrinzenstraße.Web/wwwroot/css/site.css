@@ -77,7 +77,7 @@ nav.navbar-default .nav-header-link > li:after {
     border-right: 3px solid #f7ad78;
 }
 
-nav.navbar-default .nav-header-link .total-cart-amount {
+nav.navbar-default .nav-header-link .total-cart-amount, nav.navbar-default .nav-header-link .total-termin-amount {
     color: #f27a24;
 }
 

@@ -96,7 +96,7 @@ var orderComplete = function (paymentIntentId) {
         return result.json();
     })
     .then(function () {
-        window.location = '/';
+        window.location = '/Klijent/Rezervacije';
     })
 };
 // Show the customer the error from Stripe if their card fails to charge

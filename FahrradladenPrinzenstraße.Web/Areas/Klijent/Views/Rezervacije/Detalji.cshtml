@@ -1,0 +1,126 @@
+﻿@model Rezervacija
+<h2>Detalji rezervacije #@Model.RezervacijaId</h2>
+
+@if (Model.RezervacijaProdajaBicikla.Any() || Model.RezervacijaProdajaDio.Any() || Model.RezervacijaProdajaOprema.Any())
+{
+    <h3>Kupljeni proizvodi</h3>
+    <table class="table table-light">
+        <thead>
+            <tr>
+                <th>Tip proizvoda</th>
+                <th>Naziv</th>
+                <th>Ukupna cijena</th>
+                <th>Akcija</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RezervacijaProdajaBicikla)
+            {
+                <tr>
+                    <td>Bicikl</td>
+                    <td>@item.BiciklStanje.Bicikl.PuniNaziv (@item.BiciklStanje.Bicikl.GodinaProizvodnje, @item.BiciklStanje.Bicikl.Stanje)</td>
+                    <td>
+                        @item.BiciklStanje.Bicikl.Cijena.Value.ToString("0.00") KM
+                    </td>
+                    <td>
+                        <a href="/Klijent/Bicikl/KupiBicikl/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji</a>
+                    </td>
+                </tr>
+            }
+
+            @foreach (var item in Model.RezervacijaProdajaDio)
+            {
+                <tr>
+                    <td>Dio</td>
+                    <td>@item.DioStanje.Dio.Naziv</td>
+                    <td>
+                        @item.DioStanje.Dio.Cijena.ToString("0.00") KM
+                    </td>
+                    <td>
+                        <a href="/Klijent/Dio/KupiDio/@item.DioStanje.DioId" class="btn btn-primary">Detalji</a>
+                    </td>
+                </tr>
+            }
+
+            @foreach (var item in Model.RezervacijaProdajaOprema)
+            {
+                <tr>
+                    <td>Oprema</td>
+                    <td>@item.OpremaStanje.Oprema.Naziv</td>
+                    <td>
+                        @item.OpremaStanje.Oprema.Cijena.ToString("0.00") KM
+                    </td>
+                    <td>
+                        <a href="/Klijent/Oprema/KupiOpremu/@item.OpremaStanje.OpremaId" class="btn btn-primary">Detalji</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+@if (Model.RezervacijaServis.Any())
+{
+    <h3>Termini za servis</h3>
+    <table class="table table-light">
+        <thead>
+            <tr>
+                <th>Tip proizvoda</th>
+                <th>Naziv</th>
+                <th>Ukupna cijena</th>
+                <th>Akcija</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RezervacijaServis)
+            {
+                <tr>
+                    <td>Servis</td>
+                    <td>@item.Servis.Naziv</td>
+                    <td>
+                        @item.Servis.Cijena.ToString("0.00") KM
+                    </td>
+                    <td>
+                        <a href="/Klijent/Servis/OdaberiTermin/@item.ServisId" class="btn btn-primary">Detalji</a>
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+}
+
+@if (Model.RezervacijaIznajmljenaBicikla.Any())
+{
+    <h3>Iznajmljena bicikla</h3>
+    <table class="table table-light">
+        <thead>
+            <tr>
+                <th>Tip proizvoda</th>
+                <th>Naziv</th>
+                <th>Ukupna cijena</th>
+                <th>Akcija</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.RezervacijaIznajmljenaBicikla)
+            {
+                <tr>
+                    <td>Biciklo</td>
+                    <td>@item.BiciklStanje.Bicikl.PuniNaziv (@item.BiciklStanje.Bicikl.GodinaProizvodnje, @item.BiciklStanje.Bicikl.Stanje)</td>
+                    <td>
+                        @item.BiciklStanje.Bicikl.CijenaPoDanu.Value.ToString("0.00") KM
+                    </td>
+                    <td>
+                        <a href="/Klijent/Bicikl/OdaberiTermin/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji</a>
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+
+}

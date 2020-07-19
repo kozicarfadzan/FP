@@ -92,13 +92,17 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                 int termin_sati = pocetak_termina / 60;
                 int termin_minute = pocetak_termina % 60;
 
-                int kraj_termina = (pocetak_termina + (int)(Servis.Trajanje * 60)) * VM.Kolicina;
+                int kraj_termina = pocetak_termina + (int)(Servis.Trajanje * 60) * VM.Kolicina;
 
                 string sati_string = termin_sati.ToString().PadLeft(2, '0');
                 string minute_string = termin_minute.ToString().PadLeft(2, '0');
 
                 bool kolizija = false;
                 if (pocetak_termina + Servis.Trajanje * 60 > kraj_minute)
+                {
+                    kolizija = true;
+                }
+                else if(kraj_termina > kraj_minute)
                 {
                     kolizija = true;
                 }
@@ -110,7 +114,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                     if (pocetak_termina >= pocetak_rezervacije && pocetak_termina < kraj_rezervacije)
                         kolizija = true;
 
-                    if (kraj_termina > pocetak_rezervacije && kraj_termina <= kraj_rezervacije)
+                    else if (kraj_termina > pocetak_rezervacije && kraj_termina <= kraj_rezervacije)
                         kolizija = true;
                     
                 }
@@ -153,6 +157,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                     return View(VM);
                 }
 
+                VM.Datum = VM.Datum.Add(VM.Satnica);
+
                 var lista_servisa = new List<RezervacijaServis>();
                 for (int i = 0; i < VM.DetaljiServisa.Length; i++)
                 {
@@ -167,6 +173,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                         Tip = VM.DetaljiServisa[i].Tip,
                         DatumServisiranja = VM.Datum
                     });
+                    VM.Datum = VM.Datum.AddHours(Servis.Trajanje);
                 }
 
                 Rezervacija narudzba = new Rezervacija
