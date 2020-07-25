@@ -13,5 +13,7 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public BiciklStanje BiciklStanje { get; set; }
         public DateTime DatumPreuzimanja { get; set; }
         public DateTime DatumVracanja { get; set; }
+
+        public bool Isteklo { get; set; }
     }
 }

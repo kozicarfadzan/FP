@@ -59,11 +59,11 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
 
             if (korisnik.Administrator != null)
             {
-                return Redirect("/Admin/Zaposlenik/Index");
+                return Redirect("/Admin/Bicikl/Index");
             }
             if (korisnik.Zaposlenik != null)
             {
-                return Redirect("/Zaposlenik/Home/Index");
+                return Redirect("/Zaposlenik/Servis/Index");
             }
             if (korisnik.Klijent != null)
             {

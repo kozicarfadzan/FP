@@ -197,7 +197,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                     BiciklId = VM.Id,
                     Kolicina = VM.Kolicina,
                     DatumPreuzimanja = VM.DatumPreuzimanja,
-                    DatumVracanja = VM.DatumVracanja
+                    DatumVracanja = VM.DatumVracanja.AddHours(23).AddMinutes(59).AddSeconds(59)
                 });
             }
             db.SaveChanges();

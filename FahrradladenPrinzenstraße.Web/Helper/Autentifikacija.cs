@@ -162,6 +162,44 @@ namespace FahrradladenPrinzenstraße.Web.Helper
             return broj_stavki;
 
         }
+        public static int GetNotificationCount(this HttpContext context, bool unread_only = false)
+        {
+            Korisnik korisnik = context.GetLogiraniKorisnik();
+            MyContext db = context.RequestServices.GetService<MyContext>();
+
+            int broj = 0;
+            if (korisnik != null && korisnik.Zaposlenik != null)
+            {
+                var query = db.Notifikacija
+                    .Where(x => x.ZaposlenikId == korisnik.Zaposlenik.Id);
+                if (unread_only)
+                    broj = query.Count(x => x.IsProcitano == false);
+                else
+                    broj = query.Count();
+            }
+            return broj;
+
+        }
+
+        public static List<Notifikacija> GetNotifications(this HttpContext context, int count = 6)
+        {
+            Korisnik korisnik = context.GetLogiraniKorisnik();
+            MyContext db = context.RequestServices.GetService<MyContext>();
+
+            List<Notifikacija> lista = null;
+            if (korisnik != null && korisnik.Zaposlenik != null)
+            {
+                lista = db.Notifikacija
+                    .Where(x => x.ZaposlenikId == korisnik.Zaposlenik.Id)
+                    .Include(x => x.RezervacijaIznajmljenaBicikla.BiciklStanje.Bicikl.Model.Proizvodjac)
+                    .Include(x => x.RezervacijaIznajmljenaBicikla.Rezervacija.Klijent)
+                    .OrderByDescending(x => x.DatumVrijeme)
+                    .Take(count)
+                    .ToList();
+            }
+            return lista;
+
+        }
     }
 
 }

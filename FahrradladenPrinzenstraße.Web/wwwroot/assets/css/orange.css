@@ -321,3 +321,10 @@ a:active {
 input.error {
     border: 1px solid red !important;
 }
+
+.noborder {
+    border: 0 !important;
+}
+.nopadding {
+    padding: 0 !important;
+}

@@ -97,5 +97,6 @@ namespace FahrradladenPrinzenstraße.Data
         public DbSet<NacinOtpreme> NacinOtpreme { get; set; }
         public DbSet<RadnoVrijeme> RadnoVrijeme { get; set; }
         public DbSet<TerminStavka> TerminStavka { get; set; }
+        public DbSet<Notifikacija> Notifikacija { get; set; }
     }
 }

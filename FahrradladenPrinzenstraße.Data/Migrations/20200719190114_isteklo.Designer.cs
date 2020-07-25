@@ -4,14 +4,16 @@ using FahrradladenPrinzenstraße.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FahrradladenPrinzenstraße.Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20200719190114_isteklo")]
+    partial class isteklo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -429,12 +431,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DatumVrijeme")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsProcitano")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("RezervacijaIznajmljenaBiciklaId")
                         .HasColumnType("int");

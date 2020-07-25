@@ -59,12 +59,12 @@ namespace FahrradladenPrinzenstraße.Web.Helper
                 return;
             }
             //zaposlenici mogu pristupiti
-            if (_zaposlenik && db.Zaposlenik != null)
+            if (_zaposlenik && k.Zaposlenik != null)
             {
                 await next(); //ok - ima pravo pristupa
                 return;
             }
-            if (_klijent && db.Klijent != null)
+            if (_klijent && k.Klijent != null)
             {
                 await next(); //ok - ima pravo pristupa
                 return;

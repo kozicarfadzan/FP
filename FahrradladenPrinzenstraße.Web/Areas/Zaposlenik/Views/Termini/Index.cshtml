@@ -1,10 +1,31 @@
 ﻿@model PrikaziTermineVM
 
 @{
-    ViewData["Title"] = "Prikaz termina";
+    ViewData["Title"] = "Termini servisa";
 }
 
 <h2>@ViewData["Title"]</h2>
+
+
+<form class="navbar-form navbar-left" style="width: 750px;">
+    <div class="input-group col-md-12">
+        <div class="col-md-7">
+            <div class="col-md-6">
+                Od: <input asp-for="DatumOd" class="form-control" onchange="this.form.submit();" />
+            </div>
+            <div class="col-md-6">
+                Do: <input asp-for="DatumDo" class="form-control" onchange="this.form.submit();" />
+            </div>
+        </div>
+        <div class="col-md-4" style="padding-left: 0">
+            Klijent:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select asp-for="KlijentId" asp-items="@Model.Klijenti" class="form-control chosen" style="width: 170px;" placeholder="Ime ili prezime klijenta">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+</form>
+
+
 <table class="table table-striped">
     <tr>
         <th>Datum i satnica termina</th>
@@ -20,7 +41,7 @@
     {
         <tr>
 
-            <td> @z.DatumServisiranja</td>
+            <td> @z.DatumServisiranja.ToShortDateString() @z.DatumServisiranja.ToShortTimeString()</td>
             <td>  @z.Servis.Naziv</td>
             <td>  @z.Rezervacija.Klijent.Korisnik.Ime @z.Rezervacija.Klijent.Korisnik.Prezime</td>
             <td>  @z.Servis.Trajanje.ToString("0.0") sati</td>
@@ -44,3 +65,32 @@
 
 </table>
 
+<a hidden asp-action="Zavrseno" id="url_termin_zavrseno"></a>
+
+
+<script>
+    $(function () {
+
+        $('.chosen').chosen({
+            width: '100%',
+            search_contains: true
+        }).change(function () {
+            this.form.submit();
+        });
+
+        $('.termin-zavrseno').change(function () {
+            var stanje = $(this).is(':checked');
+            var RezervacijaServisId = $(this).val();
+
+            var url = $('#url_termin_zavrseno').attr('href') + '/' + RezervacijaServisId + '?stanje=' + stanje;
+
+            $.post(url, function (data) {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+            })
+        });
+    });
+</script>

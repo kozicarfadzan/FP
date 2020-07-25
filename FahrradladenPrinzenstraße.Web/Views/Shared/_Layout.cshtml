@@ -3,20 +3,23 @@
     Korisnik korisnik = Context.GetLogiraniKorisnik();
     string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
     string actionName = ViewContext.RouteData.Values["Action"].ToString();
+    string areaName = ViewContext.RouteData.Values["area"] != null ? ViewContext.RouteData.Values["area"].ToString() : null;
     bool AdminOrZaposlenik = korisnik?.Administrator != null || korisnik?.Zaposlenik != null;
-    bool IsHome = controllerName == "Home";
+    bool IsHome = areaName == null;
     bool Klijent = korisnik?.Klijent != null;
     double CijenaStavki = Klijent ? Context.GetUkupnoKosarica() : 0;
     double CijenaTermina = Klijent ? Context.GetUkupnaCijenaTermina() : 0;
     int BrojStavki = Klijent ? Context.GetBrojStavkiKosarica() : 0;
     int BrojTermina = Klijent ? Context.GetBrojTerminaKosarica() : 0;
+    int NotificationCount = korisnik?.Zaposlenik != null ? Context.GetNotificationCount(true) : 0;
+    List<Notifikacija> notifikacije = korisnik?.Zaposlenik != null ? Context.GetNotifications() : null;
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <!-- Meta -->
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charGetBrojNotifikacijaset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
 
@@ -40,6 +43,11 @@
     @if (Klijent)
     {
         <link rel="stylesheet" href="~/css/datepicker.css" />
+    }
+    @if (korisnik?.Zaposlenik != null && !IsHome)
+    {
+        <link rel="stylesheet" href="~/assets/css/notification.css" />
+        <link rel="stylesheet" href="~/css/chosen/chosen.css" />
     }
 
 
@@ -92,36 +100,52 @@
                     <ul class="nav navbar-nav nav-header-link navbar-right">
                         @if (korisnik != null)
                         {
-                            <li><a href="#">Dobrodošli, @korisnik.Ime @korisnik.Prezime</a></li>
+                            <li><a href="#">Dobrodošli, @korisnik.Ime</a></li>
 
+                            @if (korisnik?.Zaposlenik != null)
+                            {
+                                <li>
+                                    <div class="notification-dropdown dropdown">
+                                        <a href="#" role="button" data-toggle="dropdown" data-target="#" class="notification-bell">
+                                            <i class="fa fa-bell"></i><span class="counter @(NotificationCount > 0 ? "" : "hidden")">@NotificationCount</span>&nbsp;&nbsp;
+                                        </a>
+
+                                        <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+
+                                            <div class="notification-heading">
+                                                <h4 class="menu-title">Obavijesti</h4><h4 class="menu-title pull-right">Pregledaj sve<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>
+                                            </div>
+                                            <li class="divider"></li>
+                                            <div class="notifications-wrapper">
+                                                @foreach (var notification in notifikacije)
+                                                {
+
+                                                    <a class="content" asp-controller="Iznajmljivanje" asp-action="Detalji" asp-route-id="@notification.RezervacijaIznajmljenaBiciklaId">
+
+                                                        <div class="notification-item @(notification.IsProcitano ? "read" : "")">
+                                                            @if (notification.Tip == TipNotifikacije.Istekao_Termin)
+                                                            {
+                                                                <h4 class="item-title">@notification.RezervacijaIznajmljenaBicikla.BiciklStanje.Bicikl.PuniNaziv · @notification.DatumVrijeme.ToShortDateString()</h4>
+                                                                <p class="item-info">Termin istekao - @notification.RezervacijaIznajmljenaBicikla.Rezervacija.Ime @notification.RezervacijaIznajmljenaBicikla.Rezervacija.Prezime</p>
+                                                            }
+                                                        </div>
+
+                                                    </a>
+
+                                                }
+
+                                            </div>
+                                            <li class="divider"></li>
+                                            <div class="notification-footer"><h4 class="menu-title">Pregledaj sve<i class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+                                        </ul>
+                                    </div>
+
+                                </li>
+
+                            }
                             <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
                         }
-                        @if (korisnik?.Administrator != null)
-                        {
-
-                        }
-                        else if (korisnik?.Zaposlenik != null)
-                        {
-
-                        }
-                        else if (korisnik?.Klijent != null)
-                        {
-                            <li><a href="index.php?page=cart">Wishlist</a></li>
-                        }
-                        else
-                        {
-
-                            <li><a asp-area="" asp-controller="Registracija" asp-action="Index"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
-                            <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
-                        }
                     </ul>
-
-
-
-
-
-
-
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
@@ -178,7 +202,7 @@
                         <p>Zaposlenik Panel</p>
 
                         <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Zaposlenik/Servis/Index">Servis</a></li>
-                        <li class="@(controllerName == "Termini" ? "active":  "")"><a href="/Zaposlenik/Termini/Index">Termini</a></li>
+                        <li class="@(controllerName == "Termini" ? "active":  "")"><a href="/Zaposlenik/Termini/Index">Termini servisa</a></li>
                         <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Zaposlenik/Bicikl/Index">Bicikl</a></li>
                         <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Zaposlenik/Dio/Index">Dijelovi</a></li>
                         <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Zaposlenik/Oprema/Index">Oprema</a></li>
@@ -410,19 +434,19 @@
 
                                         @if (korisnik?.Klijent != null)
                                         {
-                                        <li>
+                                            <li>
 
-                                            <a href="/Klijent/Korpa/Stavke" style="padding-top: 5px; padding-bottom: 0;">
-                                                Korpa: <span class="total-cart-amount">
-                                                    <span>@CijenaStavki.ToString("0.00") KM</span>
-                                                </span>
-                                            </a>
-                                            <a href="/Klijent/Termin/Stavke" style="padding-top: 0; padding-bottom: 0;">
-                                                Termini: <span class="total-termin-amount">
-                                                    <span>@CijenaTermina.ToString("0.00") KM</span>
-                                                </span>
-                                            </a>
-                                        </li>
+                                                <a href="/Klijent/Korpa/Stavke" style="padding-top: 5px; padding-bottom: 0;">
+                                                    Korpa: <span class="total-cart-amount">
+                                                        <span>@CijenaStavki.ToString("0.00") KM</span>
+                                                    </span>
+                                                </a>
+                                                <a href="/Klijent/Termin/Stavke" style="padding-top: 0; padding-bottom: 0;">
+                                                    Termini: <span class="total-termin-amount">
+                                                        <span>@CijenaTermina.ToString("0.00") KM</span>
+                                                    </span>
+                                                </a>
+                                            </li>
                                             <li>
 
                                                 <a href="/Klijent/Korpa/Stavke" data-disable-toggle="modal" data-target=".myCart-modal-lg">
@@ -442,10 +466,27 @@
                                         {
 
                                             <li class="dropdown">
-                                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime</a>
+                                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime <span class="caret"></span></a>
                                                 <ul class="dropdown-menu">
-                                                    <li><a href="/Klijent/Profil">Profil</a></li>
-                                                    <li><a href="/Klijent/Rezervacije">Rezervacije</a></li>
+                                                    @if (AdminOrZaposlenik)
+                                                    {
+                                                        if (korisnik.Zaposlenik != null)
+                                                        {
+                                                            <li><a href="/Zaposlenik/Servis">Dashboard</a></li>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <li><a href="/Admin/Bicikl">Dashboard</a></li>
+
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <li><a href="/Klijent/Profil">Profil</a></li>
+                                                        <li><a href="/Klijent/Rezervacije">Rezervacije</a></li>
+                                                    }
                                                     <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
                                                 </ul>
                                             </li>
@@ -673,6 +714,11 @@
     {
         <script src="~/js/datepicker.js"></script>
         <script src="~/js/datepicker.en.js"></script>
+    }
+    else if (korisnik?.Zaposlenik != null)
+    {
+        <script src="~/js/chosen.jquery.js"></script>
+
     }
 
     @RenderSection("Scripts", required: false)

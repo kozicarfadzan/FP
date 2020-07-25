@@ -23,7 +23,7 @@
                         @item.BiciklStanje.Bicikl.Cijena.Value.ToString("0.00") KM
                     </td>
                     <td>
-                        <a href="/Klijent/Bicikl/KupiBicikl/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji</a>
+                        <a href="/Klijent/Bicikl/KupiBicikl/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji o proizvodu</a>
                     </td>
                 </tr>
             }
@@ -37,7 +37,7 @@
                         @item.DioStanje.Dio.Cijena.ToString("0.00") KM
                     </td>
                     <td>
-                        <a href="/Klijent/Dio/KupiDio/@item.DioStanje.DioId" class="btn btn-primary">Detalji</a>
+                        <a href="/Klijent/Dio/KupiDio/@item.DioStanje.DioId" class="btn btn-primary">Detalji o proizvodu</a>
                     </td>
                 </tr>
             }
@@ -51,7 +51,7 @@
                         @item.OpremaStanje.Oprema.Cijena.ToString("0.00") KM
                     </td>
                     <td>
-                        <a href="/Klijent/Oprema/KupiOpremu/@item.OpremaStanje.OpremaId" class="btn btn-primary">Detalji</a>
+                        <a href="/Klijent/Oprema/KupiOpremu/@item.OpremaStanje.OpremaId" class="btn btn-primary">Detalji o proizvodu</a>
                     </td>
                 </tr>
             }
@@ -67,22 +67,79 @@
         <thead>
             <tr>
                 <th>Tip proizvoda</th>
-                <th>Naziv</th>
+                <th>Vrsta servisa</th>
                 <th>Ukupna cijena</th>
+                <th>Termin</th>
+                <th>Dodatni troškovi</th>
                 <th>Akcija</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.RezervacijaServis)
             {
-                <tr>
+                <tr data-toggle="collapse" data-target="#servis_detalji_@item.RezervacijaServisId" class="clickable">
                     <td>Servis</td>
                     <td>@item.Servis.Naziv</td>
+                    <td>@item.DatumServisiranja.ToShortDateString() @item.DatumServisiranja.ToShortTimeString()</td>
                     <td>
                         @item.Servis.Cijena.ToString("0.00") KM
                     </td>
                     <td>
-                        <a href="/Klijent/Servis/OdaberiTermin/@item.ServisId" class="btn btn-primary">Detalji</a>
+                        @if (item.DodatniTroskovi != 0)
+                        {
+                            <span>do @item.DodatniTroskovi.ToString("0.00") KM</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                    <td>
+                        <button data-toggle="collapse" data-target="#servis_detalji_@item.RezervacijaServisId" class="btn btn-primary">Detalji</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6" class="noborder nopadding">
+                        <div id="servis_detalji_@item.RezervacijaServisId" class="collapse">
+
+                            <div class="form-horizontal">
+                                <div class="form-group">
+
+                                    <label class="control-label col-md-1 nopadding">Proizvođač</label>
+                                    <div class="col-md-2">
+                                        @item.Proizvodjac
+                                    </div>
+
+
+                                    <label class="control-label col-md-1 nopadding">Model</label>
+                                    <div class="col-md-2">
+                                        @item.Model
+                                    </div>
+
+                                </div>
+                                    
+                                <div class="form-group">
+                                    
+                                    <label class="control-label col-md-1 nopadding">Boja</label>
+                                    <div class="col-md-2">
+                                        @item.Boja
+                                    </div>
+                           
+                                    <label class="control-label col-md-1 nopadding">Tip bicikla</label>
+                                    <div class="col-md-2">
+                                        @item.Tip
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    
+                                    <label class="control-label col-md-1 nopadding">Opis</label>
+                                    <div class="col-md-10">
+                                        @item.Opis
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </td>
                 </tr>
             }
@@ -99,7 +156,10 @@
         <thead>
             <tr>
                 <th>Tip proizvoda</th>
-                <th>Naziv</th>
+                <th>Biciklo</th>
+                <th>Datum preuzimanja</th>
+                <th>Datum vracanja</th>
+                <th>Cijena po danu</th>
                 <th>Ukupna cijena</th>
                 <th>Akcija</th>
             </tr>
@@ -110,11 +170,16 @@
                 <tr>
                     <td>Biciklo</td>
                     <td>@item.BiciklStanje.Bicikl.PuniNaziv (@item.BiciklStanje.Bicikl.GodinaProizvodnje, @item.BiciklStanje.Bicikl.Stanje)</td>
+                    <td>@item.DatumPreuzimanja.ToShortDateString()</td>
+                    <td>@item.DatumVracanja.ToShortDateString()</td>
                     <td>
                         @item.BiciklStanje.Bicikl.CijenaPoDanu.Value.ToString("0.00") KM
                     </td>
                     <td>
-                        <a href="/Klijent/Bicikl/OdaberiTermin/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji</a>
+                        @((item.BiciklStanje.Bicikl.CijenaPoDanu.Value * ((item.DatumVracanja.Date - item.DatumPreuzimanja.Date).Days + 1)).ToString("0.00")) KM
+                    </td>
+                    <td>
+                        <a href="/Klijent/Iznajmi/OdaberiTermin/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji o biciklu</a>
                     </td>
                 </tr>
             }
