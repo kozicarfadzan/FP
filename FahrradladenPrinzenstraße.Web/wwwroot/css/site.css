@@ -2,14 +2,14 @@
     padding-top: 50px;
 }
 
-body.has-navbar .navbar-default {
-    background-color: #333;
-    color: #fff;
-}
+    body.has-navbar .navbar-default {
+        background-color: #333;
+        color: #fff;
+    }
 
-body.has-navbar .navbar-default a {
-    color: #fff !important;
-}
+        body.has-navbar .navbar-default a {
+            color: #fff !important;
+        }
 
 .navbar-default {
     border-color: #333;
@@ -30,6 +30,86 @@ body.has-navbar .navbar-default a {
     color: #fff;
     background-color: #fe1212;
     border-radius: 10em;
+}
+
+.filterProizvodiForma .checkbox, .filterProizvodiForma .radio {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.filterProizvodiForma .sidebar .list-checkbox > li {
+    margin-bottom: 5px;
+}
+
+.rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: left;
+}
+
+    .rating > a {
+        display: inline-block;
+        position: relative;
+        width: 0.8em;
+        font-size: 30px;
+        line-height: 30px;
+    }
+
+
+        .rating > a.trenutnaOcjena:before,
+        .rating > a.trenutnaOcjena ~ a:before {
+            content: "\2605";
+            position: absolute;
+            left: -1px;
+            color: black;
+        }
+
+        .rating > a:hover,
+        .rating > a:hover ~ a {
+            color: transparent !important;
+        }
+
+
+            .rating > a:hover:before,
+            .rating > a:hover ~  a:before {
+                content: "\2605" !important;
+                position: absolute;
+                left: -1px;
+                color: gold !important;
+            }
+
+
+
+    .rating a {
+        text-decoration: none !important;
+    }
+
+
+.img-responsive, .thumbnail > img, .thumbnail a > img, .carousel-inner > .item > img, .carousel-inner > .item > a > img 
+{
+    max-height: 100%;
+    max-width: 100%;
+}
+
+#category-products .product-item-grid-view .product-item .product-image {
+    height: 175px;
+}
+#category-products .product-item-list-view .product-item img.img-responsive {
+    height: 175px;
+}
+
+#relate-items-carousel .product-item .product-image,
+#popular-items-carousel .product-item .product-image 
+{
+    height: 116px;
+}
+
+#relate-items-carousel .product-image img,
+#popular-items-carousel .product-image img {
+    /*min-height: 106px;*/
+    max-height: 100%;
+    /*max-width: 100%;*/
+    width: auto;
 }
 
 /*

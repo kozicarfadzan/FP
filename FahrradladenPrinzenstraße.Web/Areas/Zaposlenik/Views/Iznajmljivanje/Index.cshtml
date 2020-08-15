@@ -1,0 +1,97 @@
+﻿@model PrikaziIznajmljivanje
+
+@{
+    ViewData["Title"] = "Termini iznajmljivanja";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<form class="navbar-form navbar-left" style="width: 750px;">
+    <div class="input-group col-md-12">
+        <div class="col-md-7">
+            <div class="col-md-6">
+                Od: <input asp-for="DatumOd" class="form-control" onchange="this.form.submit();" />
+            </div>
+            <div class="col-md-6">
+                Do: <input asp-for="DatumDo" class="form-control" onchange="this.form.submit();" />
+            </div>
+        </div>
+        <div class="col-md-4" style="padding-left: 0">
+            Klijent:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select asp-for="KlijentId" asp-items="@Model.Klijenti" class="form-control chosen" style="width: 170px;" placeholder="Ime ili prezime klijenta">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+</form>
+
+
+<table class="table table-striped">
+    <tr>
+        <th>Datum preuzimanja</th>
+        <th>Datum vraćanja</th>
+        <th>Bicikl </th>
+        <th>Klijent</th>
+        <th>Vraćeno</th>
+        <th>Akcija</th>
+    </tr>
+
+
+    @foreach (RezervacijaIznajmljenaBicikla z in Model.Termini)
+    {
+    <tr>
+
+        <td> @z.DatumPreuzimanja.ToShortDateString()</td>
+        <td> @z.DatumVracanja.ToShortDateString()</td>
+        <td>  @z.BiciklStanje.Bicikl.PuniNaziv</td>
+        <td>  @z.Rezervacija.Klijent.Korisnik.Ime @z.Rezervacija.Klijent.Korisnik.Prezime</td>
+       
+        <td>
+            <div class="checkbox">
+                @if (z.IsZavrseno)
+                    {
+                <input type="checkbox" class="termin-zavrseno" value="@z.RezervacijaIznajmljenaBiciklaID" checked />
+                    }
+                    else
+                    {
+                <input type="checkbox" class="termin-zavrseno" value="@z.RezervacijaIznajmljenaBiciklaID" />
+                    }
+            </div>
+        </td>
+        <td>
+            @Html.ActionLink("Detalji", "Detalji", new { id = z.RezervacijaIznajmljenaBiciklaID }, new { @class = "btn btn-default" })
+        </td>
+    </tr>
+    }
+
+</table>
+
+<a hidden asp-action="Zavrseno" id="url_termin_zavrseno"></a>
+
+
+<script>
+    $(function () {
+
+        $('.chosen').chosen({
+            width: '100%',
+            search_contains: true
+        }).change(function () {
+            this.form.submit();
+        });
+
+        $('.termin-zavrseno').change(function () {
+            var stanje = $(this).is(':checked');
+            var RezervacijaIznajmljenaBiciklaID = $(this).val();
+
+            var url = $('#url_termin_zavrseno').attr('href') + '/' + RezervacijaIznajmljenaBiciklaID + '?stanje=' + stanje;
+
+            $.post(url, function (data) {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+            })
+        });
+    });
+</script>

@@ -4,14 +4,16 @@ using FahrradladenPrinzenstraße.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FahrradladenPrinzenstraße.Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20200802130735_OcjenaProizvoda")]
+    partial class OcjenaProizvoda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -470,9 +472,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<int?>("DioId")
                         .HasColumnType("int");
 
-                    b.Property<int>("KlijentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Ocjena")
                         .HasColumnType("int");
 
@@ -484,8 +483,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasIndex("BiciklId");
 
                     b.HasIndex("DioId");
-
-                    b.HasIndex("KlijentId");
 
                     b.HasIndex("OpremaId");
 
@@ -1075,21 +1072,15 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.OcjenaProizvoda", b =>
                 {
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Bicikl", "Bicikl")
-                        .WithMany("OcjenaProizvoda")
+                        .WithMany()
                         .HasForeignKey("BiciklId");
 
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Dio", "Dio")
-                        .WithMany("OcjenaProizvoda")
+                        .WithMany()
                         .HasForeignKey("DioId");
 
-                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Klijent", "Klijent")
-                        .WithMany()
-                        .HasForeignKey("KlijentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Oprema", "Oprema")
-                        .WithMany("OcjenaProizvoda")
+                        .WithMany()
                         .HasForeignKey("OpremaId");
                 });
 

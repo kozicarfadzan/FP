@@ -5,45 +5,9 @@
 
 <div class="row">
     <!-- ========================================= CONTENT ========================================= -->
+    
     <div class="col-md-9 col-md-push-3">
-        <div class="featured-product margin-top-40">
-            <div class="row">
-                <div class="col-md-5 col-sm-5">
-                    <h2 class="page-title no-margin-top text-md-center">Cute French Bully</h2>
-                    <p class="page-subtitle text-md-center">Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor.</p>
-                    <table class="table-product-price">
-                        <tr class="row">
-                            <td class="col-md-5 col-sm-5">
-                                <span class="price">$1000.00</span>
-                            </td>
-                            <td class="col-md-2 col-sm-2 col-separator-td">
-                                <span class="col-separator">&nbsp;</span>
-                            </td>
-                            <td class="col-md-5 col-sm-5 old-price-container">
-                                was <br />
-                                <span class="old-price">$1200.00</span>
-                            </td>
-                        </tr>
-                    </table><!-- /table -->
-                    <div class="product-actions hidden-xs hidden-sm">
-                        <a href="index.php?page=cart" class="btn btn-add-to-cart btn-secondary btn-ky"><img src="assets/images/icon-cart.png" alt="" class="icon-btn" /> Dodaj u košaricu</a>
-                        <a href="index.php?page=detail" class="btn btn-inverse btn-ky">More <span data-icon="&#x35;"></span></a>
-                    </div><!-- /.product-actions -->
-                </div><!-- /.col -->
-
-                <div class="col-md-7 col-sm-7">
-                    <img src="assets/images/blank.gif" data-echo="assets/images/category-product/main-product-01.jpg" alt="Cute French Bully" width="590" height="393" class="img-responsive">
-                </div><!-- /.col -->
-
-                <div class="col-md-12 col-sm-12 hidden-lg hidden-md">
-                    <div class="product-actions margin-top-20 text-center">
-                        <a href="index.php?page=cart" class="btn btn-add-to-cart btn-secondary btn-ky"><img src="assets/images/icon-cart.png" alt="" class="icon-btn" /> Dodaj u košaricu</a>
-                        <a href="index.php?page=detail" class="btn btn-inverse btn-ky">More <span data-icon="&#x35;"></span></a>
-                    </div>
-                </div><!-- /.col -->
-            </div><!-- /.row -->
-            <hr />
-        </div><!-- /.featured-product -->
+   
         <section id="category-products">
             <h2 class="page-title text-md-center">In this Category</h2>
             <p class="page-subtitle text-md-center">Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim</p>
@@ -75,7 +39,7 @@
     <!-- ========================================= CONTENT : END ========================================= -->
     <!-- ========================================= SIDEBAR ========================================= -->
     <div class="col-md-3 col-md-pull-9">
-        <form id="filterBiciklForma">
+        <form id="filterBiciklForma" class="filterProizvodiForma">
             <aside class="sidebar row">
                 <div class="sidebar-section col-sm-4 col-xs-4 col-md-12 col-lg-12">
                     <h4 class="sidebar-title">Način prikaza</h4>
@@ -214,8 +178,8 @@
 <div class="row related-pets-section">
     <div class="col-md-3">
         <div class="section-info">
-            <h3 class="section-title text-md-center">Related Pets</h3>
-            <p class="section-subtitle text-md-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
+            <h3 class="section-title text-md-center">Popularni Bicikli</h3>
+            <p class="section-subtitle text-md-center">Vi ste odlučili!</p>
             <div class="controls clearfix hidden-xs hidden-sm">
                 <a href="#" data-target="#relate-items-carousel" class="btn btn-primary pull-left owl-prev"><span data-icon="&#x23;"></span></a>
                 <a href="#" data-target="#relate-items-carousel" class="btn btn-primary pull-right owl-next"><span data-icon="&#x24;"></span></a>
@@ -230,28 +194,48 @@
                     <a href="#" data-target="#relate-items-carousel" class="btn btn-primary owl-prev"><span data-icon="&#x23;"></span></a>
                 </div><!-- /.controls -->
             </div><!-- /.col -->
-            <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
-                <div id="relate-items-carousel" class="grid-view home-owl-carousel">
+            @if (Model.PopularniBicikli.Count == 0)
+            {
 
-                    <div class="product-item-column">
-                        <div class="product-item-grid-view">
-                            <div class="product-item">
-                                <div class="product-image">
-                                    <a href="index.php?page=detail">
-                                        <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-01.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                    </a>
-                                </div><!-- /.product-image -->
-                                <div class="product-detail text-md-center">
-                                    <h3 class="product-name"><a href="index.php?page=detail">Puppy Bully</a></h3>
-                                    <p class="product-price"><span class="price">$1000.00</span></p>
-                                </div><!-- /.product-detail -->
-                            </div><!-- /.product-item -->
-                        </div><!-- /.product-item-grid-view -->
-                    </div><!-- /.product-item-column -->
+                <div>
+                    Nije pronađeno
+                </div>
+            }
+            else
+            {
+                <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
+                    <div id="relate-items-carousel" class="grid-view home-owl-carousel">
 
+                        @foreach (var item in Model.PopularniBicikli)
+                        {
+                            <div class="product-item-column">
+                                <div class="product-item-grid-view">
+                                    <div class="product-item">
+                                        <div class="product-image">
+                                            <a href="@item.Link">
+                                                @if (item.Slika == null || item.Slika.Length < 1000)
+                                                {
+                                                    <img src="~/assets/images/default_FP.png" width="262" height="202" alt="@item.Naziv" class="center-block img-responsive">
+                                                }
+                                                else
+                                                {
+                                                    <img src="data:image/png;base64,@Convert.ToBase64String(item.Slika)" width="262" height="202" alt="@item.Naziv" class="center-block img-responsive">
+                                                }
 
-                </div><!-- /#recent-items-carousel -->
-            </div><!-- /.col -->
+                                            </a>
+                                        </div><!-- /.product-image -->
+                                        <div class="product-detail text-md-center">
+                                            <h3 class="product-name"><a href="@item.Link">@item.Naziv</a></h3>
+                                            <p class="product-price"><span class="price">@item.Cijena.ToString("0.00") KM</span></p>
+                                        </div><!-- /.product-detail -->
+                                    </div><!-- /.product-item -->
+                                </div><!-- /.product-item-grid-view -->
+                            </div><!-- /.product-item-column -->
+                        }
+
+                    </div><!-- /#recent-items-carousel -->
+                </div><!-- /.col -->
+            }
             <div class="col-xs-2 col-sm-2 hidden-md hidden-lg no-padding">
                 <div class="controls text-left">
                     <a href="#" data-target="#relate-items-carousel" class="btn btn-primary owl-next"><span data-icon="&#x24;"></span></a>

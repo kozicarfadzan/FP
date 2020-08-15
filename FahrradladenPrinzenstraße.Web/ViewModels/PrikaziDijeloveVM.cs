@@ -20,8 +20,7 @@ namespace FahrradladenPrinzenstraße.Web.ViewModels
 
         public List<Proizvodjac> Proizvodjaci { get; set; }
         public List<int> ProizvodjacId { get; set; }
-
-
+        public List<PreporuceniProizvod> PopularniDijelovi { get; internal set; }
 
         public class Row
         {

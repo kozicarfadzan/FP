@@ -26,6 +26,19 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
             PrikaziOpremuVM Model = new PrikaziOpremuVM
             {
                 Proizvodjaci = db.Proizvodjac.ToList(),
+                PopularnaOprema = db.Oprema.Where(x => x.OcjenaProizvoda.Any())
+                .Where(x => x.OpremaStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaOprema.Count() == 0).Any())
+                .Where(x => x.Aktivan)
+                .OrderByDescending(x => x.OcjenaProizvoda.Average(x => x.Ocjena))
+                .Take(5)
+                .Select(x => new PreporuceniProizvod
+                {
+                    Id = x.OpremaId,
+                    Naziv = x.Naziv,
+                    Cijena = x.Cijena,
+                    Slika = x.Slika,
+                    Tip = TipProizvoda.Oprema
+                }).ToList()
 
             };
 

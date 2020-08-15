@@ -11,11 +11,14 @@
                 <th>Naziv</th>
                 <th>Ukupna cijena</th>
                 <th>Akcija</th>
+                <th>Ocjena</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.RezervacijaProdajaBicikla)
             {
+                int? ocjena = item.OcjenaKorisnika;
+
                 <tr>
                     <td>Bicikl</td>
                     <td>@item.BiciklStanje.Bicikl.PuniNaziv (@item.BiciklStanje.Bicikl.GodinaProizvodnje, @item.BiciklStanje.Bicikl.Stanje)</td>
@@ -25,11 +28,22 @@
                     <td>
                         <a href="/Klijent/Bicikl/KupiBicikl/@item.BiciklStanje.BiciklId" class="btn btn-primary">Detalji o proizvodu</a>
                     </td>
+
+                    <td>
+                        <div class="rating">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <a asp-action="OcijeniBicikl" asp-route-id="@item.BiciklStanje.BiciklId" asp-route-ocjena="@i" class="@(ocjena >= i ? "trenutnaOcjena" : "")"><span>☆</span></a>
+                            }
+                        </div>
+                    </td>
                 </tr>
             }
 
             @foreach (var item in Model.RezervacijaProdajaDio)
             {
+                int? ocjena = item.OcjenaKorisnika;
+
                 <tr>
                     <td>Dio</td>
                     <td>@item.DioStanje.Dio.Naziv</td>
@@ -39,11 +53,21 @@
                     <td>
                         <a href="/Klijent/Dio/KupiDio/@item.DioStanje.DioId" class="btn btn-primary">Detalji o proizvodu</a>
                     </td>
+
+                    <td>
+                        <div class="rating">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <a asp-action="OcijeniDio" asp-route-id="@item.DioStanje.DioId" asp-route-ocjena="@i" class="@(ocjena >= i ? "trenutnaOcjena" : "")"><span>☆</span></a>
+                            }
+                        </div>
+                    </td>
                 </tr>
             }
 
             @foreach (var item in Model.RezervacijaProdajaOprema)
             {
+                int? ocjena = item.OcjenaKorisnika;
                 <tr>
                     <td>Oprema</td>
                     <td>@item.OpremaStanje.Oprema.Naziv</td>
@@ -51,7 +75,16 @@
                         @item.OpremaStanje.Oprema.Cijena.ToString("0.00") KM
                     </td>
                     <td>
-                        <a href="/Klijent/Oprema/KupiOpremu/@item.OpremaStanje.OpremaId" class="btn btn-primary">Detalji o proizvodu</a>
+                        <a href="/Klijent/Oprema/KupiOprema/@item.OpremaStanje.OpremaId" class="btn btn-primary">Detalji o proizvodu</a>
+                    </td>
+
+                    <td>
+                        <div class="rating">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                <a asp-action="OcijeniOpremu" asp-route-id="@item.OpremaStanje.OpremaId" asp-route-ocjena="@i" class="@(ocjena >= i ? "trenutnaOcjena" : "")"><span>☆</span></a>
+                            }
+                        </div>
                     </td>
                 </tr>
             }
@@ -117,21 +150,21 @@
                                     </div>
 
                                 </div>
-                                    
+
                                 <div class="form-group">
-                                    
+
                                     <label class="control-label col-md-1 nopadding">Boja</label>
                                     <div class="col-md-2">
                                         @item.Boja
                                     </div>
-                           
+
                                     <label class="control-label col-md-1 nopadding">Tip bicikla</label>
                                     <div class="col-md-2">
                                         @item.Tip
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    
+
                                     <label class="control-label col-md-1 nopadding">Opis</label>
                                     <div class="col-md-10">
                                         @item.Opis

@@ -47,13 +47,13 @@ namespace FahrradladenPrinzenstraße.Web.ViewModels
         /* dropdown */
         public List<int> Brzine { get; set; }
         public int? Brzina { get; set; }
-
+        public List<PreporuceniProizvod> PopularniBicikli { get; internal set; }
 
         public class Row
         {
             public int BiciklId { get; set; }
             public Model Model { get; set; }
-            public string PuniNaziv => Model.Tip + " " + Model.Naziv;
+            public string PuniNaziv => Model.Proizvodjac.Naziv + " " + Model.Naziv;
             public short GodinaProizvodnje { get; set; }
             public Stanje Stanje { get; set; }
             public byte[] Slika { get; set; }

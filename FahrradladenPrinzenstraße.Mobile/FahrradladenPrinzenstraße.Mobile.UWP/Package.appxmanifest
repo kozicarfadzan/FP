@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="da16555a-b7c5-4166-ba32-37d8404a874b"
-    Publisher="CN=e0295618-bc7f-48e3-af41-019c1a860b6a"
+    Name="c1575a39-18cc-41ea-9c53-bb1f7bf4d5eb"
+    Publisher="CN=58be093c-27ee-494d-94da-0c1f4a57e6ea"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>FahrradladenPrinzenstraße.Mobile.UWP</DisplayName>
-    <PublisherDisplayName>e0295618-bc7f-48e3-af41-019c1a860b6a</PublisherDisplayName>
+    <PublisherDisplayName>58be093c-27ee-494d-94da-0c1f4a57e6ea</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

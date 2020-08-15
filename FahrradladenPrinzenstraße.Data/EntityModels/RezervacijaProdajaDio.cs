@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FahrradladenPrinzenstraße.Data.EntityModels
@@ -12,5 +13,12 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public Rezervacija Rezervacija { get; set; }
         public int DioStanjeId { get; set; }
         public DioStanje DioStanje { get; set; }
+        public int? OcjenaKorisnika
+        {
+            get
+            {
+                return DioStanje?.Dio?.OcjenaProizvoda?.Where(x => x.KlijentId == Rezervacija.KlijentId).FirstOrDefault()?.Ocjena ?? 0;
+            }
+        }
     }
 }

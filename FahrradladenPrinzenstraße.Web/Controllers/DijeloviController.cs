@@ -25,7 +25,19 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
             PrikaziDijeloveVM Model = new PrikaziDijeloveVM
             {
                 Proizvodjaci=db.Proizvodjac.ToList(),
-
+                PopularniDijelovi = db.Dio.Where(x => x.OcjenaProizvoda.Any())
+                .Where(x => x.DioStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaDio.Count() == 0).Any())
+                .Where(x => x.Aktivan)
+                .OrderByDescending(x => x.OcjenaProizvoda.Average(x => x.Ocjena))
+                .Take(5)
+                .Select(x => new PreporuceniProizvod
+                {
+                    Id = x.DioId,
+                    Naziv = x.Naziv,
+                    Cijena = x.Cijena,
+                    Slika = x.Slika,
+                    Tip = TipProizvoda.Dio
+                }).ToList()
             };
 
             return View(Model);

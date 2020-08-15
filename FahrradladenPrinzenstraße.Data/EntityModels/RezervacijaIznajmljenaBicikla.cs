@@ -15,5 +15,6 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public DateTime DatumVracanja { get; set; }
 
         public bool Isteklo { get; set; }
+        public bool IsZavrseno { get; set; }
     }
 }

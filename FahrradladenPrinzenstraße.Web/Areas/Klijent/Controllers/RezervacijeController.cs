@@ -74,14 +74,136 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
 
             Rezervacija vm = db.Rezervacija.Where(x => x.RezervacijaId == Id)
                 .Where(x => x.KlijentId == Klijent.Id)
+                .Include("RezervacijaIznajmljenaBicikla.BiciklStanje.Bicikl.OcjenaProizvoda")
                 .Include("RezervacijaIznajmljenaBicikla.BiciklStanje.Bicikl.Model.Proizvodjac")
                 .Include("RezervacijaProdajaBicikla.BiciklStanje.Bicikl.Model.Proizvodjac")
+                .Include("RezervacijaProdajaBicikla.BiciklStanje.Bicikl.OcjenaProizvoda")
                 .Include("RezervacijaProdajaDio.DioStanje.Dio")
+                .Include("RezervacijaProdajaDio.DioStanje.Dio.OcjenaProizvoda")
                 .Include("RezervacijaProdajaOprema.OpremaStanje.Oprema")
+                .Include("RezervacijaProdajaOprema.OpremaStanje.Oprema.OcjenaProizvoda")
                 .Include("RezervacijaServis.Servis")
                 .FirstOrDefault();
 
             return View(vm);
+        }
+
+        public IActionResult OcijeniBicikl(int Id, int ocjena)
+        {
+            var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
+
+            if(ocjena < 1 || ocjena > 5)
+            {
+                return new JsonResult(new { error = "Neispravna ocjena." });
+            }
+
+            var kupio_bicikl = db.RezervacijaProdajaBicikla.Where(x => x.BiciklStanje.BiciklId == Id)
+                .Where(x => x.Rezervacija.KlijentId == Klijent.Id)
+                .FirstOrDefault();
+            if(kupio_bicikl != null)
+            {
+                var postojeca_ocjena = db.OcjenaProizvoda.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == Id).FirstOrDefault();
+                if(postojeca_ocjena != null)
+                {
+                    postojeca_ocjena.Ocjena = ocjena;
+                    postojeca_ocjena.DatumOcjene = DateTime.Now;
+                }
+                else
+                {
+                    var ocjena_proizvoda = new OcjenaProizvoda
+                    {
+                        KlijentId = Klijent.Id,
+                        BiciklId = Id,
+                        Ocjena = ocjena,
+                        DatumOcjene = DateTime.Now
+                    };
+                    db.OcjenaProizvoda.Add(ocjena_proizvoda);
+                }
+
+                db.SaveChanges();
+
+                return RedirectToAction("Detalji", new { Id = kupio_bicikl.RezervacijaId });
+            }
+            return new JsonResult(new { error = "Ne možete ocijeniti proizvod koji niste kupili." });
+        }
+
+        public IActionResult OcijeniDio(int Id, int ocjena)
+        {
+            var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
+
+            if (ocjena < 1 || ocjena > 5)
+            {
+                return new JsonResult(new { error = "Neispravna ocjena." });
+            }
+
+            var kupio_dio = db.RezervacijaProdajaDio.Where(x => x.DioStanje.DioId== Id)
+                .Where(x => x.Rezervacija.KlijentId == Klijent.Id)
+                .FirstOrDefault();
+            if (kupio_dio != null)
+            {
+                var postojeca_ocjena = db.OcjenaProizvoda.Where(x => x.KlijentId == Klijent.Id && x.DioId == Id).FirstOrDefault();
+                if (postojeca_ocjena != null)
+                {
+                    postojeca_ocjena.Ocjena = ocjena;
+                    postojeca_ocjena.DatumOcjene = DateTime.Now;
+                }
+                else
+                {
+                    var ocjena_proizvoda = new OcjenaProizvoda
+                    {
+                        KlijentId = Klijent.Id,
+                        DioId = Id,
+                        Ocjena = ocjena,
+                        DatumOcjene = DateTime.Now
+                    };
+                    db.OcjenaProizvoda.Add(ocjena_proizvoda);
+                }
+
+                db.SaveChanges();
+
+                return RedirectToAction("Detalji", new { Id = kupio_dio.RezervacijaId });
+            }
+            return new JsonResult(new { error = "Ne možete ocijeniti proizvod koji niste kupili." });
+        }
+        
+
+        public IActionResult OcijeniOpremu(int Id, int ocjena)
+        {
+            var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
+
+            if (ocjena < 1 || ocjena > 5)
+            {
+                return new JsonResult(new { error = "Neispravna ocjena." });
+            }
+
+            var kupio_opremu = db.RezervacijaProdajaOprema.Where(x => x.OpremaStanje.OpremaId== Id)
+                .Where(x => x.Rezervacija.KlijentId == Klijent.Id)
+                .FirstOrDefault();
+            if (kupio_opremu != null)
+            {
+                var postojeca_ocjena = db.OcjenaProizvoda.Where(x => x.KlijentId == Klijent.Id && x.OpremaId == Id).FirstOrDefault();
+                if (postojeca_ocjena != null)
+                {
+                    postojeca_ocjena.Ocjena = ocjena;
+                    postojeca_ocjena.DatumOcjene = DateTime.Now;
+                }
+                else
+                {
+                    var ocjena_proizvoda = new OcjenaProizvoda
+                    {
+                        KlijentId = Klijent.Id,
+                        OpremaId = Id,
+                        Ocjena = ocjena,
+                        DatumOcjene = DateTime.Now
+                    };
+                    db.OcjenaProizvoda.Add(ocjena_proizvoda);
+                }
+
+                db.SaveChanges();
+
+                return RedirectToAction("Detalji", new { Id = kupio_opremu.RezervacijaId });
+            }
+            return new JsonResult(new { error = "Ne možete ocijeniti proizvod koji niste kupili." });
         }
 
     }

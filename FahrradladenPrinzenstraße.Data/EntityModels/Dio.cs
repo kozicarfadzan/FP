@@ -22,6 +22,7 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
         public bool Aktivan { get; set; } = true;
         public byte[] Slika { get; set; }
         public IEnumerable<DioStanje> DioStanje { get; set; }
+        public IEnumerable<OcjenaProizvoda> OcjenaProizvoda { get; set; }
 
     }
 }

@@ -1,4 +1,9 @@
-﻿<div id="hero">
+﻿@model HomeVM
+@{
+    ViewData["Title"] = "Početna stranica";
+}
+
+<div id="hero">
     <div id="owl-main" class="owl-carousel home-page-carousel height-lg owl-inner-nav owl-ui-lg owl-theme">
         <div class="item" style="background-image: url(assets/images/slider02.jpg);">
             <div class="container">
@@ -9,9 +14,6 @@
                     <div class="fadeInDown-2 text hidden-xs" style="opacity: 0;">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod <br> tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
                     </div>
-                    <div class="button-holder fadeInDown-3" style="opacity: 0;">
-                        <a class="btn uppercase strong btn-secondary btn-add-to-cart btn-action" href="index.php?page=detail">Dodaj u košaricu</a>
-                    </div><!-- /.button-holder -->
 
                 </div><!-- /.caption -->
             </div><!-- /.container -->
@@ -27,9 +29,6 @@
                     <div class="fadeInDown-2 text hidden-xs" style="opacity: 0;">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod <br> tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
                     </div>
-                    <div class="button-holder fadeInDown-3" style="opacity: 0;">
-                        <a class="btn uppercase strong btn-secondary btn-add-to-cart btn-action" href="index.php?page=detail">Dodaj u košaricu</a>
-                    </div><!-- /.button-holder -->
                 </div><!-- /.caption -->
             </div><!-- /.container -->
         </div><!-- /.item -->
@@ -43,9 +42,6 @@
                     <div class="fadeInDown-2 text  hidden-xs" style="opacity: 0;">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod <br> tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
                     </div>
-                    <div class="button-holder fadeInDown-3" style="opacity: 0;">
-                        <a class="btn uppercase strong btn-secondary btn-add-to-cart btn-action" href="index.php?page=detail">Dodaj u košaricu</a>
-                    </div><!-- /.button-holder -->
                 </div><!-- /.caption -->
             </div><!-- /.container -->
         </div><!-- /.item -->
@@ -58,9 +54,9 @@
                     <div class="fadeInDown-2 text  hidden-xs" style="opacity: 0;">
                         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod <br> tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
                     </div>
-                    <div class="button-holder fadeInDown-3" style="opacity: 0;">
+                    <!--div class="button-holder fadeInDown-3" style="opacity: 0;">
                         <a class="btn uppercase strong btn-secondary btn-add-to-cart btn-action" href="index.php?page=detail">Dodaj u košaricu</a>
-                    </div><!-- /.button-holder -->
+                    </!--div><!-- /.button-holder -->
                 </div><!-- /.caption -->
             </div><!-- /.container -->
         </div><!-- /.item -->
@@ -123,172 +119,8 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="section-info">
-                    <h3 class="section-title text-md-center">Recent Bully</h3>
-                    <p class="section-subtitle text-md-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
-                    <div class="controls clearfix hidden-xs hidden-sm">
-                        <a href="#" data-target="#recent-items-carousel" class="btn btn-primary pull-left owl-prev"><span data-icon="&#x23;"></span></a>
-                        <a href="#" data-target="#recent-items-carousel" class="btn btn-primary pull-right owl-next"><span data-icon="&#x24;"></span></a>
-                    </div><!-- /.controls -->
-                </div><!-- /.section-info -->
-            </div><!-- /.col -->
-
-            <div class="col-md-9">
-                <div class="row">
-                    <div class="col-xs-2 col-sm-2 hidden-md hidden-lg no-padding">
-                        <div class="controls text-right">
-                            <a href="#" data-target="#recent-items-carousel" class="btn btn-primary owl-prev"><span data-icon="&#x23;"></span></a>
-                        </div><!-- /.controls -->
-                    </div><!-- /.col -->
-                    <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
-                        <div id="recent-items-carousel" class="grid-view home-owl-carousel">
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-01.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Puppy Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-02.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">FrenchBully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-03.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">English Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-04.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Cute French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-05.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Puppy Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-06.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-07.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">English Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/recent-products/product-08.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                        </div><!-- /#recent-items-carousel -->
-                    </div><!-- /.col -->
-
-                    <div class="col-xs-2 col-sm-2 hidden-md hidden-lg no-padding">
-                        <div class="controls text-left">
-                            <a href="#" data-target="#recent-items-carousel" class="btn btn-primary owl-next"><span data-icon="&#x24;"></span></a>
-                        </div><!-- /.controls -->
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.recent section -->
-
-    <div class="page-section wow fadeInUp">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="section-info">
-                    <h3 class="section-title text-md-center">Popular</h3>
-                    <p class="section-subtitle text-md-center">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor</p>
+                    <h3 class="section-title text-md-center">Popularni proizvodi</h3>
+                    <p class="section-subtitle text-md-center">Vi ste odlučili!</p>
                     <div class="controls clearfix hidden-xs hidden-sm">
                         <a href="#" data-target="#popular-items-carousel" class="btn btn-primary pull-left owl-prev"><span data-icon="&#x23;"></span></a>
                         <a href="#" data-target="#popular-items-carousel" class="btn btn-primary pull-right owl-next"><span data-icon="&#x24;"></span></a>
@@ -303,139 +135,49 @@
                             <a href="#" data-target="#popular-items-carousel" class="btn btn-primary owl-prev"><span data-icon="&#x23;"></span></a>
                         </div><!-- /.controls -->
                     </div><!-- /.col -->
-                    <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
-                        <div id="popular-items-carousel" class="grid-view home-owl-carousel">
+                    @if (Model.PopularniProizvodi.Count == 0)
+                    {
 
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-01.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Puppy Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
+                        <div>
+                            Nije pronađeno
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
+                            <div id="popular-items-carousel" class="grid-view home-owl-carousel">
 
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-02.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
+                                @foreach (var item in Model.PopularniProizvodi)
+                                {
 
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-03.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">English Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
+                                    <div class="product-item-column">
+                                        <div class="product-item-grid-view">
+                                            <div class="product-item">
+                                                <div class="product-image">
+                                                    <a href="@item.Link">
+                                                        @if (item.Slika == null || item.Slika.Length < 1000)
+                                                        {
+                                                            <img src="~/assets/images/default_FP.png" width="262" height="202" alt="@item.Naziv" class="center-block img-responsive">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="data:image/png;base64,@Convert.ToBase64String(item.Slika)" width="262" height="202" alt="@item.Naziv" class="center-block img-responsive">
+                                                        }
 
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-04.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Cute French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
+                                                    </a>
+                                                </div><!-- /.product-image -->
+                                                <div class="product-detail text-md-center">
+                                                    <h3 class="product-name"><a href="@item.Link">@item.Naziv</a></h3>
+                                                    <p class="product-price"><span class="price">@item.Cijena.ToString("0.00") KM</span></p>
+                                                </div><!-- /.product-detail -->
+                                            </div><!-- /.product-item -->
+                                        </div><!-- /.product-item-grid-view -->
+                                    </div><!-- /.product-item-column -->
+                                }
 
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-05.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Puppy Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-06.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-07.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">English Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                            <div class="product-item-column">
-                                <div class="product-item-grid-view">
-                                    <div class="product-item">
-                                        <div class="product-image">
-                                            <a href="index.php?page=detail">
-                                                <img src="assets/images/blank.gif" data-echo="assets/images/popular-products/product-08.jpg" width="262" height="202" alt="Product" class="center-block img-responsive">
-                                            </a>
-                                        </div><!-- /.product-image -->
-                                        <div class="product-detail text-md-center">
-                                            <h3 class="product-name"><a href="index.php?page=detail">Cute French Bully</a></h3>
-                                            <p class="product-price"><span class="price">$1000.00</span></p>
-                                        </div><!-- /.product-detail -->
-                                    </div><!-- /.product-item -->
-                                </div><!-- /.product-item-grid-view -->
-                            </div><!-- /.product-item-column -->
-
-                        </div><!-- /#popular-items-carousel -->
-                    </div><!-- /.col -->
+                            </div><!-- /#popular-items-carousel -->
+                        </div><!-- /.col -->
+                    }
                     <div class="col-xs-2 col-sm-2 hidden-md hidden-lg no-padding">
                         <div class="controls text-left">
                             <a href="#" data-target="#popular-items-carousel" class="btn btn-primary owl-next"><span data-icon="&#x24;"></span></a>
