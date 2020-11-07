@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
@@ -10,10 +11,9 @@ namespace FahrradladenPrinzenstraße.Model
         [ForeignKey("Korisnik")]
         public int Id { get; set; }
 
-        public Korisnik Korisnik { get; set; }
-
         public DateTime DatumRegistracije { get; set; }
 
+        [JsonIgnore]
         public List<KorpaStavka> KorpaStavke { get; set; }
     }
 }

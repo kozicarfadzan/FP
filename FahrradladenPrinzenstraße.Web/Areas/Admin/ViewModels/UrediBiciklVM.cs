@@ -26,6 +26,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels
         public int BojaId { get; set; }
         [DisplayName("Nožna kočnica")]
         public bool NoznaKocnica { get; set; }
+        public string Opis { get; set; }
 
         public List<string> BiciklStanja_Sifre { get; set; }
         public List<int> BiciklStanja_Lokacije { get; set; }

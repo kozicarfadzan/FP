@@ -41,7 +41,11 @@ namespace FahrradladenPrinzenstraße.WebAPI.Mapper
             CreateMap<Data.EntityModels.VelicinaOkvira, Model.VelicinaOkvira>();
             CreateMap<Data.EntityModels.Zaposlenik, Model.Zaposlenik>();
 
-            //CreateMap<Data.Artists, Model.Requests.ArtistsInsertRequest>().ReverseMap();
+            CreateMap<Data.EntityModels.Korisnik, Model.Requests.KorisnikInsertRequest>().ReverseMap();
+            CreateMap<Data.EntityModels.Korisnik, Model.Requests.KorisnikUpdateRequest>().ReverseMap();
+            CreateMap<Data.EntityModels.KorpaStavka, Model.Requests.KorpaStavkaInsertRequest>().ReverseMap();
+            CreateMap<Data.EntityModels.NacinOtpreme, Model.Requests.NacinOtpremeInsertRequest>().ReverseMap();
+            CreateMap<Data.EntityModels.Rezervacija, Model.Requests.RezervacijaInsertRequest>().ReverseMap();
         }
     }
 }

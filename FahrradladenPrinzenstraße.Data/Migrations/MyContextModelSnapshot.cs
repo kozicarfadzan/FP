@@ -82,10 +82,19 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<bool>("NoznaKocnica")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Opis")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte[]>("Slika")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<int>("Stanje")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StarosnaGrupaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VelicinaOkviraId")
                         .HasColumnType("int");
 
                     b.HasKey("BiciklId");
@@ -93,6 +102,10 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasIndex("BojaId");
 
                     b.HasIndex("ModelId");
+
+                    b.HasIndex("StarosnaGrupaId");
+
+                    b.HasIndex("VelicinaOkviraId");
 
                     b.ToTable("Bicikl");
                 });
@@ -377,16 +390,10 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.Property<int>("SpolBicikl")
                         .HasColumnType("int");
 
-                    b.Property<int>("StarosnaGrupaId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Suspenzija")
                         .HasColumnType("int");
 
                     b.Property<int>("Tip")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VelicinaOkviraId")
                         .HasColumnType("int");
 
                     b.HasKey("ModelId");
@@ -394,10 +401,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasIndex("MaterijalOkviraId");
 
                     b.HasIndex("ProizvodjacId");
-
-                    b.HasIndex("StarosnaGrupaId");
-
-                    b.HasIndex("VelicinaOkviraId");
 
                     b.ToTable("Modeli");
                 });
@@ -944,6 +947,18 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                         .HasForeignKey("ModelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.StarosnaGrupa", "StarosnaGrupa")
+                        .WithMany()
+                        .HasForeignKey("StarosnaGrupaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.VelicinaOkvira", "VelicinaOkvira")
+                        .WithMany()
+                        .HasForeignKey("VelicinaOkviraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FahrradladenPrinzenstraße.Data.EntityModels.BiciklStanje", b =>
@@ -1043,18 +1058,6 @@ namespace FahrradladenPrinzenstraße.Data.Migrations
                     b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.Proizvodjac", "Proizvodjac")
                         .WithMany()
                         .HasForeignKey("ProizvodjacId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.StarosnaGrupa", "StarosnaGrupa")
-                        .WithMany()
-                        .HasForeignKey("StarosnaGrupaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FahrradladenPrinzenstraße.Data.EntityModels.VelicinaOkvira", "VelicinaOkvira")
-                        .WithMany()
-                        .HasForeignKey("VelicinaOkviraId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

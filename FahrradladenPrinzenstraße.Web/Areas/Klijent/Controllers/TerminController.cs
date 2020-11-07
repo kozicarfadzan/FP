@@ -192,8 +192,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
             return db.TerminStavka
                 .Include(x => x.Bicikl).ThenInclude(x => x.Model).ThenInclude(x => x.MaterijalOkvira)
                 .Include(x => x.Bicikl).ThenInclude(x => x.Model).ThenInclude(x => x.Proizvodjac)
-                .Include(x => x.Bicikl).ThenInclude(x => x.Model).ThenInclude(x => x.StarosnaGrupa)
-                .Include(x => x.Bicikl).ThenInclude(x => x.Model).ThenInclude(x => x.VelicinaOkvira)
+                .Include(x => x.Bicikl).ThenInclude(x => x.StarosnaGrupa)
+                .Include(x => x.Bicikl).ThenInclude(x => x.VelicinaOkvira)
                 .Include(x => x.Bicikl).ThenInclude(x => x.Boja)
                 .Include(x => x.Bicikl).ThenInclude(x => x.BiciklStanje)
                 .Where(x => x.KlijentId == Klijent.Id).ToList();

@@ -37,6 +37,12 @@ namespace FahrradladenPrinzenstraße.Mobile
                 {
                     new MasterDetailPageMasterMenuItem { Id = 0, Title = "Početna", TargetType = typeof(MainPage) },
                     new MasterDetailPageMasterMenuItem { Id = 1, Title = "Kupi Bicikl", TargetType = typeof(Views.KupiBicikl.CatalogListPage) },
+                     new MasterDetailPageMasterMenuItem { Id = 2, Title = "Iznajmi Bicikl", TargetType = typeof(Views.IznajmiBicikl.CatalogListPage) },
+                       new MasterDetailPageMasterMenuItem { Id = 3, Title = "Kupi Opremu", TargetType = typeof(Views.KupiOpremu.CatalogListPage) },
+                       //new MasterDetailPageMasterMenuItem { Id = 4, Title = "Kupi Dio", TargetType = typeof(Views.KupiDio.CatalogListPage) },
+                    new MasterDetailPageMasterMenuItem { Id = 5, Title = "Servis", TargetType = typeof(Views.Servis.CatalogListPage) },
+                    new MasterDetailPageMasterMenuItem { Id = 6, Title = "Košarica proizvoda", TargetType = typeof(Views.Korpa.CartPage) },
+                    new MasterDetailPageMasterMenuItem { Id = 7, Title = "Košarica termina", TargetType = typeof(Views.Termini.CartPage) },
                 });
             }
 

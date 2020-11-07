@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -9,7 +10,7 @@ namespace FahrradladenPrinzenstraße.Model
     {
         public Dio()
         {
-            DioStanje = new List<DioStanje>();
+            //DioStanje = new List<DioStanje>();
         }
 
         public int DioId { get; set; }
@@ -21,8 +22,8 @@ namespace FahrradladenPrinzenstraße.Model
         [DefaultValue(true)]
         public bool Aktivan { get; set; } = true;
         public byte[] Slika { get; set; }
-        public IEnumerable<DioStanje> DioStanje { get; set; }
+        //public IEnumerable<DioStanje> DioStanje { get; set; }
         public IEnumerable<OcjenaProizvoda> OcjenaProizvoda { get; set; }
-
+        public int Kolicina { get; set; }
     }
 }

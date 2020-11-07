@@ -11,5 +11,8 @@ namespace FahrradladenPrinzenstraße.Model
         public string Opis { get; set; }
         public double Cijena { get; set; }
 
+        public string CijenaStr => Cijena.ToString("0.00") + " KM";
+        public byte[] Slika { get; set; }
+
     }
 }

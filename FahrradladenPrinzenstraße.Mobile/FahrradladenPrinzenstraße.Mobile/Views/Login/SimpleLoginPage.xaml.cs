@@ -19,7 +19,7 @@ namespace FahrradladenPrinzenstraße.Mobile.Views.Login
         public SimpleLoginPage()
         {
             InitializeComponent();
-            BindingContext = VM = new LoginPageViewModel(Navigation);
+            BindingContext = VM = new LoginPageViewModel();
         }
     }
 }

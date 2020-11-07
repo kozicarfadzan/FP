@@ -17,41 +17,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Stripe;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace FahrradladenPrinzenstraße.WebAPI
 {
-    public class BasicAuthDocumentFilter : IDocumentFilter
-    {
-
-        public void Apply(OpenApiDocument openApiDoc, DocumentFilterContext context)
-        {
-            var securityRequirements = new List<OpenApiSecurityRequirement>()
-            {
-                new OpenApiSecurityRequirement()
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "basic"
-                                },
-                                Name = "Basic",
-                                In = ParameterLocation.Header,
-
-                            },
-                            new List<string>()
-                        }
-                    }
-            };
-
-            openApiDoc.SecurityRequirements = securityRequirements;
-        }
-    }
-
 
     public class Startup
     {
@@ -65,32 +36,69 @@ namespace FahrradladenPrinzenstraße.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyAllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
+
             services.AddMvc(x =>
             {
                 x.EnableEndpointRouting = false;
                 x.Filters.Add<ErrorFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
 #pragma warning disable CS0618 // Type or member is obsolete
             services.AddAutoMapper();
 #pragma warning restore CS0618 // Type or member is obsolete
 
             services.AddScoped<IKorisnikService, KorisnikService>();
+            services.AddScoped<IBiciklService, BiciklService>();
+            services.AddScoped<IOpremaService, OpremaService>();
+            services.AddScoped<IServisService, ServisService>();
+            services.AddScoped<IKorpaStavkaService, KorpaStavkaService>();
+            services.AddScoped<ITerminStavkaService, TerminStavkaService>();
+            services.AddScoped<INacinOtpremeService, NacinOtpremeService>();
+            services.AddScoped<IRezervacijaService, RezervacijaService>();
+            services.AddScoped<IProizvodjacService, ProizvodjacService>();
+            services.AddScoped<IVelicinaOkviraService, VelicinaOkviraService>();
+            services.AddScoped<IStarosnaGrupaService, StarosnaGrupaService>();
+            services.AddScoped<IBojaService, BojaService>();
+            services.AddScoped<IBrzinaService, BrzinaService>();
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FahrradladenPrinzenstraße API v1", Version = "v1" });
-                c.AddSecurityDefinition("basicAuth", new OpenApiSecurityScheme() { Type = SecuritySchemeType.Http, Scheme = "basic" });
+
+                c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "basic",
+                    In = ParameterLocation.Header,
+                    Description = "Basic Authorization header using the Bearer scheme."
+                });
+
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "basicAuth" }
-                        },
-                        new string[]{}
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "basic"
+                                }
+                            },
+                            new string[] {}
                     }
                 });
-                //c.DocumentFilter<BasicAuthDocumentFilter>();
+
             });
 
             services.AddAuthentication("BasicAuthentication")
@@ -105,12 +113,17 @@ namespace FahrradladenPrinzenstraße.WebAPI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 #pragma warning restore CS0618 // Type or member is obsolete
         {
+            StripeConfiguration.ApiKey = "sk_test_51GtZFeLtVZ5smQUiowBnySeFMXtWtRd8cjejdu71JpHjpwBb2AiE5ZI3CURlv9zK9Qr2w3heajsrPjCJSCbr4sal00RKdS0Mtm";
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseSwagger();
+            app.UseStaticFiles();
+
+            app.UseCors("MyAllowAllOrigins");
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
@@ -120,6 +133,7 @@ namespace FahrradladenPrinzenstraße.WebAPI
                 s.SwaggerEndpoint("/swagger/v1/swagger.json", "FahrradladenPrinzenstraße API v1");
             });
 
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using FahrradladenPrinzenstraße.Mobile.DataService;
+using FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
@@ -17,7 +18,17 @@ namespace FahrradladenPrinzenstraße.Mobile.Views.KupiBicikl
         public CatalogListPage()
         {
             InitializeComponent();
-            this.BindingContext = CatalogDataService.Instance.CatalogPageViewModel;
+            this.BindingContext = VM = new CatalogPageViewModel(Navigation);
+        }
+
+        public CatalogPageViewModel VM { get; set; }
+
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            await VM.UcitajBicikla().ConfigureAwait(false);
+            await VM.UpdateCartItemCount().ConfigureAwait(false);
+            await VM.UcitajFiltere().ConfigureAwait(false);
         }
     }
 }

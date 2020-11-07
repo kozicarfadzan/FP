@@ -8,7 +8,6 @@ namespace FahrradladenPrinzenstraße.Model
     {
         public int RezervacijaId { get; set; }
         public int KlijentId { get; set; }
-        public Klijent Klijent { get; set; }
         public DateTime DatumRezervacije { get; set; }
         public DateTime? DatumUplate { get; set; }
 
@@ -33,11 +32,8 @@ namespace FahrradladenPrinzenstraße.Model
 
         public StanjeRezervacije StanjeRezervacije { get; set; }
 
-        public List<RezervacijaIznajmljenaBicikla> RezervacijaIznajmljenaBicikla { get; set; }
-        public List<RezervacijaProdajaBicikla> RezervacijaProdajaBicikla { get; set; }
-        public List<RezervacijaProdajaDio> RezervacijaProdajaDio { get; set; }
-        public List<RezervacijaProdajaOprema> RezervacijaProdajaOprema { get; set; }
-        public List<RezervacijaServis> RezervacijaServis { get; set; }
+        public bool IsTerminRezervacija { get; set; }
+        public bool IsServisRezervacija { get; set; }
 
     }
     public enum StanjeRezervacije

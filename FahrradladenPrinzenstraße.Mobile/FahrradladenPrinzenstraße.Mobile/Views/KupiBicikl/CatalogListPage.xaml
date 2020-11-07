@@ -55,7 +55,7 @@
                             WidthRequest="40">
                             <badge:SfBadgeView.Content>
                                 <buttons:SfButton
-                                    Command="{Binding Path=BindingContext.CardItemCommand, Source={x:Reference ListViewList}}"
+                                    Command="{Binding Path=BindingContext.CartItemCommand, Source={x:Reference ListViewList}}"
                                     CornerRadius="4"
                                     Style="{StaticResource IconButtonStyle}"
                                     Text="{StaticResource Cart}" />

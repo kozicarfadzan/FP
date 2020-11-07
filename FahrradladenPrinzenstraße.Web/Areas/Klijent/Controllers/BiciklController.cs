@@ -31,8 +31,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                 Bicikl = db.Bicikl
                 .Include(x => x.Model).ThenInclude(x => x.MaterijalOkvira)
                 .Include(x => x.Model).ThenInclude(x => x.Proizvodjac)
-                .Include(x => x.Model).ThenInclude(x => x.StarosnaGrupa)
-                .Include(x => x.Model).ThenInclude(x => x.VelicinaOkvira)
+                .Include(x => x.StarosnaGrupa)
+                .Include(x => x.VelicinaOkvira)
                 .Include(x => x.Boja)
                 .Include(x => x.BiciklStanje)
                 .Where(x => x.BiciklId == Id)

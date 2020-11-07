@@ -10,9 +10,7 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.Login
     {
         #region Fields
 
-        private string email;
-
-        private bool isInvalidEmail;
+        private string username;
 
         #endregion
 
@@ -21,47 +19,24 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.Login
         /// <summary>
         /// Gets or sets the property that bounds with an entry that gets the email ID from user in the login page.
         /// </summary>
-        public string Email
+        public string Username
         {
             get
             {
-                return this.email;
+                return this.username;
             }
 
             set
             {
-                if (this.email == value)
+                if (this.username == value)
                 {
                     return;
                 }
 
-                this.email = value;
+                this.username = value;
                 this.NotifyPropertyChanged();
             }
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the entered email is valid or invalid.
-        /// </summary>
-        public bool IsInvalidEmail
-        {
-            get
-            {
-                return this.isInvalidEmail;
-            }
-
-            set
-            {
-                if (this.isInvalidEmail == value)
-                {
-                    return;
-                }
-
-                this.isInvalidEmail = value;
-                this.NotifyPropertyChanged();
-            }
-        }
-
         #endregion
     }
 }

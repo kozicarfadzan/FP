@@ -16,5 +16,7 @@ namespace FahrradladenPrinzenstraße.Model
         public DateTime DatumVracanja { get; set; }
 
         public int BrojDana => (int)((DatumVracanja.Date - DatumPreuzimanja.Date).TotalDays + 1);
+
+        public double UkupnaCijena => Bicikl.CijenaPoDanu.Value * BrojDana;
     }
 }

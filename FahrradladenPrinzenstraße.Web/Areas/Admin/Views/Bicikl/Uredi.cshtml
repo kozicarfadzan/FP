@@ -18,7 +18,9 @@
                 <tr>
                     <td>@Html.LabelFor(x => x.ModelId)</td>
                     <td>
-                        @Html.DropDownListFor(x => x.ModelId, listModel, "Odaberite model", new { @class ="form-control"
+                        @Html.DropDownListFor(x => x.ModelId, listModel, "Odaberite model", new
+                        {
+                            @class = "form-control"
                     })
                     </td>
                     <td>@Html.ValidationMessageFor(x => x.ModelId)</td>
@@ -34,7 +36,9 @@
                 <tr>
                     <td>@Html.LabelFor(x => x.BojaId)</td>
                     <td>
-                        @Html.DropDownListFor(x => x.BojaId, listBoje, "Odaberite boju", new { @class ="form-control"
+                        @Html.DropDownListFor(x => x.BojaId, listBoje, "Odaberite boju", new
+                        {
+                            @class = "form-control"
                     })
                     </td>
                     <td>@Html.ValidationMessageFor(x => x.BojaId)</td>
@@ -54,6 +58,12 @@
                     <td>@Html.LabelFor(x => x.CijenaPoDanu)</td>
                     <td>@Html.TextBoxFor(x => x.CijenaPoDanu, new { @class = "form-control" })</td>
                     <td>@Html.ValidationMessageFor(x => x.CijenaPoDanu)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.Opis)</td>
+                    <td>@Html.TextAreaFor(x => x.Opis, new { @class = "form-control", rows = 5 })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Opis)</td>
                 </tr>
 
                 <tr>

@@ -101,6 +101,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                     NoznaKocnica = model.NoznaKocnica,
                     Slika = model.Slika,
                     Stanje = model.Stanje,
+                    Opis = model.Opis,
                     Aktivan = true
                 };
 
@@ -160,6 +161,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
                     Stanje = x.Stanje,
                     Slika = x.Slika,
                     NoznaKocnica = x.NoznaKocnica,
+                    Opis = x.Opis,
                     BiciklStanje = x.BiciklStanje.Select(y => new BiciklStanje
                     {
                         BiciklStanjeId = y.BiciklStanjeId,
@@ -232,9 +234,10 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.Controllers
             bicikl.Cijena = model.Cijena;
             bicikl.CijenaPoDanu = model.CijenaPoDanu;
             bicikl.GodinaProizvodnje = model.GodinaProizvodnje;
-            bicikl.ModelId = bicikl.ModelId;
-            bicikl.Stanje = bicikl.Stanje;
-            bicikl.NoznaKocnica = bicikl.NoznaKocnica;
+            bicikl.ModelId = model.ModelId;
+            bicikl.Stanje = model.Stanje;
+            bicikl.NoznaKocnica = model.NoznaKocnica;
+            bicikl.Opis = model.Opis;
 
             if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Sifre != null)
             {

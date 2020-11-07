@@ -72,7 +72,6 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
             public string PaymentIntentId { get; set; }
             [JsonProperty]
             public int RezervacijaId { get; set; }
-
         }
     }
 }

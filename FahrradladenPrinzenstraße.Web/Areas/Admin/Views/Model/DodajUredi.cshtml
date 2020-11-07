@@ -41,16 +41,6 @@
                 <td>@Html.ValidationMessageFor(x => x.MaterijalOkviraId)</td>
             </tr>
             <tr>
-                <td>@Html.LabelFor(x => x.StarosnaGrupa)</td>
-                <td>@(Html.DropDownListFor(x=>x.StarosnaGrupaId, listStarosnaGrupa, "Odaberite"))</td>
-                <td>@Html.ValidationMessageFor(x => x.StarosnaGrupaId)</td>
-            </tr>
-            <tr>
-                <td>@Html.LabelFor(x => x.VelicinaOkvira)</td>
-                <td>@(Html.DropDownListFor(x=>x.VelicinaOkviraId, listVelicinaOkvira, "Odaberite"))</td>
-                <td>@Html.ValidationMessageFor(x => x.VelicinaOkviraId)</td>
-            </tr>
-            <tr>
                 <td>@Html.LabelFor(x => x.Suspenzija)</td>
                 <td>@Html.DropDownListFor(x => x.Tip, DropdownHelper.GetEnumSelectList<Suspenzija>(), "Odaberite")</td>
                 <td>@Html.ValidationMessageFor(x => x.Suspenzija)</td>

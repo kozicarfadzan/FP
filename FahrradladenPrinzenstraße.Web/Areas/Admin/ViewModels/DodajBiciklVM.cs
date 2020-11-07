@@ -29,5 +29,6 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Admin.ViewModels
 
         public List<string> BiciklStanja_Sifre { get; set; }
         public List<int> BiciklStanja_Lokacije { get; set; }
+        public string Opis { get; set; }
     }
 }

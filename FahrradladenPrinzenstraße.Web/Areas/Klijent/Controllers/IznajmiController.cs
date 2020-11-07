@@ -31,8 +31,8 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                 Bicikl = db.Bicikl
                 .Include(x => x.Model).ThenInclude(x => x.MaterijalOkvira)
                 .Include(x => x.Model).ThenInclude(x => x.Proizvodjac)
-                .Include(x => x.Model).ThenInclude(x => x.StarosnaGrupa)
-                .Include(x => x.Model).ThenInclude(x => x.VelicinaOkvira)
+                .Include(x => x.StarosnaGrupa)
+                .Include(x => x.VelicinaOkvira)
                 .Include(x => x.Boja)
                 .Include(x => x.BiciklStanje)
                 .Where(x => x.BiciklId == Id && x.Stanje == Stanje.Korišteno)
@@ -181,7 +181,7 @@ namespace FahrradladenPrinzenstraße.Web.Areas.Klijent.Controllers
                 if(ukupno_dostupno == 0)
                     return new BadRequestResult(); // 400
 
-                return new UnauthorizedResult(); // 401
+                return new StatusCodeResult(417);
             }
 
             var PostojecaStvaka = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == VM.Id && x.DatumPreuzimanja == VM.DatumPreuzimanja && x.DatumVracanja == VM.DatumVracanja).FirstOrDefault();

@@ -141,6 +141,7 @@ namespace FahrradladenPrinzenstraße.WebAPI.Services
             query = query.Include(x => x.Administrator);
             query = query.Include(x => x.Zaposlenik);
             query = query.Include(x => x.Klijent);
+            query = query.Include(x => x.Grad);
 
             var entity = query.FirstOrDefault();
 

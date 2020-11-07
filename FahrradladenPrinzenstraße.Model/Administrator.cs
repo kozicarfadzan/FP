@@ -1,4 +1,5 @@
 ﻿
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,7 +12,7 @@ namespace FahrradladenPrinzenstraße.Model
     {
         [ForeignKey("Korisnik")]
         public int Id { get; set; }
-
+        [JsonIgnore]
         public Korisnik Korisnik { get; set; }
     }
 

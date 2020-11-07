@@ -1,24 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading.Tasks;
+using FahrradladenPrinzenstraße.Data.EntityModels;
+using FahrradladenPrinzenstraße.Mobile.Controls;
 using FahrradladenPrinzenstraße.Mobile.Models;
+using FahrradladenPrinzenstraße.Mobile.Views.Korpa;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Syncfusion.XForms.Buttons;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
 {
     /// <summary>
     /// ViewModel for catalog page.
     /// </summary>
-    [Preserve(AllMembers = true)]
+    [Xamarin.Forms.Internals.Preserve(AllMembers = true)]
     [DataContract]
     public class CatalogPageViewModel : BaseViewModel
     {
+        private readonly APIService _serviceBickl = new APIService("Bicikl");
+        private readonly APIService _serviceKorpaStavka = new APIService("KorpaStavka");
+        private readonly APIService _serviceProizvodjac = new APIService("Proizvodjac");
+        private readonly APIService _serviceVelicinaOkvira = new APIService("VelicinaOkvira");
+        private readonly APIService _serviceStarosnaGrupa = new APIService("StarosnaGrupa");
+        private readonly APIService _serviceBrzina = new APIService("Brzina");
+        private readonly APIService _serviceBoja = new APIService("Boja");
+        private readonly INavigation Navigation;
+
         #region Fields
 
-        private ObservableCollection<Category> filterOptions;
+        private List<Category> filterOptions;
 
-        private ObservableCollection<string> sortOptions;
+        private List<string> sortOptions;
+
+
+        private Model.Requests.BiciklSearchRequest request = new Model.Requests.BiciklSearchRequest();
 
         private Command addFavouriteCommand;
 
@@ -30,9 +49,10 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
 
         private Command addToCartCommand;
 
-        private Command cardItemCommand;
+        private Command cartItemCommand;
 
         private string cartItemCount;
+        private bool filteriUcitani;
 
         #endregion
 
@@ -41,91 +61,11 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <summary>
         /// Initializes a new instance for the <see cref="CatalogPageViewModel" /> class.
         /// </summary>
-        public CatalogPageViewModel()
+        public CatalogPageViewModel(INavigation navigation)
         {
-            this.FilterOptions = new ObservableCollection<Category>
-            {
-                new Category
-                {
-                    Name = "Gender",
-                    SubCategories = new List<string>
-                    {
-                        "Men",
-                        "Women"
-                    }
-                },
-                new Category
-                {
-                    Name = "Brand",
-                    SubCategories = new List<string>
-                    {
-                        "Brand A",
-                        "Brand B"
-                    }
-                },
-                new Category
-                {
-                    Name = "Categories",
-                    SubCategories = new List<string>
-                    {
-                        "Category A",
-                        "Category B"
-                    }
-                },
-                new Category
-                {
-                    Name = "Color",
-                    SubCategories = new List<string>
-                    {
-                        "Maroon",
-                        "Pink"
-                    }
-                },
-                new Category
-                {
-                    Name = "Price",
-                    SubCategories = new List<string>
-                    {
-                        "Above 3000",
-                        "1000 to 3000",
-                        "Below 1000"
-                    }
-                },
-                new Category
-                {
-                    Name = "Size",
-                    SubCategories = new List<string>
-                    {
-                        "S", "M", "L", "XL", "XXL"
-                    }
-                },
-                new Category
-                {
-                    Name = "Patterns",
-                    SubCategories = new List<string>
-                    {
-                        "Pattern 1", "Pattern 2"
-                    }
-                },
-                new Category
-                {
-                    Name = "Offers",
-                    SubCategories = new List<string>
-                    {
-                        "Buy 1 Get 1", "Buy 1 Get 2"
-                    }
-                },
-                new Category
-                {
-                    Name = "Coupons",
-                    SubCategories = new List<string>
-                    {
-                        "Coupon 1", "Coupon 2"
-                    }
-                },
-            };
+            this.FilterOptions = new List<Category>();
 
-            this.SortOptions = new ObservableCollection<string>
+            this.SortOptions = new List<string>
             {
                 "New Arrivals",
                 "Price - high to low",
@@ -133,6 +73,7 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
                 "Popularity",
                 "Discount"
             };
+            this.Navigation = navigation;
         }
 
         #endregion
@@ -142,16 +83,15 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <summary>
         /// Gets or sets the property that has been bound with a list view, which displays the item details in tile.
         /// </summary>
-        [DataMember(Name = "products")]
         public ObservableCollection<Product> Products
         {
             get; set;
-        }
+        } = new ObservableCollection<Product>();
 
         /// <summary>
         /// Gets or sets the property that has been bound with a list view, which displays the filter options.
         /// </summary>
-        public ObservableCollection<Category> FilterOptions
+        public List<Category> FilterOptions
         {
             get
             {
@@ -173,7 +113,7 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <summary>
         /// Gets or sets the property has been bound with a list view, which displays the sort details.
         /// </summary>
-        public ObservableCollection<string> SortOptions
+        public List<string> SortOptions
         {
             get
             {
@@ -208,6 +148,161 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
             }
         }
 
+        public async Task UcitajBicikla()
+        {
+            var list = await _serviceBickl.Get<List<Model.Bicikl>>(request);
+            Products.Clear();
+
+            if (list.Count != 0)
+            {
+                foreach (var item in list)
+                {
+                    Products.Add(new Product
+                    {
+                        Id = item.BiciklId,
+                        ActualPrice = item.Stanje == Model.Stanje.Korišteno ? item.CijenaPoDanu.Value : item.Cijena.Value,
+                        Name = item.PuniNaziv,
+                        SizeVariants = item.SizeVariants,
+                        Stanje = item.Stanje,
+                        Slika = item.Slika,
+                        Description = item.Opis,
+                        OverallRating = item.Ocjena,
+                        Bicikl = item
+                    });
+                }
+            }
+            else
+            {
+                //Products.Add(new Model.Bicikl
+                //{
+                //    ResultText = "No results found."
+                //});
+            }
+        }
+
+
+        public async Task UcitajFiltere()
+        {
+            this.filterOptions.Clear();
+
+            this.filterOptions.Add(new Category
+            {
+                Name = "Stanje",
+                FieldName = "Stanje",
+                SubCategories = Enum.GetValues(typeof(Stanje))
+                      .Cast<Stanje>()
+                      .Where(x => x != Stanje.Korišteno)
+                      .ToDictionary(t => (int)t, t => t.ToString()),
+                FilterType = "checkbox"
+            });
+            this.filterOptions.Add(new Category
+            {
+                Name = "Nožna kočnica",
+                FieldName = "NoznaKocnica",
+                SubCategories = new Dictionary<int, string>
+                    {
+                        {-1, "Sve" },
+                        {1, "Da" },
+                        {0, "Ne" },
+                    },
+                FilterType = "radio"
+            });
+
+            var proizvodjaci = await _serviceProizvodjac.Get<List<Model.Proizvodjac>>(null);
+            this.filterOptions.Add(
+                new Category
+                {
+                    Name = "Proizvođač",
+                    FieldName = "ProizvodjacId",
+                    SubCategories = proizvodjaci
+                       .ToDictionary(t => (int)t.ProizvodjacId, t => t.Naziv),
+                    FilterType = "checkbox"
+                }
+            );
+
+            var velicineOkvira = await _serviceVelicinaOkvira.Get<List<Model.VelicinaOkvira>>(null);
+            this.filterOptions.Add(
+                new Category
+                {
+                    Name = "Veličina okvira",
+                    FieldName = "VelicinaOkviraId",
+                    SubCategories = velicineOkvira
+                       .ToDictionary(t => t.VelicinaOkviraId, t => t.Naziv),
+                    FilterType = "checkbox"
+                }
+            );
+
+            this.FilterOptions.Add(
+                new Category
+                {
+                    Name = "Spolovi bicikla",
+                    FieldName = "SpolBicikla",
+                    SubCategories = Enum.GetValues(typeof(SpolBicikl))
+                       .Cast<SpolBicikl>()
+                       .ToDictionary(t => (int)t, t => t.ToString()),
+                    FilterType = "checkbox"
+                }
+            );
+
+            var starosneGrupe = await _serviceStarosnaGrupa.Get<List<Model.StarosnaGrupa>>(null);
+            this.filterOptions.Add(
+                new Category
+                {
+                    Name = "Starosne grupe",
+                    FieldName = "StarosnaGrupaId",
+                    SubCategories = starosneGrupe
+                       .ToDictionary(t => t.StarosnaGrupaId, t => t.Naziv),
+                    FilterType = "checkbox"
+                }
+            );
+
+            var Suspenzije = new Dictionary<int, string>();
+            Suspenzije.Add(-1, "Sve");
+            foreach (var item in Enum.GetValues(typeof(Suspenzija)))
+            {
+                Suspenzije.Add((int)item, item.ToString());
+            }
+
+            this.FilterOptions.Add(
+                new Category
+                {
+                    Name = "Suspenzija",
+                    FieldName = "Suspenzija",
+                    SubCategories = Suspenzije,
+                    FilterType = "radio"
+                }
+            );
+
+            var brzine = await _serviceBrzina.Get<List<int>>(new Model.Requests.BrzinaSearchRequest
+            {
+                SamoIznajmljivanje = false
+            });
+            this.filterOptions.Add(
+                new Category
+                {
+                    Name = "Broj Brzina",
+                    FieldName = "Brzina",
+                    SubCategories = brzine
+                       .ToDictionary(t => t, t => t.ToString()),
+                    FilterType = "checkbox"
+                }
+            );
+
+            var boje = await _serviceBoja.Get<List<Model.Boja>>(null);
+            this.filterOptions.Add(
+                new Category
+                {
+                    Name = "Boje",
+                    FieldName = "BojaId",
+                    SubCategories = boje
+                       .ToDictionary(t => t.BojaId, t => t.Naziv),
+                    FilterType = "checkbox"
+                }
+            );
+
+            filteriUcitani = true;
+        }
+
         #endregion
 
         #region Command
@@ -225,7 +320,7 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// </summary>
         public Command SortCommand
         {
-            get { return this.sortCommand ?? (this.sortCommand = new Command(this.SortClicked)); }
+            get { return this.sortCommand ?? (this.sortCommand = new Command<SfButton>((btn) => this.SortClicked(btn))); }
         }
 
         /// <summary>
@@ -233,7 +328,7 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// </summary>
         public Command FilterCommand
         {
-            get { return this.filterCommand ?? (this.filterCommand = new Command(this.FilterClicked)); }
+            get { return this.filterCommand ?? (this.filterCommand = new Command<object>((btn) => this.FilterClicked(btn))); }
         }
 
         /// <summary>
@@ -258,9 +353,9 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <summary>
         /// Gets or sets the command will be executed when the cart icon button has been clicked.
         /// </summary>
-        public Command CardItemCommand
+        public Command CartItemCommand
         {
-            get { return this.cardItemCommand ?? (this.cardItemCommand = new Command(this.CartClicked)); }
+            get { return this.cartItemCommand ?? (this.cartItemCommand = new Command(this.CartClicked)); }
         }
 
         #endregion
@@ -273,14 +368,17 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <param name="attachedObject">The Object</param>
         private void ItemSelected(object attachedObject)
         {
-            // Do something
+            Product prod = attachedObject as Product;
+
+            if (prod != null)
+                Navigation.PushAsync(new Views.DetaljiBicikl.DetailPage(prod));
         }
 
         /// <summary>
         /// Invoked when the items are sorted.
         /// </summary>
-        /// <param name="attachedObject">The Object</param>
-        private void SortClicked(object attachedObject)
+        /// <param name="btn">The button being clicked</param>
+        private void SortClicked(SfButton btn)
         {
             // Do something
         }
@@ -288,10 +386,14 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <summary>
         /// Invoked when the filter button is clicked.
         /// </summary>
-        /// <param name="obj">The Object</param>
+        /// <param name="obj">The button being clicked</param>
         private void FilterClicked(object obj)
         {
-            // Do something
+            if (filteriUcitani && obj is SfButton btn)
+            {
+                SfPopupView popupView = new SfPopupView();
+                popupView.ShowFilterPopUp("Zatvori", btn, this.FilterOptions, request, UcitajBicikla);
+            }
         }
 
         /// <summary>
@@ -310,16 +412,24 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.KupiBicikl
         /// <param name="obj">The Object</param>
         private void AddToCartClicked(object obj)
         {
-            // Do something
+
         }
 
         /// <summary>
         /// Invoked when cart icon button is clicked.
         /// </summary>
-        /// <param name="obj"></param>
-        private void CartClicked(object obj)
+        private void CartClicked()
         {
-            // Do something
+            Navigation.PushAsync(new CartPage());
+        }
+
+        public async Task UpdateCartItemCount()
+        {
+            var count = await _serviceKorpaStavka.Get<int>(null, "GetBrojStavki");
+            if (count > 0 || CartItemCount != null)
+            {
+                CartItemCount = count.ToString();
+            }
         }
 
         #endregion

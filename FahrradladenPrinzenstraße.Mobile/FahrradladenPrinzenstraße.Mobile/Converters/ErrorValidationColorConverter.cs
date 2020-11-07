@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using FahrradladenPrinzenstraße.Mobile.Controls;
-using FahrradladenPrinzenstraße.Mobile.ViewModels.Login;
+using FahrradladenPrinzenstraße.Mobile.ViewModels.PotvrdaNarudzbe;
 
 namespace FahrradladenPrinzenstraße.Mobile.Converters
 {

@@ -99,7 +99,7 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
 
             if (VM.VelicinaOkviraId != null)
             {
-                BiciklaQry = BiciklaQry.Where(x => VM.VelicinaOkviraId.Contains(x.Model.VelicinaOkviraId));
+                BiciklaQry = BiciklaQry.Where(x => VM.VelicinaOkviraId.Contains(x.VelicinaOkviraId));
             }
 
             if (VM.SpolBicikla != null)
@@ -121,7 +121,7 @@ namespace FahrradladenPrinzenstraße.Web.Controllers
             }
             if (VM.StarosnaGrupaId != null)
             {
-                BiciklaQry = BiciklaQry.Where(x => VM.StarosnaGrupaId.Contains(x.Model.StarosnaGrupaId));
+                BiciklaQry = BiciklaQry.Where(x => VM.StarosnaGrupaId.Contains(x.StarosnaGrupaId));
             }
 
             if (VM.Tip != null)

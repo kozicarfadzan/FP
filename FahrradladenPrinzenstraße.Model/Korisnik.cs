@@ -14,8 +14,6 @@ namespace FahrradladenPrinzenstraße.Model
         private string _prezime;
 
         private string _korisnickoIme;
-        private string _lozinkaHash;
-        private string _lozinkaSalt;
         private bool _aktivan;
 
         private string _adresaStanovanja;
@@ -50,16 +48,6 @@ namespace FahrradladenPrinzenstraße.Model
         {
             get { return _korisnickoIme; }
             set { _korisnickoIme = value; }
-        }
-        public string LozinkaHash
-        {
-            get { return _lozinkaHash; }
-            set { _lozinkaHash = value; }
-        }
-        public string LozinkaSalt
-        {
-            get { return _lozinkaSalt; }
-            set { _lozinkaSalt = value; }
         }
         public bool Aktivan
         {

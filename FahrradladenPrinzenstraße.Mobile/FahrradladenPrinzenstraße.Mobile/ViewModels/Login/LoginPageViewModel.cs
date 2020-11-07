@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 
@@ -10,10 +12,11 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.Login
     [Preserve(AllMembers = true)]
     public class LoginPageViewModel : LoginViewModel
     {
+        private readonly APIService _serviceKorisnik = new APIService("Korisnik");
+
         #region Fields
 
         private string password;
-        private readonly INavigation navigation;
 
         #endregion
 
@@ -22,13 +25,12 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.Login
         /// <summary>
         /// Initializes a new instance for the <see cref="LoginPageViewModel" /> class.
         /// </summary>
-        public LoginPageViewModel(INavigation navigation)
+        public LoginPageViewModel()
         {
-            this.LoginCommand = new Command(this.LoginClicked);
+            this.LoginCommand = new Command(async () => await LoginClicked());
             this.SignUpCommand = new Command(this.SignUpClicked);
             this.ForgotPasswordCommand = new Command(this.ForgotPasswordClicked);
             this.SocialMediaLoginCommand = new Command(this.SocialLoggedIn);
-            this.navigation = navigation;
         }
 
         #endregion
@@ -89,9 +91,35 @@ namespace FahrradladenPrinzenstraße.Mobile.ViewModels.Login
         /// Invoked when the Log In button is clicked.
         /// </summary>
         /// <param name="obj">The Object</param>
-        private void LoginClicked(object obj)
+        private async Task LoginClicked()
         {
+            APIService.Username = Username;
+            APIService.Password = Password;
+
+            try
+            {
+                APIService.CurrentUser = await _serviceKorisnik.Get<Model.Korisnik>(null, "MyProfile");
+
+                if ((await APIService.GetCurrentUser()).Uloga != "Klijent")
+                {
+                    await Application.Current.MainPage.DisplayAlert("Error", "Nemate pravo pristupa ovoj aplikaciji.", "OK");
+                    return;
+                }
+
+
+                await SecureStorage.SetAsync("username", Username);
+                await SecureStorage.SetAsync("password", Password);
+
+#pragma warning disable CS0612 // Type or member is obsolete
             Application.Current.MainPage = (new MasterDetailPage());
+#pragma warning restore CS0612 // Type or member is obsolete
+            }
+            catch (Exception)
+            {
+
+            }
+
+
         }
 
         /// <summary>

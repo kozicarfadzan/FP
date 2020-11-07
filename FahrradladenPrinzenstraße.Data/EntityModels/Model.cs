@@ -19,12 +19,5 @@ namespace FahrradladenPrinzenstraße.Data.EntityModels
 
         public MaterijalOkvira MaterijalOkvira { get; set; }
         public int MaterijalOkviraId { get; set; }
-
-
-        public int StarosnaGrupaId { get; set; }
-        public StarosnaGrupa StarosnaGrupa { get; set; }
-
-        public int VelicinaOkviraId { get; set; }
-        public VelicinaOkvira VelicinaOkvira { get; set; }
     }
 }

@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FahrradladenPrinzenstraße.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FahrradladenPrinzenstraße.Mobile", "FahrradladenPrinzenstraße.Mobile\FahrradladenPrinzenstraße.Mobile\FahrradladenPrinzenstraße.Mobile.csproj", "{FA45DC6B-0C37-4C36-B573-98BC250FF643}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FahrradladenPrinzenstraße.Model", "FahrradladenPrinzenstraße.Model\FahrradladenPrinzenstraße.Model.csproj", "{7BD72488-6568-4D95-97A1-10DAC3455FBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FahrradladenPrinzenstraße.Model", "FahrradladenPrinzenstraße.Model\FahrradladenPrinzenstraße.Model.csproj", "{7BD72488-6568-4D95-97A1-10DAC3455FBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +80,8 @@ Global
 		{BA5D648D-830B-4E1E-97F9-990ACEE9D33A}.Release|x86.ActiveCfg = Release|Any CPU
 		{BA5D648D-830B-4E1E-97F9-990ACEE9D33A}.Release|x86.Build.0 = Release|Any CPU
 		{7ADBA617-D259-4123-8A35-28A35935F40F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7ADBA617-D259-4123-8A35-28A35935F40F}.Debug|Any CPU.Build.0 = Debug|x86
+		{7ADBA617-D259-4123-8A35-28A35935F40F}.Debug|Any CPU.Deploy.0 = Debug|x86
 		{7ADBA617-D259-4123-8A35-28A35935F40F}.Debug|ARM.ActiveCfg = Debug|ARM
 		{7ADBA617-D259-4123-8A35-28A35935F40F}.Debug|ARM.Build.0 = Debug|ARM
 		{7ADBA617-D259-4123-8A35-28A35935F40F}.Debug|ARM.Deploy.0 = Debug|ARM
