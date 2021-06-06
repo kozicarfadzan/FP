@@ -3,6 +3,7 @@
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>Šifra</th>
             <th>Proizvođač</th>
             <th>Naziv modela</th>
             <th>Godina proizvodnje</th>
@@ -26,6 +27,7 @@
         @foreach (var item in Model.Bicikla.ToList())
         {
             <tr>
+                <td>B-@item.BiciklId</td>
                 <td>@item.Model.Proizvodjac.Naziv</td>
                 <td>@item.Model.Naziv</td>
                 <td>@item.GodinaProizvodnje</td>
