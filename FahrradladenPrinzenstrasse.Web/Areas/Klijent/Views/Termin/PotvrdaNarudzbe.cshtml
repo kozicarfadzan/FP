@@ -168,7 +168,7 @@
 
                                     <p class="payment_module">
                                         <label class="radio">
-                                            <input type="radio" name="NacinPlacanja" value="online" required checked />
+                                            <input type="radio" name="NacinPlacanja" class="nacin-placanja" value="online" required checked />
                                             Online plaćanje putem kartice
                                         </label>
                                     </p><!-- /.payment_module -->
@@ -189,8 +189,21 @@
 
 <script>
 
+    function ValidirajCheckoutForm() {
+        $('.checkout-form').validate().settings.ignore = ".select-shipping-method, .nacin-placanja";
+        return $('.checkout-form').valid();
+    }
+    function ValidirajNacinOtpreme() {
+        var NacinOtpremeId = $('[name="NacinOtpremeId"]:checked').val();
+        return NacinOtpremeId !== undefined;
+    }
+    function ValidirajNacinPlacanja() {
+        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
+        return NacinPlacanja !== undefined;
+    }
+
     $('#continue_nacinotpreme').on('click', function () {
-        if (!$('.checkout-form').valid()) {
+        if (!ValidirajCheckoutForm()) {
             event.preventDefault();
             return;
         }
@@ -199,11 +212,13 @@
     })
 
     $('#button_order').on('click', function () {
-        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
-        if (NacinPlacanja === undefined) {
+        if (!ValidirajCheckoutForm()) {
+            event.preventDefault();
+            alert('Lični podaci nisu ispravno uneseni!')
+        }
+        else if (!ValidirajNacinPlacanja()) {
             event.preventDefault();
             alert('Odaberite način plaćanja!')
-            return;
         }
 
     })

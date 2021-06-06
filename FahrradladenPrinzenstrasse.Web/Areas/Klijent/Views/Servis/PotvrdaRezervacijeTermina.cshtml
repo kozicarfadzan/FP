@@ -148,7 +148,7 @@
                                 <div id="HOOK_PAYMENT">
                                     <p class="payment_module">
                                         <label class="radio" style="color: #181818">
-                                            <input type="radio" name="NacinPlacanja" value="online" required checked />
+                                            <input type="radio" name="NacinPlacanja" class="nacin-placanja" value="online" required checked />
                                             Online plaćanje putem kartice<br />
                                             <small>Prilikom rezervacije termina za servis moguće je samo online plaćanje putem kartice.</small>
                                         </label>
@@ -169,11 +169,25 @@
 
 
 <script>
+
+    function ValidirajCheckoutForm() {
+        $('.checkout-form').validate().settings.ignore = ".select-shipping-method, .nacin-placanja";
+        return $('.checkout-form').valid();
+    }
+    function ValidirajNacinOtpreme() {
+        var NacinOtpremeId = $('[name="NacinOtpremeId"]:checked').val();
+        return NacinOtpremeId !== undefined;
+    }
+    function ValidirajNacinPlacanja() {
+        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
+        return NacinPlacanja !== undefined;
+    }
+
     $('.continue_detalji').on('click', function () {
         var index = parseInt($(this).data('index'));
         var ukupno_bicikala_za_servis = parseInt($(this).data('total'));
 
-        if ($(".checkout-form").valid()) {
+        if (ValidirajCheckoutForm()) {
             if (index + 1 == ukupno_bicikala_za_servis) {
                 $('.item-nacin-placanja').trigger('click');
             }
@@ -186,11 +200,13 @@
 
     })
     $('#button_order').on('click', function () {
-        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
-        if (NacinPlacanja === undefined) {
+        if (!ValidirajCheckoutForm()) {
+            event.preventDefault();
+            alert('Lični podaci nisu ispravno uneseni!')
+        }
+        else if (!ValidirajNacinPlacanja()) {
             event.preventDefault();
             alert('Odaberite način plaćanja!')
-            return;
         }
 
     })

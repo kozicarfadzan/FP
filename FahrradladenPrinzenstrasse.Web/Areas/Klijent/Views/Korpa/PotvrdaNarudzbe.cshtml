@@ -245,11 +245,11 @@
                                         <label class="radio">
                                             @if (Model.NacinPlacanja == "onpickup")
                                             {
-                                                <input type="radio" name="NacinPlacanja" value="onpickup" required checked />
+                                                <input type="radio" name="NacinPlacanja" class="nacin-placanja" value="onpickup" required checked />
                                             }
                                             else
                                             {
-                                                <input type="radio" name="NacinPlacanja" value="onpickup" required />
+                                                <input type="radio" name="NacinPlacanja" class="nacin-placanja" value="onpickup" required />
                                             }
                                             Plaćanje pri preuzimanju / Plaćanje pouzećem
                                         </label>
@@ -259,11 +259,11 @@
                                         <label class="radio">
                                             @if (Model.NacinPlacanja == "online")
                                             {
-                                                <input type="radio" name="NacinPlacanja" value="online" required checked />
+                                                <input type="radio" name="NacinPlacanja" class="nacin-placanja" value="online" required checked />
                                             }
                                             else
                                             {
-                                                <input type="radio" name="NacinPlacanja" value="online" required />
+                                                <input type="radio" name="NacinPlacanja" class="nacin-placanja" value="online" required />
                                             }
                                             Online plaćanje putem kartice
                                         </label>
@@ -284,6 +284,19 @@
 
 
 <script>
+    function ValidirajCheckoutForm() {
+        $('.checkout-form').validate().settings.ignore = ".select-shipping-method, .nacin-placanja";
+        return $('.checkout-form').valid();
+    }
+    function ValidirajNacinOtpreme() {
+        var NacinOtpremeId = $('[name="NacinOtpremeId"]:checked').val();
+        return NacinOtpremeId !== undefined;
+    }
+    function ValidirajNacinPlacanja() {
+        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
+        return NacinPlacanja !== undefined;
+    }
+
     $('.select-shipping-method').change(function () {
         if (!$(this).is(':checked')) {
             return;
@@ -297,8 +310,9 @@
         $('#postarina_iznos').html(cijena_odabrane_postarine.toFixed(2));
     });
 
+
     $('#continue_nacinotpreme').on('click', function () {
-        if (!$('.checkout-form').valid()) {
+        if (!ValidirajCheckoutForm()) {
             event.preventDefault();
             return;
         }
@@ -306,8 +320,7 @@
         $('.item-nacin-otpreme').trigger('click');
     })
     $('#continue_nacinplacanja').on('click', function () {
-        var NacinOtpremeId = $('[name="NacinOtpremeId"]:checked').val();
-        if (NacinOtpremeId === undefined) {
+        if (!ValidirajNacinOtpreme()) {
             alert('Odaberite način otpreme!')
             return;
         }
@@ -316,11 +329,17 @@
     })
 
     $('#button_order').on('click', function () {
-        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
-        if (NacinPlacanja === undefined) {
+        if (!ValidirajCheckoutForm()) {
+            event.preventDefault();
+            alert('Lični podaci nisu ispravno uneseni!')
+        }
+        else if (!ValidirajNacinOtpreme()) {
+            event.preventDefault();
+            alert('Odaberite način otpreme!')
+        }
+        else if (!ValidirajNacinPlacanja()) {
             event.preventDefault();
             alert('Odaberite način plaćanja!')
-            return;
         }
 
     })
