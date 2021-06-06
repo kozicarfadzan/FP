@@ -1,0 +1,335 @@
+﻿@model FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.ViewModels.DodajOpremuVM
+@{
+    ViewData["Title"] = (Model.OpremaId == 0 ? "Dodaj" : "Uredi") + " Opremu";
+    var listProizvodjac = Context.GetEntitySelectList<Proizvodjac>("ProizvodjacId", "Naziv");
+    var listModel = Context.GetEntitySelectList<Model>("ModelId", "Naziv");
+    var listBoje = Context.GetEntitySelectList<Boja>("BojaId", "Naziv");
+    var listLokacije = Context.GetEntitySelectList<Lokacija>("LokacijaId", "Naziv");
+}
+
+
+<form action="/Zaposlenik/Oprema/@(Model.OpremaId == 0 ? "Dodaj" : "Uredi")" method="post" enctype="multipart/form-data" id="dodajForm">
+    <div class="col-md-5">
+        <h2>@ViewData["Title"]</h2>
+
+        <hr />
+        @Html.HiddenFor(x => x.OpremaId)
+        <table>
+            <tbody>
+                <tr>
+                    <td>Naziv:</td>
+                    <td>@Html.TextBoxFor(x => x.Naziv, new { @class = "form-control" })</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>@Html.ValidationMessageFor(x => x.Naziv)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.Cijena)</td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Cijena, new { @class = "form-control", type = "number", min = "0" })
+                        <script>
+                            if ($('#OpremaId').val() == "0") {
+                                $('#Cijena').val("");
+                            }
+                        </script>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>@Html.ValidationMessageFor(x => x.Cijena)</td>
+                </tr>
+
+
+                <tr>
+                    <td>Opis:</td>
+                    <td>@Html.TextAreaFor(x => x.Opis, new { @class = "form-control" })</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>@Html.ValidationMessageFor(x => x.Opis)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.ProizvodjacId)</td>
+                    <td>@Html.DropDownListFor(x => x.ProizvodjacId, listProizvodjac, "Odaberite proizvodjaca", new { @class = "form-control" })</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>@Html.ValidationMessageFor(x => x.ProizvodjacId)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.Slika)</td>
+                    <td><input type="file" name="Slika" id="Slika" accept="image/*" /></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding-top: 10px; padding-bottom: 10px;">
+                        @if (Model.Slika == null || Model.Slika.Length < 1000)
+                        {
+                            <img src="~/assets/images/default_FP.png" id="SlikaPreview" style="max-width: 400px" />
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Slika)" id="SlikaPreview" style="max-width: 400px" />
+                        }
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+
+        <div id="oprema-stanja-list"></div>
+
+        <button type="submit" class="btn btn-success">Snimi</button>
+        <a asp-action="Index" class="btn btn-primary">Nazad</a>
+
+        <a asp-action="DeaktivirajOpremaStanje" id="deaktiviraj-link" hidden></a>
+        <a asp-action="AktivirajOpremaStanje" id="aktiviraj-link" hidden></a>
+    </div>
+    <div class="col-md-6" id="ajaxDiv">
+
+    </div>
+
+    <div class="col-md-6">
+        <h3>Oprema na stanju</h3>
+        <hr />
+        <table class="table table-striped" id="stavke_tabela">
+            <thead>
+
+                <tr>
+                    <th>Šifra</th>
+                    <th>Lokacija</th>
+                </tr>
+            </thead>
+            <tbody id="stavke_ajaxdiv">
+                @if (Model.OpremaId != 0)
+                {
+                    @foreach (var item in Model.OpremaStanje)
+                    {
+                        <tr>
+                            <td>
+                                <span>@item.Sifra</span>
+                                <input type="hidden" name="OpremaStanja_Sifre[]" value="@item.Sifra" />
+                            </td>
+                            <td>
+                                @if (item.KupacId != null)
+                                {
+
+                                    <select class="form-control" name="OpremaStanja_Lokacije[]" data-value="" onfocus="this.setAttribute('data-value', this.value);" onchange="this.value = this.getAttribute('data-value');" readonly>
+                                        @foreach (SelectListItem item1 in listLokacije)
+                                        {
+                                            @if (int.Parse(item1.Value) == item.LokacijaId)
+                                            {
+                                                <option value="@item1.Value" selected>@item1.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item1.Value">@item1.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                }
+                                else
+                                {
+
+                                    <select class="form-control" name="OpremaStanja_Lokacije[]">
+                                        @foreach (SelectListItem item1 in listLokacije)
+                                        {
+                                            @if (int.Parse(item1.Value) == item.LokacijaId)
+                                            {
+                                                <option value="@item1.Value" selected>@item1.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item1.Value">@item1.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                }
+                            </td>
+                            <td>
+                                @if (item.KupacId != null)
+                                {
+                                    <a href="#" class="btn btn-primary">Prodano</a>
+                                }
+                                else
+                                {
+
+                                    @if (item.Aktivan)
+                                    {
+                                        <a href="#" data-id="@item.OpremaStanjeId" class="btn btn-danger izmjenaOpremaStanja">Deaktiviraj</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" data-id="@item.OpremaStanjeId" class="btn btn-success izmjenaOpremaStanja">Aktiviraj</a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td><input type="text" id="AddStavka_Sifra" name="Sifra" class="form-control" data-val="true" data-val-length="Šifra mora sadrzavati minimalno 4 karaktera." data-val-length-min="4" /></td>
+                    <td>
+                        <select id="AddStavka_LokacijaId" class="form-control">
+                            <option value="">Odaberite lokaciju</option>
+                            @foreach (SelectListItem item in listLokacije)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+
+                        </select>
+                    </td>
+                    <td><button class="btn btn-success" id="btn_dodaj_stavku">Dodaj stavku</button></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="field-validation-valid" data-valmsg-for="Sifra" data-valmsg-replace="true"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>
+
+
+<div class="clearfix"></div>
+
+<script>
+    (function ($) {
+
+        $("#btn_dodaj_stavku").click(function () {
+            event.preventDefault();
+
+            var has_errors = false;
+
+            var LokacijaId = parseInt($("#AddStavka_LokacijaId").val());
+            if (isNaN(LokacijaId) || LokacijaId <= 0) {
+                $("#AddStavka_LokacijaId").addClass("border-red");
+                has_errors = true;
+            }
+            else
+                $("#AddStavka_LokacijaId").removeClass("border-red");
+
+            var Sifra = $.trim($("#AddStavka_Sifra").val());
+            if (Sifra.length == 0 || $('#AddStavka_Sifra').valid() == false) {
+                $("#AddStavka_Sifra").addClass("border-red");
+                has_errors = true;
+            }
+            else {
+                $("#AddStavka_Sifra").removeClass("border-red");
+            }
+
+            if (has_errors)
+                return;
+
+            /*
+            var LokacijaNaziv = $("#AddStavka_LokacijaId option:selected").text();
+            $("#stavke_tabela tbody").append("<tr><td>" + Sifra + "</td><td>" + LokacijaNaziv + "</td</tr>");
+            $("#oprema-stanja-list").append("<input type='hidden' name='OpremaStanja_Sifre[]' value='" + Sifra + "' />");
+            $("#oprema-stanja-list").append("<input type='hidden' name='OpremaStanja_Lokacije[]' value='" + LokacijaId + "' />");
+*/
+
+            var CloneLokacijeDropdown = $("#AddStavka_LokacijaId").clone();
+            CloneLokacijeDropdown.removeAttr('id');
+            CloneLokacijeDropdown.attr('name', 'OpremaStanja_Lokacije[]');
+
+            $("#stavke_tabela tbody").append("<tr>\
+                <td>" + Sifra + "\
+                    <input type='hidden' name='OpremaStanja_Sifre[]' value='" + Sifra + "' />\
+                </td>\
+                <td> " + CloneLokacijeDropdown.prop('outerHTML') + "</td>\
+                <td><button class='btn btn-danger brisanjeTempOpremaStanja' type='button'>Obriši</button></td>\
+                </tr>");
+            $("#stavke_tabela tbody tr:last select").find("option[value='" + LokacijaId + "']").prop('selected', true);
+
+            $("#oprema-stanja-list").append("");
+
+            $("#AddStavka_Sifra, #AddStavka_LokacijaId").val("");
+        });
+
+
+        $(".izmjenaOpremaStanja").click(function (event) {
+            event.preventDefault();
+
+            var button = $(this);
+            var Oprema_id = button.data('id');
+
+            var url, aktiviranje;
+            if (button.hasClass('btn-danger')) {
+                url = $('#deaktiviraj-link').attr('href');
+                aktiviranje = false;
+            }
+            else {
+                url = $('#aktiviraj-link').attr('href');
+                aktiviranje = true;
+            }
+            url += '/' + Oprema_id;
+
+            $.get(url, function (data) {
+                if (aktiviranje) {
+                    button.removeClass('btn-success').addClass('btn-danger').html("Deaktiviraj");
+                }
+                else {
+                    button.removeClass('btn-danger').addClass('btn-success').html("Aktiviraj");
+                }
+            });
+        });
+
+        $("#stavke_tabela").on('click', '.brisanjeTempOpremaStanja', function (event) {
+            event.preventDefault();
+
+            var row = $(this).closest('tr');
+            row.remove();
+        });
+
+        $("#AddStavka_LokacijaId").change(function () {
+            var LokacijaId = parseInt($(this).val());
+            if (isNaN(LokacijaId) || LokacijaId <= 0) {
+                $(this).addClass("border-red");
+                return;
+            }
+            else
+                $(this).removeClass("border-red");
+        });
+        $("#AddStavka_Sifra").change(function () {
+            if ($(this).valid() == false) {
+                $(this).addClass("border-red");
+                return;
+            }
+            else
+                $(this).removeClass("border-red");
+        });
+
+    })(jQuery);
+</script>
+<script>
+
+
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#SlikaPreview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#Slika").change(function () {
+        readURL(this);
+    });
+
+</script>

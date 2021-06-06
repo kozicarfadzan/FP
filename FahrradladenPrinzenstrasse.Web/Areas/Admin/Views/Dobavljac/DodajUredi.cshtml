@@ -1,0 +1,24 @@
+﻿@model Dobavljac
+@{
+    ViewData["Title"] = (Model.DobavljacID == 0 ? "Dodaj" : "Uredi") + " model";
+    
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<form action="/Admin/Dobavljac/Snimi" method="post">
+    @Html.HiddenFor(x => x.DobavljacID)
+    <table style="width:400px">
+        <tbody>
+            <tr>
+                <td>Naziv:</td>
+                <td>@Html.TextBoxFor(x => x.Naziv, new { @class = "form-control", @style = "width: 200px;" })</td>
+                <td>@Html.ValidationMessageFor(x => x.Naziv)</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success"  style="width: 98px;">Snimi</button>
+</form>

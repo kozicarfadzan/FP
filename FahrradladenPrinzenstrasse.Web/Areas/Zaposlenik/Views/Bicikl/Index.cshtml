@@ -1,0 +1,86 @@
+﻿@model FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.ViewModels.PrikaziBiciklVM
+@{
+    ViewData["Title"] = "Prikaz bicikala";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div style="position: relative;">
+    <form style="float: left;" id="filterBiciklForma">
+
+        <table>
+            <tr>
+                <td style="width: 110px;">Proizvođač:</td>
+                <td>@Html.DropDownListFor(x => x.ProizvodjacId, Model.Proizvodjaci, "Odaberite", new { @class = "form-control", onchange = "ucitajBicikla();" })</td>
+            </tr>
+            <tr>
+                <td>Stanje:</td>
+                <td>@Html.DropDownListFor(x => x.Stanje, Model.Stanja, "Odaberite", new { @class = "form-control", onchange = "ucitajBicikla();" })</td>
+            </tr>
+        </table>
+    </form>
+
+    <div style="position: absolute; right: 6px; bottom:6px;">
+        <a href="/Zaposlenik/Bicikl/Dodaj" class="btn btn-primary">Dodaj</a>
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<div class="panel with-nav-tabs panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_aktivna" data-toggle="tab">Aktivna (<span id="tab_aktivna_count">0</span>)</a></li>
+            <li><a href="#tab_neaktivna" data-toggle="tab">Neaktivna (<span id="tab_neaktivna_count">0</span>)</a></li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab_aktivna">
+
+
+            </div>
+            <div class="tab-pane fade" id="tab_neaktivna">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<a hidden asp-action="UcitajListuBicikala" asp-route-Aktivan="True" id="url_aktivna_bicikla"></a>
+<a hidden asp-action="UcitajListuBicikala" asp-route-Aktivan="False" id="url_neaktivna_bicikla"></a>
+
+<script>
+
+    function ucitajBicikla() {
+        var forma = $('#filterBiciklForma');
+
+        var filteri = '&' + forma.serialize();
+
+        $.get($('#url_aktivna_bicikla').attr('href') + filteri, function (data) {
+            $('#tab_aktivna').html(data);
+
+            var count = (data.match(/btn-danger/g) || []).length;
+            $('#tab_aktivna_count').html(count);
+
+        });
+        $.get($('#url_neaktivna_bicikla').attr('href') + filteri, function (data) {
+            $('#tab_neaktivna').html(data);
+
+            var count = (data.match(/btn-success/g) || []).length;
+            $('#tab_neaktivna_count').html(count);
+        });
+    }
+
+    $(".tab-content").on('click', '.ajax-btn', function (event) {
+        event.preventDefault();
+
+        $.get($(this).attr('href'), function (data) {
+            ucitajBicikla();
+        });
+    });
+
+    $(function () {
+        ucitajBicikla();
+    });
+</script>

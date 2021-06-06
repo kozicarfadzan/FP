@@ -1,0 +1,642 @@
+﻿@model IzvjestajObracunVM
+@{
+    ViewData["Title"] = "Obračun";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title">Obračun</h4>
+                        <h4 class="card-subtitle">
+                            @if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Dnevno)
+                            {
+                                <span>Dnevna zarada</span>
+                            }
+                            else if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Sedmično)
+                            {
+                                <span>Sedmična zarada</span>
+                            }
+                            else if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Mjesečno)
+                            {
+                                <span>Mjesečna zarada</span>
+                            }
+                            else if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Godišnje)
+                            {
+                                <span>Godišnja zarada</span>
+                            }
+                        </h4>
+                    </div>
+                    <div class="ml-auto d-flex no-block align-items-center">
+                        <ul class="list-inline font-12 dl m-r-15 m-b-0">
+                            <li class="list-inline-item text-orange">
+                                <i class="fa fa-circle"></i> Bicikla
+                            </li>
+                            <li class="list-inline-item text-primary">
+                                <i class="fa fa-circle"></i> Oprema
+                            </li>
+                            <li class="list-inline-item text-danger">
+                                <i class="fa fa-circle"></i> Dijelovi
+                            </li>
+                            <li class="list-inline-item text-success">
+                                <i class="fa fa-circle"></i> Servisi
+                            </li>
+                            <li class="list-inline-item text-warning">
+                                <i class="fa fa-circle"></i> Iznajmljivanje
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- column -->
+                    <div class="col-lg-12">
+                        <div class="campaign ct-charts"></div>
+                    </div>
+                    <!-- column -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- Sales chart -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Table -->
+<!-- ============================================================== -->
+<div class="row">
+    <!-- column -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <!-- title -->
+                <div>
+                    <div class="pull-left">
+                        <h4 class="card-title">Najprodavaniji proizvodi</h4>
+                    </div>
+                    <div class="pull-right">
+                        <div class="dl">
+                            <form method="get" class="form-inline">
+                                @if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Godišnje)
+                                {
+                                    <button type="submit" class="btn btn-primary">Prikaži</button>
+                                    <input asp-for="@Model.Year" class="form-control" style="width: 80px;" />
+                                }
+                                else if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Mjesečno)
+                                {
+                                    <button type="submit" class="btn btn-primary">Prikaži</button>
+                                    <input asp-for="@Model.Year" class="form-control" style="width: 80px;" />
+                                    <select asp-for="@Model.Month" asp-items="Model.Months" class="form-control"></select>
+                                }
+                                else if (Model.ReportType == IzvjestajObracunVM.ObracunReportType.Dnevno || Model.ReportType == IzvjestajObracunVM.ObracunReportType.Sedmično)
+                                {
+                                    <button type="submit" class="btn btn-primary">Prikaži</button>
+                                    <input asp-for="@Model.DateTime" class="form-control" style="width: 150px;" />
+                                }
+                                <select class="form-control" id="report-period" asp-for="@Model.ReportType" asp-items="Model.ReportTypes" onchange="this.form.submit();"></select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- title -->
+            </div>
+            <div class="table-responsive">
+                <table class="table v-middle">
+                    <thead>
+                        <tr class="bg-light">
+                            <th class="border-top-0">Proizvod</th>
+                            <th class="border-top-0">Kategorija</th>
+                            <th class="border-top-0">Jed. cijena</th>
+                            <th class="border-top-0">Količina</th>
+                            <th class="border-top-0">Ukupna zarada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.NajprodavanijiProizvodi)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.Naziv</strong>
+                                </td>
+                                <td>
+                                    @if (item.VrstaProizvoda == IzvjestajObracunVM.VrstaProizvoda.Biciklo)
+                                    {
+                                        <label class="label label-warning">Bicikla</label>
+                                    }
+                                    else if (item.VrstaProizvoda == IzvjestajObracunVM.VrstaProizvoda.Oprema)
+                                    {
+                                        <label class="label label-primary">Oprema</label>
+                                    }
+                                    else if (item.VrstaProizvoda == IzvjestajObracunVM.VrstaProizvoda.Dio)
+                                    {
+                                        <label class="label label-danger">Servisi</label>
+                                    }
+                                    else if (item.VrstaProizvoda == IzvjestajObracunVM.VrstaProizvoda.Servis)
+                                    {
+                                        <label class="label label-success">Servisi</label>
+                                    }
+                                    else if (item.VrstaProizvoda == IzvjestajObracunVM.VrstaProizvoda.Iznajmljivanje)
+                                    {
+                                        <label class="label label-default">Iznajmljivanje</label>
+                                    }
+                                </td>
+                                <td>
+                                    @item.JedCijena.ToString("0.00") KM
+                                </td>
+                                <td>@item.Kolicina</td>
+                                <td>
+                                    @item.Zarada.ToString("0.00") KM
+                                </td>
+                            </tr>
+                        }
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .campaign {
+        position: relative;
+        height: 250px
+    }
+
+        .campaign .ct-series-a .ct-area {
+            fill-opacity: 0.2;
+            fill: orange
+        }
+
+        .campaign .ct-series-a .ct-line, .campaign .ct-series-a .ct-point {
+            stroke: orange;
+            stroke-width: 2px
+        }
+
+        .campaign .ct-series-b .ct-area {
+            fill: #428bca;
+            fill-opacity: 0.1
+        }
+
+        .campaign .ct-series-b .ct-line, .campaign .ct-series-b .ct-point {
+            stroke: #428bca;
+            stroke-width: 2px
+        }
+
+        .campaign .ct-series-c .ct-area {
+            fill: #a94442;
+            fill-opacity: 0.1
+        }
+
+        .campaign .ct-series-c .ct-line, .campaign .ct-series-c .ct-point {
+            stroke: #a94442;
+            stroke-width: 2px
+        }
+
+        .campaign .ct-series-d .ct-area {
+            fill: #3c763d;
+            fill-opacity: 0.1
+        }
+
+        .campaign .ct-series-d .ct-line, .campaign .ct-series-d .ct-point {
+            stroke: #3c763d;
+            stroke-width: 2px
+        }
+
+        .campaign .ct-series-e .ct-area {
+            fill: #8a6d3b;
+            fill-opacity: 0.1
+        }
+
+        .campaign .ct-series-e .ct-line, .campaign .ct-series-e .ct-point {
+            stroke: #8a6d3b;
+            stroke-width: 2px
+        }
+
+        .campaign .ct-series-a .ct-point, .campaign .ct-series-b .ct-point, .campaign .ct-series-c .ct-point, .campaign .ct-series-d .ct-point, .campaign .ct-series-e .ct-point {
+            stroke-width: 6px
+        }
+
+    .chartist-tooltip {
+        position: absolute;
+        display: inline-block;
+        opacity: 0;
+        border-radius: 2px;
+        padding: 10px 20px;
+        background: #2962FF;
+        color: #fff;
+        ext-align: center;
+        pointer-events: none;
+        z-index: 1;
+        -webkit-transition: opacity .2s linear;
+        -moz-transition: opacity .2s linear;
+        -o-transition: opacity .2s linear;
+        transition: opacity .2s linear
+    }
+
+        .chartist-tooltip:before {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            margin-left: -5px;
+            border: 5px solid transparent;
+            border-top-color: #2962FF
+        }
+
+        .chartist-tooltip.tooltip-show {
+            opacity: 1
+        }
+
+    .custom-select {
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        -o-appearance: none;
+        background-size: auto
+    }
+</style>
+
+<script>
+    $(function () {
+        "use strict";
+        // ==============================================================
+        // Newsletter
+        // ==============================================================
+
+        var report_period = parseInt($('#report-period').val());
+
+        var labels = @Html.Raw(Json.Serialize(Model.ChartLabels));
+
+        var chart = new Chartist.Line('.campaign', {
+            labels: labels,
+            series: [
+                @Html.Raw(Json.Serialize(Model.Data[IzvjestajObracunVM.VrstaProizvoda.Biciklo])),
+                @Html.Raw(Json.Serialize(Model.Data[IzvjestajObracunVM.VrstaProizvoda.Oprema])),
+                @Html.Raw(Json.Serialize(Model.Data[IzvjestajObracunVM.VrstaProizvoda.Dio])),
+                @Html.Raw(Json.Serialize(Model.Data[IzvjestajObracunVM.VrstaProizvoda.Servis])),
+                @Html.Raw(Json.Serialize(Model.Data[IzvjestajObracunVM.VrstaProizvoda.Iznajmljivanje]))
+            ]
+        }, {
+            low: 0,
+            high: @Model.Maximum,
+
+            showArea: true,
+            fullWidth: true,
+            plugins: [
+                Chartist.plugins.tooltip()
+            ],
+            axisY: {
+                onlyInteger: true,
+                scaleMinSpace: 40,
+                offset: 20,
+                labelInterpolationFnc: function (value) {
+                    return (value / 1);
+                }
+            },
+
+        });
+
+        // Offset x1 a tiny amount so that the straight stroke gets a bounding box
+        // Straight lines don't get a bounding box
+        // Last remark on -> http://www.w3.org/TR/SVG11/coords.html#ObjectBoundingBox
+        chart.on('draw', function (ctx) {
+            if (ctx.type === 'area') {
+                ctx.element.attr({
+                    x1: ctx.x1 + 0.001
+                });
+            }
+        });
+
+        // Create the gradient definition on created event (always after chart re-render)
+        chart.on('created', function (ctx) {
+            var defs = ctx.svg.elem('defs');
+            defs.elem('linearGradient', {
+                id: 'gradient',
+                x1: 0,
+                y1: 1,
+                x2: 0,
+                y2: 0
+            }).elem('stop', {
+                offset: 0,
+                'stop-color': 'rgba(255, 255, 255, 1)'
+            }).parent().elem('stop', {
+                offset: 1,
+                'stop-color': 'rgba(64, 196, 255, 1)'
+            });
+        });
+
+
+        var chart = [chart];
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="panel-header panel-header-lg">
+        <canvas id="bigDashboardChart"></canvas>
+    </div>
+
+    <div class="content">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card card-chart">
+                    <div class="card-header">
+                        <h5 class="card-category">Global Sales</h5>
+                        <h4 class="card-title">Shipped Products</h4>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret" data-toggle="dropdown">
+                                <i class="now-ui-icons loader_gear"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                                <a class="dropdown-item text-danger" href="#">Remove Data</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="lineChartExample"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card card-chart">
+                    <div class="card-header">
+                        <h5 class="card-category">2018 Sales</h5>
+                        <h4 class="card-title">All products</h4>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-round btn-outline-default dropdown-toggle btn-simple btn-icon no-caret" data-toggle="dropdown">
+                                <i class="now-ui-icons loader_gear"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                                <a class="dropdown-item text-danger" href="#">Remove Data</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="lineChartExampleWithNumbersAndGrid"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card card-chart">
+                    <div class="card-header">
+                        <h5 class="card-category">Email Statistics</h5>
+                        <h4 class="card-title">24 Hours Performance</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="barChartSimpleGradientsNumbers"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="now-ui-icons ui-2_time-alarm"></i> Last 7 days
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card  card-tasks">
+                    <div class="card-header ">
+                        <h5 class="card-category">Backend development</h5>
+                        <h4 class="card-title">Tasks</h4>
+                    </div>
+                    <div class="card-body ">
+                        <div class="table-full-width table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox" checked>
+                                                    <span class="form-check-sign"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="text-left">Sign contract for "What are conference organizers afraid of?"</td>
+                                        <td class="td-actions text-right">
+                                            <button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
+                                                <i class="now-ui-icons ui-2_settings-90"></i>
+                                            </button>
+                                            <button type="button" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                                                <i class="now-ui-icons ui-1_simple-remove"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox">
+                                                    <span class="form-check-sign"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="text-left">Lines From Great Russian Literature? Or E-mails From My Boss?</td>
+                                        <td class="td-actions text-right">
+                                            <button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
+                                                <i class="now-ui-icons ui-2_settings-90"></i>
+                                            </button>
+                                            <button type="button" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                                                <i class="now-ui-icons ui-1_simple-remove"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox" checked>
+                                                    <span class="form-check-sign"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td class="text-left">
+                                            Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
+                                        </td>
+                                        <td class="td-actions text-right">
+                                            <button type="button" rel="tooltip" title="" class="btn btn-info btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Edit Task">
+                                                <i class="now-ui-icons ui-2_settings-90"></i>
+                                            </button>
+                                            <button type="button" rel="tooltip" title="" class="btn btn-danger btn-round btn-icon btn-icon-mini btn-neutral" data-original-title="Remove">
+                                                <i class="now-ui-icons ui-1_simple-remove"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <hr>
+                        <div class="stats">
+                            <i class="now-ui-icons loader_refresh spin"></i> Updated 3 minutes ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-category">All Persons List</h5>
+                        <h4 class="card-title"> Employees Stats</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class=" text-primary">
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Country
+                                </th>
+                                <th>
+                                    City
+                                </th>
+                                <th class="text-right">
+                                    Salary
+                                </th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Dakota Rice
+                                        </td>
+                                        <td>
+                                            Niger
+                                        </td>
+                                        <td>
+                                            Oud-Turnhout
+                                        </td>
+                                        <td class="text-right">
+                                            $36,738
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Minerva Hooper
+                                        </td>
+                                        <td>
+                                            Curaçao
+                                        </td>
+                                        <td>
+                                            Sinaai-Waas
+                                        </td>
+                                        <td class="text-right">
+                                            $23,789
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Sage Rodriguez
+                                        </td>
+                                        <td>
+                                            Netherlands
+                                        </td>
+                                        <td>
+                                            Baileux
+                                        </td>
+                                        <td class="text-right">
+                                            $56,142
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Doris Greene
+                                        </td>
+                                        <td>
+                                            Malawi
+                                        </td>
+                                        <td>
+                                            Feldkirchen in Kärnten
+                                        </td>
+                                        <td class="text-right">
+                                            $63,542
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Mason Porter
+                                        </td>
+                                        <td>
+                                            Chile
+                                        </td>
+                                        <td>
+                                            Gloucester
+                                        </td>
+                                        <td class="text-right">
+                                            $78,615
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Javascript method's body can be found in assets/js/demos.js
+            demo.initDashboardPageCharts();
+
+        });
+    </script>*@

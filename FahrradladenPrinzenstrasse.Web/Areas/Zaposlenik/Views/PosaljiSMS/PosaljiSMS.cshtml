@@ -1,0 +1,48 @@
+﻿@model FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.ViewModels.PosaljiSMSVM
+@using  FahrradladenPrinzenstrasse.Data.EntityModels
+
+
+@{
+    ViewBag.Title = "PosaljiSMS";
+}
+
+<h2>PosaljiSMS</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Poruka</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.OdabraniKlijenti, htmlAttributes: new { @class = "control-label col-md-2" })
+
+            <div class="col-md-10">
+                @Html.ListBoxFor(m => m.OdabraniKlijenti, new MultiSelectList(@Model.Klijenti, "KorisnikID", "Ime", @Model.OdabraniKlijenti), new { @style = "height: 280px; width: 300px" })
+
+                @Html.ValidationMessageFor(model => model.OdabraniKlijenti, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Sadrzaj, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Sadrzaj, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Sadrzaj, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Send SMS" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+

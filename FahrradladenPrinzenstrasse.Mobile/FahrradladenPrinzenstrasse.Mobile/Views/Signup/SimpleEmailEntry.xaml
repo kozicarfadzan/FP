@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentView
+    x:Class="FahrradladenPrinzenstrasse.Mobile.Views.Signup.SimpleEmailEntry"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+    xmlns:control="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Controls"
+    xmlns:converter="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Converters">
+
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <converter:BooleanToColorConverter x:Key="ColorConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentView.Resources>
+
+    <ContentView.Content>
+        <StackLayout>
+            <border:SfBorder
+                BackgroundColor="{DynamicResource Gray-White}"
+                BorderColor="{Binding Path=IsFocused, Source={x:Reference EmailEntry}, Converter={x:StaticResource ColorConverter}, ConverterParameter={x:Reference EmailEntry}}"
+                Style="{StaticResource SfBorderStyle}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <control:BorderlessEntry
+                        x:Name="EmailEntry"
+                        Placeholder="Email adresa"
+                        PlaceholderColor="{DynamicResource Gray-700}"
+                        Style="{StaticResource EntryStyle}"
+                        Text="{Binding Email}"
+                        TextColor="{DynamicResource Gray-900}" />
+
+                </Grid>
+            </border:SfBorder>
+
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

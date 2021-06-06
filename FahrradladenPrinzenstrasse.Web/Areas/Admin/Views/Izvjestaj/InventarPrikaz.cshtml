@@ -1,0 +1,44 @@
+﻿@model IzvjestajInventarPrikazVM
+
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th>
+                @if(Model.NacinPrikaza == 1)
+                {
+                    <span>Šifra proizvoda</span>
+                }
+                else
+                {
+                    <span>Serijski broj</span>
+                }
+            </th>
+            <th>Vrsta stavke</th>
+            <th>Naziv stavke</th>
+            <th>Cijena po komadu</th>
+            <th>Količina na stanju</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Stavke.Count == 0)
+        {
+
+            <tr>
+                <td colspan="6">Nije pronađeno</td>
+            </tr>
+        }
+        @foreach (var item in Model.Stavke)
+        {
+            <tr>
+                <td>@item.Šifra</td>
+                <td>@item.VrstaStavke</td>
+                <td>@item.Naziv</td>
+                <td>
+                    @item.Cijena.ToString("0.00") KM
+                </td>
+                <td>@item.KolicinaNaStanju</td>
+            </tr>
+
+        }
+    </tbody>
+</table>

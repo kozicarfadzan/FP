@@ -1,0 +1,69 @@
+﻿@model IzvjestajInventarVM
+@{
+    ViewData["Title"] = "Inventar";
+    var date = DateTime.Now;
+}
+
+
+<h2>@ViewData["Title"]</h2>
+
+<form class="navbar-form navbar-left hidden-print" id="form-inventar">
+    <div class="input-group pull-left">
+        <div class="col-md-4">
+            Vrsta proizvoda: <br />
+            <select data-placeholder="Sve" class="chosen-select select-vrsta-proizvoda" multiple style="width:150px;" asp-for="@Model.OdabraneOpcije" asp-items="@Model.DostupneOpcije"></select>
+        </div>
+        <div class="col-md-4">
+            Način prikaza: <br />
+            <select style="width:150px; margin: 0;" asp-for="@Model.NacinPrikaza" asp-items="@Model.NaciniPrikaza" class="select-nacin-prikaza form-control"></select>
+        </div>
+        <div class="col-md-4">
+            Lokacija: <br />
+            <select asp-items="@Model.Lokacije" asp-for="LokacijaId" class="form-control select-lokacija" style="margin: 0; width:150px;"></select>
+        </div>
+    </div>
+
+    <div class="pull-right margin-top-20">
+        <button class="btn btn-primary" onclick="printInventory();"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</button>
+    </div>
+</form>
+
+<div id="ajax-div"></div>
+
+<a asp-action="InventarPrikaz" hidden id="url_inventar_prikaz"></a>
+<script>
+    function loadInventory() {
+        var url = $('#url_inventar_prikaz').attr('href');
+        var form = $('#form-inventar');
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(),
+            success: function (data) {
+                $('#ajax-div').html(data);
+            }
+        });
+    }
+
+    $('.select-vrsta-proizvoda, .select-lokacija, .select-nacin-prikaza').change(loadInventory);
+
+    loadInventory();
+
+    $(document).ready(function () {
+        $('.select-vrsta-proizvoda').chosen({});
+    });
+
+    function printInventory() {
+        event.preventDefault();
+
+        var title_element = $('#admin_header_placeholder');
+        var old_title = title_element.html();
+
+        title_element.html("<span class='hidden-print'>" + old_title + "</span><span class='visible-print'>@ViewData["Title"] - @date.ToShortDateString() @date.ToShortTimeString()</span>");
+        window.print();
+
+        title_element.html(old_title);
+    }
+
+</script>

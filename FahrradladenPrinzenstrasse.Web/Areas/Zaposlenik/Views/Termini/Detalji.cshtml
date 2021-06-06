@@ -1,0 +1,190 @@
+﻿@model RezervacijaServis
+@{
+    ViewData["Title"] = "Detalji termina za servis";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<div class="form-horizontal control-label-left-align">
+    <h3>Podaci o korisniku</h3>
+    <hr />
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.DatumRezervacije, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.DatumRezervacije.ToShortDateString() @Model.Rezervacija.DatumRezervacije.ToShortTimeString()
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.DatumUplate, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @if (Model.Rezervacija.DatumUplate.HasValue)
+                {
+                    <span>@Model.Rezervacija.DatumUplate.Value.ToShortDateString()</span>
+                    <span>@Model.Rezervacija.DatumUplate.Value.ToShortTimeString()</span>
+                }
+                else
+                {
+                    <span>Nije uplaćeno</span>
+                }
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.Label("ImePrezime", "Ime i prezime", htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.ImePrezime
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.AdresaStanovanja, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.AdresaStanovanja
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.Grad, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.Grad
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.PostanskiKod, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.PostanskiKod
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.Pokrajina, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.Pokrajina
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.Država, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.Država
+            </div>
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.Email, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.Email
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Rezervacija.BrojTelefona, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Rezervacija.BrojTelefona
+            </div>
+        </div>
+
+    </div>
+    @*<div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Dodaj" class="btn btn-primary" />
+            </div>
+        </div>*@
+</div>
+
+<div style="height: 16px;"></div>
+
+<div class="form-horizontal control-label-left-align">
+    <h3>Podaci o biciklu za servis</h3>
+    <hr />
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.DatumServisiranja, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.DatumServisiranja.ToShortDateString() @Model.DatumServisiranja.ToShortTimeString()
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.IsZavrseno, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @(Model.IsZavrseno ? "Da" : "Ne")
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Servis.Naziv, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Servis.Naziv
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.DodatniTroskovi, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.DodatniTroskovi.ToString("0.00") KM
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Proizvodjac, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Proizvodjac
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Model, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Model
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Boja, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Boja
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            @Html.LabelFor(model => model.Tip, htmlAttributes: new { @class = "control-label col-md-6" })
+            <div class="col-md-6 top-padding-7">
+                @Model.Tip
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-8">
+            @Html.LabelFor(model => model.Opis, htmlAttributes: new { @class = "control-label col-md-3 col-md-3-narrow" })
+            <div class="col-md-9 top-padding-7">
+                @Model.Opis
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    @Html.ActionLink("Vrati na početnu", "Index", "Termini", new { }, htmlAttributes: new { @class = "btn btn-primary", @onclick= "if (document.referrer != '') { history.back(); return false; }" })
+</div>

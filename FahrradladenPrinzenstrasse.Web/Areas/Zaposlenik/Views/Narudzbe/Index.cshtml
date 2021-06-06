@@ -1,0 +1,80 @@
+﻿@model NarudzbeViewModel
+@{
+    ViewData["Title"] = "Narudžbe";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form class="navbar-form navbar-left" style="width: 750px;">
+    <div class="input-group col-md-12">
+        <div class="col-md-7">
+            <div class="col-md-6">
+                Od: <input asp-for="DatumOd" class="form-control" onchange="this.form.submit();" />
+            </div>
+            <div class="col-md-6">
+                Do: <input asp-for="DatumDo" class="form-control" onchange="this.form.submit();" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<table class="table table-light">
+    <thead>
+        <tr>
+            <th>Šifra</th>
+            <th>Datum rezervacije</th>
+            <th>Datum uplate</th>
+            <th>Vrsta rezervacije</th>
+            <th>Ukupni iznos</th>
+            <th>Akcija</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Rezervacije.Count == 0)
+        {
+
+            <tr>
+                <td colspan="6">Nije pronađeno</td>
+            </tr>
+        }
+        @foreach (var item in Model.Rezervacije)
+        {
+            <tr>
+                <td>@item.RezervacijaId</td>
+                <td>@item.DatumRezervacije.ToShortDateString() @item.DatumRezervacije.ToShortTimeString()</td>
+                <td>
+                    @if (item.DatumUplate.HasValue)
+                    {
+                        <span>@item.DatumUplate.Value.ToShortDateString() @item.DatumUplate.Value.ToShortTimeString()</span>
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+                <td>
+                    @if (item.RezervacijaProdajaBicikla.Any() || item.RezervacijaProdajaDio.Any() || item.RezervacijaProdajaOprema.Any())
+                    {
+                        @("Kupovina")
+                    }
+                    else if (item.RezervacijaServis.Any())
+                    {
+                        @("Servis")
+                    }
+                    else if (item.RezervacijaIznajmljenaBicikla.Any())
+                    {
+                        @("Iznajmljivanje")
+                    }
+                </td>
+                <td>
+                    @item.UkupniIznos.ToString("0.00") KM
+                </td>
+                <td>
+                    <a href="/Zaposlenik/Narudzbe/Detalji/@item.RezervacijaId" class="btn btn-primary">Detalji</a>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>
+

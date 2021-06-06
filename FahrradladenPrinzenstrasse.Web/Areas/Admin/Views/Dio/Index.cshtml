@@ -1,0 +1,90 @@
+﻿@model PrikaziDioVM
+@using FahrradladenPrinzenstrasse.Data.EntityModels
+
+@{
+    ViewData["Title"] = "Prikaz dijelova";
+}
+<h2>@ViewData["Title"]</h2>
+
+<div style="position: relative;">
+    <form style="float: left;" id="filterDioForma">
+
+        <table>
+            <tr>
+                <td style="width: 110px;">Naziv:</td>
+                <td>@Html.TextBoxFor(x => x.Pretraga, new { @class = "form-control", onkeyup = "ucitajDijelove();" })</td>
+            </tr>
+            <tr>
+                <td style="width: 110px;">Proizvođač:</td>
+                <td>@Html.DropDownListFor(x => x.ProizvodjacId, Model.Proizvodjaci, "Odaberite", new { @class = "form-control", onchange = "ucitajDijelove();" })</td>
+            </tr>
+        </table>
+    </form>
+
+    <div style="position: absolute; right: 6px; bottom:6px;">
+        <a href="/Admin/Dio/Dodaj" class="btn btn-primary">Dodaj</a>
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+<div class="panel with-nav-tabs panel-default">
+    <div class="panel-heading">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_aktivna" data-toggle="tab">Aktivna (<span id="tab_aktivna_count">0</span>)</a></li>
+            <li><a href="#tab_neaktivna" data-toggle="tab">Neaktivna (<span id="tab_neaktivna_count">0</span>)</a></li>
+        </ul>
+    </div>
+    <div class="panel-body">
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab_aktivna">
+
+
+            </div>
+            <div class="tab-pane fade" id="tab_neaktivna">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<a hidden asp-action="UcitajListuDijelova" asp-route-Aktivan="True" id="url_aktivni_dijelovi"></a>
+<a hidden asp-action="UcitajListuDijelova" asp-route-Aktivan="False" id="url_neaktivni_dijelovi"></a>
+
+<script>
+
+    function ucitajDijelove() {
+        var forma = $('#filterDioForma');
+
+        var filteri = '&' + forma.serialize();
+
+        $.get($('#url_aktivni_dijelovi').attr('href') + filteri, function (data) {
+            $('#tab_aktivna').html(data);
+
+            var count = (data.match(/btn-danger/g) || []).length;
+            $('#tab_aktivna_count').html(count);
+
+        });
+        $.get($('#url_neaktivni_dijelovi').attr('href') + filteri, function (data) {
+            $('#tab_neaktivna').html(data);
+
+            var count = (data.match(/btn-success/g) || []).length;
+            $('#tab_neaktivna_count').html(count);
+        });
+    }
+
+    $(".tab-content").on('click', '.ajax-btn', function (event) {
+        event.preventDefault();
+
+        $.get($(this).attr('href'), function (data) {
+            ucitajDijelove();
+        }).fail(function () {
+            alert('Akcija nije uspjela.');
+        });
+    });
+
+    $(function() {
+        ucitajDijelove();
+    });
+</script>

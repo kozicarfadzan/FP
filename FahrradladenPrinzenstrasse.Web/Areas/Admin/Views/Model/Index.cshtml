@@ -1,0 +1,58 @@
+﻿
+@model List<Model>
+@{
+    ViewData["Title"] = "Prikaz modela";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<form class="form-inline">
+    <input type="text" name="Pretraga" id="Pretraga" style="display: inline-block; width: 200px;" placeholder="Unesite naziv..." class="form-control col-md-3" />
+    <button class="btn btn-success" style="margin-top: 5px; margin-left: 8px;">Pretraga</button>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Proizvođač</th>
+            <th>Vrsta rama</th>
+            <th>Tip</th>
+            <th>Materijal okvira</th>
+            <th>Suspenzija</th>
+            <th>Broj brzina</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count == 0)
+        {
+
+            <tr>
+                <td colspan="3">Nije pronađeno</td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+    <tr>
+        <td>@item.Naziv</td>
+        <td>@item.Proizvodjac.Naziv</td>
+        <td>@item.SpolBicikl</td>
+        <td>@item.Tip</td>
+        <td>@item.MaterijalOkvira.Naziv</td>
+        <td>@item.Suspenzija</td>
+        <td>@item.Brzina</td>
+        <td>
+            <a href="/Admin/Model/Obrisi?Id=@item.ModelId" class="btn btn-danger">Obriši</a> |
+            <a href="/Admin/Model/Uredi?Id=@item.ModelId" class="btn btn-warning">Uredi</a>
+        </td>
+    </tr>
+
+        }
+    </tbody>
+</table>
+
+<a href="/Admin/Model/Dodaj" class="btn btn-primary">Dodaj</a>
+
+

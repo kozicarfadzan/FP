@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FahrradladenPrinzenstrasse.Mobile.Views.DetaljiRezervacija.TransactionHistoryPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+    xmlns:control="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Controls"
+    xmlns:converter="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Converters"
+    xmlns:helper="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Helpers"
+    xmlns:viewModel="clr-namespace:FahrradladenPrinzenstrasse.Mobile.ViewModels.DetaljiRezervacija"
+    Title="{Binding Title}"
+    BackgroundColor="{DynamicResource Gray-100}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:BooleanToColorConverter x:Key="BooleanToColorConverter" />
+            <converter:ImageConverter x:Key="imgConv"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+
+        <ScrollView>
+
+            <StackLayout
+                x:Name="transactionList"
+                Padding="16"
+                BindableLayout.ItemsSource="{Binding TransactionDetails}"
+                Spacing="16">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <control:CustomShadowFrame
+                            Margin="0"
+                            Padding="0"
+                            BackgroundColor="{DynamicResource Gray-White}"
+                            BorderColor="{DynamicResource Gray-White}"
+                            CornerRadius="4"
+                            HasShadow="True"
+                            HeightRequest="90">
+                            <control:CustomShadowFrame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Path=BindingContext.ItemSelectedCommand, Source={x:Reference transactionList}}" CommandParameter="{Binding .}" />
+                            </control:CustomShadowFrame.GestureRecognizers>
+
+                            <Grid ColumnSpacing="0" RowSpacing="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  Product image  -->
+                                <border:SfBorder
+                                    Grid.RowSpan="2"
+                                    Margin="5"
+                                    BorderWidth="0"
+                                    CornerRadius="24"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                    <Image
+                                        BackgroundColor="{DynamicResource Gray-200}"
+                                        HeightRequest="80"
+                                        WidthRequest="80" 
+                                        Aspect="AspectFit"
+                                        Source="{Binding Image, Converter={StaticResource imgConv}}"
+                                        />
+
+                                </border:SfBorder>
+
+                                <!--  Product name and transaction amount label  -->
+                                <StackLayout
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    helper:RTLHelper.Margin="0,16,16,4"
+                                    Orientation="Horizontal"
+                                    Spacing="0">
+                                    <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="StartAndExpand"
+                                        Text="{Binding ProductName}"
+                                        TextColor="{DynamicResource Gray-900}" />
+
+                                    <StackLayout Margin="10,0,0,10">
+                                        <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        Text="Jed. cijena:" />
+                                        <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding UnitPrice}"
+                                        TextColor="{Binding IsCredited, Converter={x:StaticResource BooleanToColorConverter}, ConverterParameter=5}" />
+                                    </StackLayout>
+
+                                    <StackLayout Margin="10,0,0,10">
+                                        <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        Text="Količina:" />
+                                        <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding Amount}"
+                                        TextColor="{Binding IsCredited, Converter={x:StaticResource BooleanToColorConverter}, ConverterParameter=5}" />
+                                    </StackLayout>
+
+                                    <StackLayout Margin="10,0,0,10">
+
+                                        <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        Text="Ukupno:" />
+                                        <Label
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        Text="{Binding TransactionAmount}"
+                                        TextColor="{Binding IsCredited, Converter={x:StaticResource BooleanToColorConverter}, ConverterParameter=5}" />
+                                    </StackLayout>
+                                </StackLayout>
+
+                                <!--  Transaction description and date  -->
+                                <StackLayout
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Padding="0"
+                                    helper:RTLHelper.Margin="0,0,16,0"
+                                    Orientation="Horizontal"
+                                    Spacing="0"
+                                    IsVisible="{Binding PrikaziOcjenjivanje}">
+                                    <Label
+                                        FontFamily="{StaticResource Montserrat-Medium}"
+                                        FontSize="12"
+                                        HorizontalOptions="StartAndExpand"
+                                        Text="{Binding TransactionDescription}"
+                                        TextColor="{DynamicResource Gray-700}" />
+
+                                    <Label 
+                                        FontFamily="{StaticResource Montserrat-Medium}"
+                                        FontSize="12"
+                                        HorizontalOptions="End"
+                                        HorizontalTextAlignment="End"
+                                        TextColor="{DynamicResource Gray-700}"
+                                        Text="Ocjena:"/>
+
+                                    <StackLayout Orientation="Horizontal">
+                                        <ImageButton
+        Clicked="ImageButton1_Clicked"
+        BackgroundColor="Transparent"
+        Source="{Binding Star1.Image}"
+                  WidthRequest="32"
+                            />
+                                        <ImageButton
+        Clicked="ImageButton2_Clicked"
+        BackgroundColor="Transparent"
+        Source="{Binding Star2.Image}"
+                  WidthRequest="32"
+                            />
+                                        <ImageButton
+        Clicked="ImageButton3_Clicked"
+        BackgroundColor="Transparent"
+        Source="{Binding Star3.Image}"
+                  WidthRequest="32"
+                            />
+                                        <ImageButton
+        Clicked="ImageButton4_Clicked"
+        
+        BackgroundColor="Transparent"
+        Source="{Binding Star4.Image}"
+                  WidthRequest="32"
+                            />
+                                        <ImageButton
+        Clicked="ImageButton5_Clicked"
+        
+        BackgroundColor="Transparent"
+        Source="{Binding Star5.Image}"
+                  WidthRequest="32"
+                            />
+                                    </StackLayout>
+
+
+                                </StackLayout>
+                            </Grid>
+                        </control:CustomShadowFrame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </ScrollView>
+
+    </ContentPage.Content>
+</ContentPage>

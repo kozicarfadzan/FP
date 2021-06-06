@@ -1,0 +1,45 @@
+﻿@model Model
+
+<h2>Detalji modela:</h2>
+<hr />
+
+<dl class="dl-horizontal">
+
+    <dt>
+        <p style="font-size: 14px"><b>Naziv:</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.Naziv</p></dd>
+
+    <dt>
+        <p style="font-size: 14px"><b>Proizvođač:</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.Proizvodjac.Naziv</p></dd>
+
+    
+
+
+    <dt>
+        <p style="font-size: 14px"><b>Suspenzija:</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.Suspenzija</p></dd>
+    <dt>
+        <p style="font-size: 14px"><b>Vrsta rama</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.SpolBicikl</p></dd>
+    <dt>
+        <p style="font-size: 14px"><b>Tip:</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.Tip</p></dd>
+
+    <dt>
+        <p style="font-size: 14px"><b>Materijal okvira:</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.MaterijalOkvira.Naziv</p></dd>
+
+    <dt>
+        <p style="font-size: 14px"><b>Broj brzina:</b></p>
+    </dt>
+    <dd><p style="font-size: 14px">@Model.Brzina</p></dd>
+
+
+</dl>

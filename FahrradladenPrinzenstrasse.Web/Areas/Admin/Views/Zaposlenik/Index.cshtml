@@ -1,0 +1,65 @@
+﻿@model PrikaziZaposlenikVM
+@using FahrradladenPrinzenstrasse.Data.EntityModels
+
+@{
+    ViewData["Title"] = "Prikaz zaposlenika";
+}
+
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped">
+    <tr>
+        <th> Ime</th>
+        <th>Prezime</th>
+        <th>Korisničko ime</th>
+        <th>Aktivan</th>
+        <th>Grad</th>
+        <th>Adresa stanovanja</th>
+        <th>Broj telefona</th>
+        <th>Email</th>
+        <th>Spol</th>
+        <th>Akcija</th>
+    </tr>
+
+
+    @foreach (Korisnik z in Model.Korisnici)
+    {
+        <tr>
+
+            <td> @z.Ime</td>
+            <td>  @z.Prezime</td>
+            <td>  @z.KorisnickoIme</td>
+            <td>@z.Aktivan </td>
+            <td>@z.Grad.Naziv</td>
+            <td>@z.AdresaStanovanja</td>
+            <td>@z.BrojTelefona</td>
+            <td>@z.Email</td>
+            <td>@z.Spol</td>
+
+            <td>
+                @Html.ActionLink("Uredi", "Uredi", new { id = z.KorisnikID }, new { @class = "btn btn-default" })
+               
+
+
+                @if (z.Aktivan)
+                {
+                    @Html.ActionLink("Deaktiviraj", "NeAktivan", new { id = z.KorisnikID }, new { @class = "btn btn-danger" })
+                }
+                else
+                {
+                    @Html.ActionLink("Aktiviraj", "Aktivan", new { id = z.KorisnikID }, new { @class = "btn btn-success" })
+
+                }
+
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+<p>
+    @Html.ActionLink("Dodaj", "Dodaj", routeValues: null, htmlAttributes: new { @class = "btn btn-primary" })
+</p>
+<div>
+    @Html.ActionLink("Vrati na početnu", "Index")
+</div>

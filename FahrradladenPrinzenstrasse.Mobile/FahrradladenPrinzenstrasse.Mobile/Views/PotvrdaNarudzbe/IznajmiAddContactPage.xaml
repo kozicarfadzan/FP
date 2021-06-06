@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FahrradladenPrinzenstrasse.Mobile.Views.PotvrdaNarudzbe.IznajmiAddContactPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:ListCollection="clr-namespace:System.Collections.Generic;assembly=netstandard"
+    xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+    xmlns:buttons="clr-namespace:Syncfusion.XForms.Buttons;assembly=Syncfusion.Buttons.XForms"
+    xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
+    xmlns:control="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Controls"
+    xmlns:converter="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Converters"
+    xmlns:behaviors="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Behaviors"
+    xmlns:local="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Views.PotvrdaNarudzbe"
+    xmlns:viewModel="clr-namespace:FahrradladenPrinzenstrasse.Mobile.ViewModels.PotvrdaNarudzbe"
+    x:Name="PotvrdaNarudzbePage"
+    Title="Details Form"
+    BackgroundColor="{DynamicResource Gray-100}"
+    NavigationPage.HasNavigationBar="False">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:ImageConverter x:Key="imgConv"/>
+            <converter:ErrorValidationColorConverterRequired x:Key="ErrorValidationColorConverter" />
+            <converter:BooleanToColorConverter x:Key="ColorConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="16">
+                <Label Style="{StaticResource HeaderLabelStyle}" Text="Lični podaci" FontSize="22" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="56" />
+                        <RowDefinition Height="56" />
+                        <RowDefinition Height="56" />
+                        <RowDefinition Height="56" />
+                    </Grid.RowDefinitions>
+                    <border:SfBorder
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference ImeEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference ImeEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="ImeEntry"
+                            Placeholder="Ime" Text="{Binding Korisnik.Ime}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+                    <border:SfBorder
+                        Grid.Column="2"
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference PrezimeEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference PrezimeEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="PrezimeEntry"
+                            Placeholder="Prezime" Text="{Binding Korisnik.Prezime}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+
+                    <border:SfBorder
+                        Grid.Row="1"
+                        Grid.ColumnSpan="3"
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference AddressEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference AddressEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="AddressEntry"
+                            Placeholder="Adresa" Text="{Binding Korisnik.AdresaStanovanja}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+
+                    <border:SfBorder
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference GradEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference GradEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="GradEntry"
+                            Placeholder="Grad" Text="{Binding Korisnik.Grad.Naziv}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+
+                    <border:SfBorder
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference PokrajinaEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference PokrajinaEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="PokrajinaEntry"
+                            Placeholder="Pokrajina" Text="{Binding Pokrajina}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+
+                    <border:SfBorder
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference PostanskiKodEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference PostanskiKodEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="PostanskiKodEntry"
+                            Placeholder="Poštanski kod" Text="{Binding PostanskiKod}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+
+                    <border:SfBorder
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference DrzavaEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference DrzavaEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                        <control:BorderlessEntry
+                            x:Name="DrzavaEntry"
+                            Placeholder="Država" Text="{Binding Drzava}"
+                            Style="{StaticResource EntryTextStyle}" />
+                    </border:SfBorder>
+                </Grid>
+                <Label
+                    Margin="0,16,0,0"
+                    Style="{StaticResource HeaderLabelStyle}"
+                    Text="Kontakt Podaci" FontSize="22" />
+                <local:ContactEmailEntry />
+
+                <border:SfBorder
+                        BorderColor="{Binding Path=IsFocused, Source={x:Reference TelefonEntry}, Converter={x:StaticResource ErrorValidationColorConverter}, ConverterParameter={x:Reference TelefonEntry}}"
+                        Style="{StaticResource FormBorderStyle}">
+                    <control:BorderlessEntry
+                            x:Name="TelefonEntry"
+                            Placeholder="Broj telefona" Text="{Binding Korisnik.BrojTelefona}"
+                            Keyboard="Telephone" 
+                            Style="{StaticResource EntryTextStyle}" />
+                </border:SfBorder>
+
+                <Label
+                    Margin="0,16,0,0"
+                    Style="{StaticResource HeaderLabelStyle}"
+                    Text="Način plaćanja"
+                    FontSize="22"/>
+
+                <ListView 
+                    ItemsSource="{Binding NaciniPlacanja}"
+                    SelectedItem="{Binding OdabraniNacinPlacanja}"
+                    RowHeight="112"
+                    HeightRequest="{Binding NaciniPlacanjaListHeight}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Image
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.RowSpan="2"
+                                        Margin="0,0,8,0"
+                                        Aspect="AspectFit"
+                                        BackgroundColor="{DynamicResource Gray-F0}"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Start"
+                                        HeightRequest="{OnIdiom Default=100,
+                                                                Desktop=100}"
+                                        WidthRequest="{OnIdiom Default=100,
+                                                               Desktop=100}"
+                                        Source="{Binding Slika, Converter={StaticResource imgConv}}"
+                                        >
+                                    </Image>
+
+                                    <Label VerticalOptions="FillAndExpand" 
+                                                   Grid.Row="0"
+                                                   Grid.Column="1"
+                                        Grid.RowSpan="2"
+                                        VerticalTextAlignment="Center" 
+                                        Text="{Binding Opis}"
+                                        FontSize="18" FontAttributes="Bold"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                
+                <buttons:SfButton
+                    HorizontalOptions="Center" Command="{Binding SubmitCommand}"
+                    Style="{StaticResource SfButtonStyle}"
+                    Text="NARUČI"
+                    WidthRequest="200" />
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

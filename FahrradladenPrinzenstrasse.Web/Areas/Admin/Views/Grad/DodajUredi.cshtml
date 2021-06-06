@@ -1,0 +1,29 @@
+﻿@model Grad
+@{
+    ViewData["Title"] = (Model.GradID == 0 ? "Dodaj" : "Uredi") + " grad";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+
+<form action="/Admin/Grad/Snimi" method="post">
+    @Html.HiddenFor(x => x.GradID)
+    <table style="width:400px">
+        <tbody>
+            <tr>
+                <td><label class="control-label" style="">Naziv:</label></td>
+                <td>@Html.TextBoxFor(x => x.Naziv, new { @class = "form-control", @style = "width: 200px;" })</td>
+                <td>@Html.ValidationMessageFor(x => x.Naziv)</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="submit" class="btn btn-success" style="width: 98px;">Snimi</button>
+                    <a href="/Admin/Grad" class="btn btn-primary" style="width: 98px;">Nazad</a>
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+</form>

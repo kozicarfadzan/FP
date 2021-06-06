@@ -1,0 +1,52 @@
+﻿@model FahrradladenPrinzenstrasse.Web.Areas.Klijent.ViewModels.PrikaziProfilVM
+@using FahrradladenPrinzenstrasse.Data.EntityModels
+
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped">
+    <tr>
+        <th> Ime</th>
+        <th>Prezime</th>
+        <th>Korisničko ime</th>
+        <th>Aktivan</th>
+        <th>Grad</th>
+        <th>Adresa stanovanja</th>
+        <th>Broj telefona</th>
+        <th>Email</th>
+        <th>Spol</th>
+        <th>Akcija</th>
+    </tr>
+
+
+    @foreach (Korisnik z in Model.Korisnici)
+    {
+        <tr>
+
+            <td> @z.Ime</td>
+            <td>  @z.Prezime</td>
+            <td>  @z.KorisnickoIme</td>
+            <td>@z.Aktivan </td>
+            <td>@z.Grad.Naziv</td>
+            <td>@z.AdresaStanovanja</td>
+            <td>@z.BrojTelefona</td>
+            <td>@z.Email</td>
+            <td>@z.Spol</td>
+
+            <td>
+                @Html.ActionLink("Uredi", "Uredi", new { id = z.KorisnikID }, new { @class = "btn btn-default" })
+               
+
+
+              
+
+
+            </td>
+        </tr>
+    }
+
+</table>
+
+

@@ -1,0 +1,78 @@
+﻿@model FahrradladenPrinzenstrasse.Web.ViewModels.PrikaziServisVM
+@{
+    ViewData["Title"] = "Rezerviši termin za servis";
+}
+
+<div class="row">
+    <!-- ========================================= CONTENT ========================================= -->
+    <div class="col-md-9 col-md-push-3">
+        <section id="category-products">
+            <h2 class="page-title text-md-center">Prikaz</h2>
+        
+            <div class="page-section wow fadeInUp">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_servisi_grid">
+                        <div class="row">
+
+
+                        </div><!-- /.row -->
+                    </div><!-- /.tab-pane -->
+
+                </div><!-- /.tab-content -->
+            </div><!-- /.page-section -->
+
+        </section><!-- /#category-products -->
+
+    </div><!-- /.col-md-9 -->
+    <!-- ========================================= CONTENT : END ========================================= -->
+  
+</div><!-- /.row -->
+
+<a hidden asp-action="UcitajListuServisa" id="url_lista_servisa"></a>
+
+<script>
+
+    var xhr1, xhr2;
+
+    function ucitajServise() {
+        if (xhr1 != null)
+            xhr1.abort();
+
+        if (xhr2 != null)
+            xhr2.abort();
+
+        xhr1 = $.get($('#url_lista_servisa').attr('href'), function (data) {
+            $('#tab_servisi_grid .row').html(data);
+        });
+
+    }
+
+    $("#category-products").on('click', '.pagination a', function (event) {
+        event.preventDefault();
+
+        var new_page = parseInt($(this).data('page'));
+        if (isNaN(new_page) || new_page <= 0)
+            return;
+
+        var filteri = '?Page=' + new_page;
+
+        if (xhr1 != null)
+            xhr1.abort();
+
+        if (xhr2 != null)
+            xhr2.abort();
+
+        xhr1 = $.get($('#url_lista_servisa').attr('href') + filteri, function (data) {
+            $('html, body').animate({
+                scrollTop: $("#category-products").offset().top - 50
+            }, 250);
+            $('#tab_servisi_grid .row').html(data);
+        });
+
+    });
+
+    $(function () {
+        ucitajServise();
+    });
+
+</script>

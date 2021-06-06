@@ -1,0 +1,198 @@
+﻿@model PotvrdaRezervacijeTerminaVM
+@{
+    ViewData["Title"] = "Potvrda rezervacije termina";
+    IEnumerable<SelectListItem> TipoviBicikala = DropdownHelper.GetEnumSelectList<Tip>();
+    var errorMessage = TempData["error_message"];
+}
+
+<h2 class="page-title text-md-center">
+    @ViewData["Title"] -
+</h2>
+
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
+<div class="page-section">
+    <ul class="order-steps nav nav-pills nav-justified">
+        <li class="active"><a href="#">Potvrda rezervacije</a></li>
+        <li><a href="#">Kraj</a></li>
+    </ul><!-- /.order steps -->
+</div><!-- /.page section -->
+
+<div class="page-section">
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-md-push-8">
+            <div class="section">
+                <h4 class="section-title">Sažetak narudžbe</h4>
+                <table class="table table-bordered table-order-summary">
+                    <tr>
+                        <th>Ukupno</th>
+                        <td>
+                            <span class="price">
+                                <span id="ukupni_iznos">
+                                    @Model.UkupniIznos.ToString("0.00")
+                                </span> KM
+                            </span>
+                        </td>
+                    </tr>
+                </table><!-- /.table-order-summary -->
+            </div><!-- /.section -->
+        </div>
+
+        <div class="col-md-8 col-sm-8 col-md-pull-4">
+            <form class="checkout-form" action="/Klijent/Servis/PotvrdaRezervacijeTermina/@Model.Id" method="post">
+                @Html.HiddenFor(x => x.Kolicina)
+                @Html.HiddenFor(x => x.Datum)
+                @Html.HiddenFor(x => x.Satnica)
+                <div class="panel-group" id="checkout-accordion">
+
+                    @for (int i = 0; i < Model.BrojServisStavki; i++)
+                    {
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <a href="#collapseDetalji_@i" data-toggle="collapse" data-parent="#checkout-accordion" class="@(i == 0 ? "" : "collapsed") item-detalji-@i">
+                                        Detalji bicikla @(i + 1) za servis
+                                        <span data-icon="&#x50;" class="expand pull-right"></span>
+                                        <span data-icon="&#x4f;" class="contract pull-right"></span>
+                                    </a>
+                                </h3><!-- /.panel-title -->
+                            </div><!-- /.panel-heading -->
+
+                            <div id="collapseDetalji_@i" class="panel-collapse collapse @(i == 0 ? "in" : "")">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="proizvodjac_@i" class="required control-label">Proizvođač</label>
+                                                <input id="proizvodjac_@i" asp-for="@Model.DetaljiServisa[i].Proizvodjac" type="text" placeholder="Proizvođač bicikla" class="form-control" required>
+                                                <span asp-validation-for="@Model.DetaljiServisa[i].Proizvodjac"></span>
+                                            </div>
+                                        </div><!-- /.col -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="model_@i" class="required control-label">Model</label>
+                                                <input id="model_@i" asp-for="@Model.DetaljiServisa[i].Model" type="text" placeholder="Model bicikla" class="form-control" required>
+                                                <span asp-validation-for="@Model.DetaljiServisa[i].Model"></span>
+
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="boja_@i" class="required control-label">Boja</label>
+                                                <input id="boja_@i" asp-for="@Model.DetaljiServisa[i].Boja" type="text" placeholder="Boja" class="form-control" required>
+                                                <span asp-validation-for="@Model.DetaljiServisa[i].Boja"></span>
+
+                                            </div><!-- /.form-group -->
+                                        </div><!-- /.col -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="tip_@i" class="required control-label">Tip Bicikla</label>
+                                                <select id="tip_@i" asp-for="@Model.DetaljiServisa[i].Tip" asp-items="TipoviBicikala" class="form-control" required></select>
+                                                <span asp-validation-for="@Model.DetaljiServisa[i].Tip"></span>
+
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="opis_@i" class="required control-label">Opis</label>
+                                                <textarea id="opis_@i" asp-for="@Model.DetaljiServisa[i].Opis" placeholder="Opis" class="form-control" required></textarea>
+                                                <span asp-validation-for="@Model.DetaljiServisa[i].Opis"></span>
+
+                                            </div><!-- /.form-group -->
+                                        </div><!-- /.col -->
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="dodatnitroskovi_@i" class="required control-label">Dodatni troškovi</label>
+                                                <input id="dodatnitroskovi_@i" asp-for="@Model.DetaljiServisa[i].DodatniTroskovi" type="number" min="0" max="1000" step="1" value="0" class="form-control" required>
+                                                <span asp-validation-for="@Model.DetaljiServisa[i].DodatniTroskovi"></span>
+
+                                            </div><!-- /.form-group -->
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+
+                                    <div class="form-group text-right">
+                                        <a data-parent="#checkout-accordion" href="#collapseFeatures" class="btn btn-primary btn-lg uppercase strong continue_detalji" id="continue_detalji_@i" data-index="@i" data-total="@Model.BrojServisStavki">Dalje</a>
+                                    </div><!-- /.form-group -->
+                                </div><!-- /.panel-body -->
+                            </div><!-- /.panel-collapse  -->
+                        </div><!-- /.panel-default -->
+                    }
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#checkout-accordion" href="#collapseFeatures" class="collapsed item-nacin-placanja">
+                                    Način plaćanja
+                                    <span data-icon="&#x50;" class="expand pull-right"></span>
+                                    <span data-icon="&#x4f;" class="contract pull-right"></span>
+                                </a>
+                            </h3><!-- /.panel-title -->
+                        </div><!-- /.panel-heading -->
+                        <div id="collapseFeatures" class="panel-collapse collapse">
+                            <div class="panel-body text-justify">
+                                <div id="HOOK_PAYMENT">
+                                    <p class="payment_module">
+                                        <label class="radio" style="color: #181818">
+                                            <input type="radio" name="NacinPlacanja" value="online" required checked />
+                                            Online plaćanje putem kartice<br />
+                                            <small>Prilikom rezervacije termina za servis moguće je samo online plaćanje putem kartice.</small>
+                                        </label>
+                                    </p><!-- /.payment_module -->
+                                </div><!-- /#hook_module -->
+
+                                <div class="form-actions text-right">
+                                    <button type="submit" class="btn btn-primary uppercase strong btn-lg" id="button_order">Naruči</button>
+                                </div><!-- /.form-actions -->
+                            </div><!-- /.panel-body -->
+                        </div><!-- /.panel-collapse -->
+                    </div><!-- /.panel-default -->
+                </div><!-- /.panel group -->
+            </form><!-- /.checkout form -->
+        </div>
+    </div>
+</div><!-- /.page-section -->
+
+
+<script>
+    $('.continue_detalji').on('click', function () {
+        var index = parseInt($(this).data('index'));
+        var ukupno_bicikala_za_servis = parseInt($(this).data('total'));
+
+        if ($(".checkout-form").valid()) {
+            if (index + 1 == ukupno_bicikala_za_servis) {
+                $('.item-nacin-placanja').trigger('click');
+            }
+            else {
+                $('.item-detalji-' + (index + 1)).trigger('click');
+            }
+        }
+
+        event.preventDefault();
+
+    })
+    $('#button_order').on('click', function () {
+        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
+        if (NacinPlacanja === undefined) {
+            event.preventDefault();
+            alert('Odaberite način plaćanja!')
+            return;
+        }
+
+    })
+
+</script>

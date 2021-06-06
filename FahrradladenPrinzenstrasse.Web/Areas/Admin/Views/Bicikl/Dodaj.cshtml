@@ -1,0 +1,273 @@
+﻿@model DodajBiciklVM
+@{
+    ViewData["Title"] = (Model.BiciklId == 0 ? "Dodaj" : "Uredi") + " bicikl";
+    var listModel = Context.GetEntitySelectList<Model>("ModelId", "Naziv");
+    var listBoje = Context.GetEntitySelectList<Boja>("BojaId", "Naziv");
+    var listVelicineOkvira = Context.GetEntitySelectList<VelicinaOkvira>("VelicinaOkviraId", "Naziv");
+    var listStarosneGrupe = Context.GetEntitySelectList<StarosnaGrupa>("StarosnaGrupaId", "Naziv");
+    var listLokacije = Context.GetEntitySelectList<Lokacija>("LokacijaId", "Naziv");
+}
+
+
+<div class="col-md-5">
+    <h2>@ViewData["Title"]</h2>
+
+    <hr/>
+    <form action="/Admin/Bicikl/Dodaj" method="post" enctype="multipart/form-data" id="dodajForm">
+        @Html.HiddenFor(x => x.BiciklId)
+        <table>
+            <tbody>
+                <tr>
+                    <td>@Html.LabelFor(x => x.ModelId)</td>
+                    <td>
+                        @Html.DropDownListFor(x => x.ModelId, listModel, "Odaberite model", new
+                        {
+                            @class = "form-control"
+                    })
+                    </td>
+                    <td>@Html.ValidationMessageFor(x => x.ModelId)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.GodinaProizvodnje)</td>
+                    <td>@Html.TextBoxFor(x => x.GodinaProizvodnje, new { @class = "form-control", min = 1900, max = DateTime.Now.Year, type = "number", step = 1 })</td>
+                    <td>@Html.ValidationMessageFor(x => x.GodinaProizvodnje)</td>
+                </tr>
+
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.BojaId)</td>
+                    <td>
+                        @Html.DropDownListFor(x => x.BojaId, listBoje, "Odaberite boju", new
+                        {
+                            @class = "form-control"
+                    })
+                    </td>
+                    <td>@Html.ValidationMessageFor(x => x.BojaId)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.StarosnaGrupaId)</td>
+                    <td>
+                        @Html.DropDownListFor(x => x.StarosnaGrupaId, listStarosneGrupe, "Odaberite starosnu grupu", new
+                        {
+                            @class = "form-control"
+                    })
+                    </td>
+                    <td>@Html.ValidationMessageFor(x => x.StarosnaGrupaId)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.VelicinaOkviraId)</td>
+                    <td>
+                        @Html.DropDownListFor(x => x.VelicinaOkviraId, listVelicineOkvira, "Odaberite veličinu okvira", new
+                        {
+                            @class = "form-control"
+                    })
+                    </td>
+                    <td>@Html.ValidationMessageFor(x => x.VelicinaOkviraId)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.Stanje)</td>
+                    <td>@Html.DropDownListFor(x => x.Stanje, DropdownHelper.GetEnumSelectList<Stanje>(), "Odaberite", new { @class = "form-control" })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Stanje)</td>
+                </tr>
+                <tr id="row_cijena" style="display: none">
+                    <td>@Html.LabelFor(x => x.Cijena)</td>
+                    <td>@Html.TextBoxFor(x => x.Cijena, new { @class = "form-control" })</td>
+                    <td>@Html.ValidationMessageFor(x => x.Cijena)</td>
+                </tr>
+                <tr id="row_cijena_po_danu" style="display: none">
+                    <td>@Html.LabelFor(x => x.CijenaPoDanu)</td>
+                    <td>@Html.TextBoxFor(x => x.CijenaPoDanu, new { @class = "form-control" })</td>
+                    <td>@Html.ValidationMessageFor(x => x.CijenaPoDanu)</td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.NoznaKocnica)</td>
+                    <td>
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(model => model.NoznaKocnica)
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>@Html.LabelFor(x => x.Slika)</td>
+                    <td><input type="file" name="Slika" id="Slika" accept="image/*" /></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding-top: 10px; padding-bottom: 10px;">
+                        @if (Model.Slika == null || Model.Slika.Length < 1000)
+                        {
+                            <img src="~/assets/images/default_FP.png" id="SlikaPreview" style="max-width: 400px" />
+                        }
+                        else
+                        {
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.Slika)" id="SlikaPreview" style="max-width: 400px" />
+                        }
+                    </td>
+                </tr>
+
+
+            </tbody>
+        </table>
+
+        <div id="bicikl-stanja-list"></div>
+
+        <button type="submit" class="btn btn-success">Snimi</button>
+        <a asp-action="Index" class="btn btn-primary">Nazad</a>
+    </form>
+</div>
+<div class="col-md-6" id="ajaxDiv">
+
+</div>
+
+<div class="col-md-6">
+    <h3>Bickla na stanju</h3>
+    <hr />
+    <form>
+        <table class="table table-striped" id="stavke_tabela">
+            <thead>
+
+                <tr>
+                    <th>Šifra</th>
+                    <th>Lokacija</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <td><input type="text" id="AddStavka_Sifra" name="Sifra" class="form-control" data-val="true" data-val-length="Šifra mora sadrzavati minimalno 4 karaktera." data-val-length-min="4" /></td>
+                    <td>
+                        <select id="AddStavka_LokacijaId" class="form-control">
+                            <option value="">Odaberite lokaciju</option>
+                            @foreach (SelectListItem item in listLokacije)
+                            {
+                                <option value="@item.Value">@item.Text</option>
+                            }
+
+                        </select>
+                    </td>
+                    <td><button class="btn btn-success" id="btn_dodaj_stavku">Dodaj stavku</button></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div class="field-validation-valid" data-valmsg-for="Sifra" data-valmsg-replace="true"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+</div>
+
+
+<div class="clearfix"></div>
+
+<script>
+    (function ($) {
+        function updateFieldVisibility() {
+            $("#row_cijena").hide();
+            $("#row_cijena_po_danu").hide();
+            var stanje = $("#Stanje").val();
+            if (stanje == 1 || stanje == 2) {
+                $("#row_cijena").show();
+            }
+            else if (stanje == 3) {
+                $("#row_cijena_po_danu").show();
+            }
+        }
+        $("#Stanje").change(function () {
+            updateFieldVisibility();
+        });
+        updateFieldVisibility();
+
+
+
+        $("#btn_dodaj_stavku").click(function () {
+            event.preventDefault();
+
+            var has_errors = false;
+
+            var LokacijaId = parseInt($("#AddStavka_LokacijaId").val());
+            if (isNaN(LokacijaId) || LokacijaId <= 0) {
+                $("#AddStavka_LokacijaId").addClass("border-red");
+                has_errors = true;
+            }
+            else
+                $("#AddStavka_LokacijaId").removeClass("border-red");
+
+            var Sifra = $.trim($("#AddStavka_Sifra").val());
+            if (Sifra.length == 0 || $('#AddStavka_Sifra').valid() == false) {
+                $("#AddStavka_Sifra").addClass("border-red");
+                has_errors = true;
+            }
+            else {
+                $("#AddStavka_Sifra").removeClass("border-red");
+            }
+
+            if (has_errors)
+                return;
+
+            var LokacijaNaziv = $("#AddStavka_LokacijaId option:selected").text();
+            $("#stavke_tabela tbody").append("<tr><td>" + Sifra + "</td><td>" + LokacijaNaziv + "</td</tr>");
+            $("#bicikl-stanja-list").append("<input type='hidden' name='BiciklStanja_Sifre[]' value='" + Sifra + "' />");
+            $("#bicikl-stanja-list").append("<input type='hidden' name='BiciklStanja_Lokacije[]' value='" + LokacijaId + "' />");
+
+            $("#AddStavka_Sifra, #AddStavka_LokacijaId").val("");
+        });
+
+        $("#ModelId").change(function () {
+            if ($(this).val() == 0) {
+                $("#ajaxDiv").html("");
+                return;
+            }
+
+            $.get("/Admin/Model/Detalji/" + $(this).val() + "?partial=1", function (data) {
+                $("#ajaxDiv").html(data);
+            })
+        });
+
+        $("#AddStavka_LokacijaId").change(function () {
+            var LokacijaId = parseInt($(this).val());
+            if (isNaN(LokacijaId) || LokacijaId <= 0) {
+                $(this).addClass("border-red");
+                return;
+            }
+            else
+                $(this).removeClass("border-red");
+        });
+        $("#AddStavka_Sifra").change(function () {
+            if ($(this).valid() == false) {
+                $(this).addClass("border-red");
+                return;
+            }
+            else
+                $(this).removeClass("border-red");
+        });
+
+    })(jQuery);
+</script>
+<script>
+
+
+    function readURL(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#SlikaPreview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#Slika").change(function () {
+        readURL(this);
+    });
+
+</script>

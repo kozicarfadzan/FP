@@ -1,0 +1,211 @@
+﻿@model PotvrdaRezervacijeBicikalaVM
+@{
+    ViewData["Title"] = "Potvrda rezervacije bicikala";
+    var errorMessage = TempData["error_message"];
+}
+
+<h2 class="page-title text-md-center">
+    @ViewData["Title"] -
+    @if (Model.Stavke.Count == 1)
+    {
+        <span>1 termin</span>
+    }
+    else
+    {
+        <span>@Model.Stavke.Count termina</span>
+    }
+</h2>
+
+
+@if (errorMessage != null)
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+<div class="page-section">
+    <ul class="order-steps nav nav-pills nav-justified">
+        <li><a href="/Klijent/Termin/Stavke">Pregled Termina</a></li>
+        <li class="active"><a href="#">Potvrda Rezervacije</a></li>
+        <li><a href="#">Kraj</a></li>
+    </ul><!-- /.order steps -->
+</div><!-- /.page section -->
+
+<div class="page-section">
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-md-push-8">
+            <div class="section">
+                <h4 class="section-title">Sažetak narudžbe</h4>
+                <table class="table table-bordered table-order-summary">
+                    <tr>
+                        <th>Termini</th>
+                        <td>@Model.Stavke.Count termin(a)</td>
+                    </tr>
+                    <tr>
+                        <th>Predračun</th>
+                        <td><span class="price">@Model.Osnovica.ToString("0.00") KM</span></td>
+                    </tr>
+                    <tr>
+                        <th>Porez</th>
+                        <td><span class="price">@Model.UkupnoPoreza.ToString("0.00") KM</span></td>
+                    </tr>
+                    <tr>
+                        <th>Ukupno</th>
+                        <td>
+                            <span class="price">
+                                <span id="ukupni_iznos" data-iznos-bez-postarine="@((Model.Osnovica + Model.UkupnoPoreza).ToString("0.00"))">
+                                    @Model.UkupniIznos.ToString("0.00")
+                                </span> KM
+                            </span>
+                        </td>
+                    </tr>
+                </table><!-- /.table-order-summary -->
+            </div><!-- /.section -->
+        </div>
+
+        <div class="col-md-8 col-sm-8 col-md-pull-4">
+            <form class="checkout-form" action="/Klijent/Termin/PotvrdaNarudzbe" method="post">
+                <div class="panel-group" id="checkout-accordion">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a href="#collapseDescription" data-toggle="collapse" data-parent="#checkout-accordion">
+                                    Adresa
+                                    <span data-icon="&#x50;" class="expand pull-right"></span>
+                                    <span data-icon="&#x4f;" class="contract pull-right"></span>
+                                </a>
+                            </h3><!-- /.panel-title -->
+                        </div><!-- /.panel-heading -->
+
+                        <div id="collapseDescription" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="first-name" class="required control-label">Ime</label>
+                                            <input id="first-name" asp-for="@Model.Podaci.Ime" type="text" placeholder="Ime" class="form-control" required>
+                                        </div>
+                                    </div><!-- /.col -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="last-name" class="required control-label">Prezime</label>
+                                            <input id="last-name" asp-for="@Model.Podaci.Prezime" type="text" placeholder="Prezime" class="form-control" required>
+                                        </div>
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+
+                                <div class="form-group">
+                                    <label for="address" class="required control-label">Adresa</label>
+                                    <input id="address" asp-for="@Model.Podaci.AdresaStanovanja" type="text" placeholder="Adresa" class="form-control" required>
+                                </div><!-- /.form-group -->
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="town-city" class="required control-label">Grad</label>
+                                            <input id="town-city" asp-for="@Model.Podaci.Grad" type="text" placeholder="Grad" class="form-control" required>
+                                        </div><!-- /.form-group -->
+                                    </div><!-- /.col -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="state-country" class="required control-label">Općina</label>
+                                            <input id="state-country" asp-for="@Model.Podaci.Pokrajina" type="text" placeholder="Općina" class="form-control" required>
+                                        </div><!-- /.form-group -->
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="post-code" class="control-label required">Poštanski broj</label>
+                                            <input id="post-code" asp-for="@Model.Podaci.PostanskiKod" type="text" placeholder="Poštanski broj" class="form-control" required>
+                                        </div><!-- /.form-group -->
+                                    </div><!-- /.col -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="country" class="control-label required">Država</label>
+                                            <input id="country" asp-for="@Model.Podaci.Država" type="text" placeholder="Država" class="form-control" required>
+                                        </div><!-- /.form-group -->
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="email-address" class="control-label required">Email</label>
+                                            <input id="email-address" asp-for="@Model.Podaci.Email" type="email" placeholder="Email" class="form-control" required>
+                                        </div><!-- /.form-group -->
+                                    </div><!-- /.col -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="phone-number" class="control-label required">Broj telefona</label>
+                                            <input id="phone-number" asp-for="@Model.Podaci.BrojTelefona" type="tel" placeholder="Broj telefona" class="form-control" required>
+                                        </div><!-- /.form-group -->
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+
+                                <div class="form-group text-right">
+                                    <a data-parent="#checkout-accordion" href="#collapseShipping" class="btn btn-primary btn-lg uppercase strong" id="continue_nacinotpreme">Dalje</a>
+                                </div><!-- /.form-group -->
+                            </div><!-- /.panel-body -->
+                        </div><!-- /.panel-collapse  -->
+                    </div><!-- /.panel-default -->
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#checkout-accordion" href="#collapseFeatures" class="collapsed item-nacin-placanja">
+                                    Način plaćanja
+                                    <span data-icon="&#x50;" class="expand pull-right"></span>
+                                    <span data-icon="&#x4f;" class="contract pull-right"></span>
+                                </a>
+                            </h3><!-- /.panel-title -->
+                        </div><!-- /.panel-heading -->
+                        <div id="collapseFeatures" class="panel-collapse collapse">
+                            <div class="panel-body text-justify">
+                                <div id="HOOK_PAYMENT">
+
+                                    <p class="payment_module">
+                                        <label class="radio">
+                                            <input type="radio" name="NacinPlacanja" value="online" required checked />
+                                            Online plaćanje putem kartice
+                                        </label>
+                                    </p><!-- /.payment_module -->
+                                </div><!-- /#hook_module -->
+
+                                <div class="form-actions text-right">
+                                    <button type="submit" class="btn btn-primary uppercase strong btn-lg" id="button_order">Rezerviši</button>
+                                </div><!-- /.form-actions -->
+                            </div><!-- /.panel-body -->
+                        </div><!-- /.panel-collapse -->
+                    </div><!-- /.panel-default -->
+                </div><!-- /.panel group -->
+            </form><!-- /.checkout form -->
+        </div>
+    </div>
+</div><!-- /.page-section -->
+
+
+<script>
+
+    $('#continue_nacinotpreme').on('click', function () {
+        if (!$('.checkout-form').valid()) {
+            event.preventDefault();
+            return;
+        }
+
+        $('.item-nacin-placanja').trigger('click');
+    })
+
+    $('#button_order').on('click', function () {
+        var NacinPlacanja = $('[name="NacinPlacanja"]:checked').val();
+        if (NacinPlacanja === undefined) {
+            event.preventDefault();
+            alert('Odaberite način plaćanja!')
+            return;
+        }
+
+    })
+
+</script>

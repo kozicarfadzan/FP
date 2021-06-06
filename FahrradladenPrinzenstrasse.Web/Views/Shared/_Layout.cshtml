@@ -1,0 +1,730 @@
+﻿@using FahrradladenPrinzenstrasse.Web.Helper;
+@{
+    Korisnik korisnik = Context.GetLogiraniKorisnik();
+    string controllerName = ViewContext.RouteData.Values["Controller"].ToString();
+    string actionName = ViewContext.RouteData.Values["Action"].ToString();
+    string areaName = ViewContext.RouteData.Values["area"] != null ? ViewContext.RouteData.Values["area"].ToString() : null;
+    bool AdminOrZaposlenik = korisnik?.Administrator != null || korisnik?.Zaposlenik != null;
+    bool IsHome = areaName == null;
+    bool Klijent = korisnik?.Klijent != null;
+    double CijenaStavki = Klijent ? Context.GetUkupnoKosarica() : 0;
+    double CijenaTermina = Klijent ? Context.GetUkupnaCijenaTermina() : 0;
+    int BrojStavki = Klijent ? Context.GetBrojStavkiKosarica() : 0;
+    int BrojTermina = Klijent ? Context.GetBrojTerminaKosarica() : 0;
+    int NotificationCount = korisnik?.Zaposlenik != null ? Context.GetNotificationCount(true) : 0;
+    List<Notifikacija> notifikacije = korisnik?.Zaposlenik != null ? Context.GetNotifications() : null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charGetBrojNotifikacijaset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+
+    <title>@ViewData["Title"] - FP</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+
+    <!-- Customizable CSS -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="/assets/css/owl.carousel.css">
+    <link rel="stylesheet" href="/assets/css/owl.transitions.css">
+    <link rel="stylesheet" href="/assets/css/animate.min.css">
+    <link href="/assets/css/orange.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" />
+    @if (AdminOrZaposlenik)
+    {
+        <link rel="stylesheet" href="~/css/sidebar.css" />
+    }
+    @if (Klijent)
+    {
+        <link rel="stylesheet" href="~/css/datepicker.css" />
+    }
+    @if (korisnik?.Zaposlenik != null && !IsHome)
+    {
+        <link rel="stylesheet" href="~/assets/css/notification.css" />
+        <link rel="stylesheet" href="~/css/chosen/chosen.css" />
+    }
+    else if (korisnik?.Administrator != null && controllerName == "Izvjestaj")
+    {
+        <link rel="stylesheet" href="~/css/chosen/chosen.css" />
+        <link rel="stylesheet" href="~/css/chartist.min.css" />
+        <link rel="stylesheet" href="~/css/chartist-plugin-tooltip.css" />
+        @*<link rel="stylesheet" href="~/css/demo.css" />*@
+    }
+
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel='stylesheet' type='text/css'>
+
+    <!-- Icons/Glyphs -->
+    <link rel="stylesheet" href="/assets/css/elegant-fonts.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/assets/images/favicon.ico">
+
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="/assets/js/jquery-1.11.0.min.js"></script>
+
+    <!-- HTML5 elements and media queries Support for IE8 : HTML5 shim and Respond.js -->
+    <!--[if lt IE 9]>
+    <script src="/assets/js/html5shiv.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="@((AdminOrZaposlenik && !IsHome) ? "has-navbar " : "")">
+    @if (AdminOrZaposlenik && !IsHome)
+    {
+
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img style="height: 50px; margin-right: 10px; margin-left: 15px;" src="/assets/images/logo.png" /><div style="display: inline-block">
+                            Fahrradladen Prinzenstrasse
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+                    <ul class="nav navbar-nav nav-header-link navbar-right">
+                        @if (korisnik != null)
+                        {
+                            <li><a href="#">Dobrodošli, @korisnik.Ime</a></li>
+
+                            @if (korisnik?.Zaposlenik != null)
+                            {
+                                <li>
+                                    <div class="notification-dropdown dropdown">
+                                        <a href="#" role="button" data-toggle="dropdown" data-target="#" class="notification-bell">
+                                            <i class="fa fa-bell"></i><span class="counter @(NotificationCount > 0 ? "" : "hidden")">@NotificationCount</span>&nbsp;&nbsp;
+                                        </a>
+
+                                        <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+
+                                            <div class="notification-heading">
+                                                <h4 class="menu-title">Obavijesti</h4><h4 class="menu-title pull-right">Pregledaj sve<i class="glyphicon glyphicon-circle-arrow-right"></i></h4>
+                                            </div>
+                                            <li class="divider"></li>
+                                            <div class="notifications-wrapper">
+                                                @foreach (var notification in notifikacije)
+                                                {
+
+                                                    @if (notification.Tip == TipNotifikacije.Istekao_Termin)
+                                                    {
+
+                                                        <a class="content" asp-controller="Iznajmljivanje" asp-action="Detalji" asp-route-id="@notification.RezervacijaIznajmljenaBiciklaId">
+                                                            <div class="notification-item @(notification.IsProcitano ? "read" : "")">
+                                                                <h4 class="item-title">Termin istekao · @notification.DatumVrijeme.ToShortDateString() @notification.DatumVrijeme.ToShortTimeString()</h4>
+                                                                <p class="item-info">@notification.RezervacijaIznajmljenaBicikla.BiciklStanje.Bicikl.PuniNaziv - @notification.RezervacijaIznajmljenaBicikla.Rezervacija.ImePrezime</p>
+                                                            </div>
+                                                        </a>
+
+                                                    }
+                                                    else if (notification.Tip == TipNotifikacije.Nova_Narudzba)
+                                                    {
+                                                        int BrojBicikala = notification.Rezervacija.RezervacijaProdajaBicikla.Count();
+                                                        int BrojDijelova = notification.Rezervacija.RezervacijaProdajaDio.Count();
+                                                        int BrojOpreme = notification.Rezervacija.RezervacijaProdajaOprema.Count();
+
+                                                        <a class="content" asp-controller="Narudzbe" asp-action="Detalji" asp-route-id="@notification.RezervacijaId">
+                                                            <div class="notification-item @(notification.IsProcitano ? "read" : "")">
+                                                                <h4 class="item-title">Nova narudžba · @notification.Rezervacija.UkupniIznos.ToString("0.00") KM  · @notification.DatumVrijeme.ToShortDateString() @notification.DatumVrijeme.ToShortTimeString()</h4>
+                                                                <p class="item-info">
+                                                                    @if (BrojBicikala > 0)
+                                                                    {
+                                                                        <span>Bicikli: @BrojBicikala</span>
+                                                                    }
+                                                                    @if (BrojDijelova > 0)
+                                                                    {
+                                                                        @if (BrojBicikala > 0)
+                                                                        {
+                                                                            <span>,</span>
+                                                                        }
+                                                                        <span>Dijelovi: @BrojDijelova</span>
+                                                                    }
+                                                                    @if (BrojOpreme > 0)
+                                                                    {
+                                                                        @if (BrojBicikala > 0 || BrojDijelova > 0)
+                                                                        {
+                                                                            <span>,</span>
+                                                                        }
+                                                                        <span>Oprema: @BrojOpreme</span>
+                                                                    }
+                                                                    - @notification.Rezervacija.ImePrezime
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    }
+                                                    else if (notification.Tip == TipNotifikacije.Novi_Termin)
+                                                    {
+                                                        <a class="content" asp-controller="Iznajmljivanje" asp-action="Detalji" asp-route-id="@notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].RezervacijaIznajmljenaBiciklaID">
+                                                            <div class="notification-item @(notification.IsProcitano ? "read" : "")">
+                                                                <h4 class="item-title">Nova rezervacija · @notification.DatumVrijeme.ToShortDateString() @notification.DatumVrijeme.ToShortTimeString()</h4>
+                                                                <p class="item-info">
+                                                                    @notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].BiciklStanje.Bicikl.PuniNaziv -
+                                                                    @if (notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].DatumPreuzimanja.Date != @notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].DatumVracanja.Date)
+                                                                    {
+                                                                        <span>od @notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].DatumPreuzimanja.ToShortDateString() do @notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].DatumVracanja.ToShortDateString()</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span>@notification.Rezervacija.RezervacijaIznajmljenaBicikla[0].DatumPreuzimanja.ToShortDateString()</span>
+                                                                    }
+                                                                    -  @notification.Rezervacija.ImePrezime
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    }
+                                                    else if (notification.Tip == TipNotifikacije.Novi_Servis)
+                                                    {
+                                                        <a class="content" asp-controller="Termini" asp-action="Detalji" asp-route-id="@notification.Rezervacija.RezervacijaServis[0].RezervacijaServisId">
+                                                            <div class="notification-item @(notification.IsProcitano ? "read" : "")">
+                                                                <h4 class="item-title">Novi termin za servis · @notification.DatumVrijeme.ToShortDateString() @notification.DatumVrijeme.ToShortTimeString()</h4>
+                                                                <p class="item-info">
+                                                                    @notification.Rezervacija.RezervacijaServis[0].Servis.Naziv - @notification.Rezervacija.RezervacijaServis[0].DatumServisiranja.ToShortDateString() @notification.Rezervacija.RezervacijaServis[0].DatumServisiranja.ToShortTimeString() - @notification.Rezervacija.ImePrezime
+                                                                </p>
+                                                            </div>
+                                                        </a>
+                                                    }
+                                                }
+
+                                            </div>
+                                            <li class="divider"></li>
+                                            <div class="notification-footer"><h4 class="menu-title">Pregledaj sve<i class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+                                        </ul>
+                                    </div>
+
+                                </li>
+
+                            }
+                            <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+                        }
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+    }
+
+    <div class="wrapper" style="@((AdminOrZaposlenik && !IsHome) ? "display: flex; width: 100%; align-items: stretch;" : "")">
+        @if (AdminOrZaposlenik && !IsHome)
+        {
+            <nav id="sidebar">
+
+                <div class="custom-menu hidden-print">
+                    <button type="button" id="sidebarCollapse" style="z-index: 100" class="btn btn-primary">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+                </div>
+
+                @*
+                    <div class="sidebar-header">
+                        <div class="logo text-md-center">
+                            <a asp-area="" asp-controller="Home" asp-action="Index">
+                                <img style="height: 100px; margin-right: 10px; margin-left: 15px;" src="/assets/images/logo.png" /><div style="display: inline-block">
+                                    FP
+                                </div>
+                            </a>
+                        </div><!-- /.logo -->
+
+                    </div> *@
+
+                <ul class="list-unstyled components">
+                    @if (korisnik?.Administrator != null)
+                    {
+
+                        <p>Admin Panel</p>
+
+                        <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Admin/Bicikl/Index">Bicikl</a></li>
+                        <li class="@(controllerName == "Boja" ? "active":  "")"><a href="/Admin/Boja/Index">Boje</a></li>
+                        <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Admin/Dio/Index">Dijelovi</a></li>
+                        <li class="@(controllerName == "Grad" ? "active":  "")"><a href="/Admin/Grad/Index">Grad</a></li>
+                        <li class="@(controllerName == "Lokacija" ? "active":  "")"><a href="/Admin/Lokacija/Index">Lokacije</a></li>
+                        <li class="@(controllerName == "Model" ? "active":  "")"><a href="/Admin/Model/Index">Modeli</a></li>
+                        <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Admin/Oprema/Index">Oprema</a></li>
+                        <li class="@(controllerName == "Proizvodjac" ? "active":  "")"><a href="/Admin/Proizvodjac/Index">Proizvođači</a></li>
+                        <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Admin/Servis/Index">Servisi</a></li>
+                        <li class="@(controllerName == "StarosnaGrupa" ? "active":  "")"><a href="/Admin/StarosnaGrupa/Index">Starosna Grupa</a></li>
+                        <li class="@(controllerName == "VelicinaOkvira" ? "active":  "")"><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
+                        <li class="@(controllerName == "Zaposlenik" ? "active":  "")"><a href="/Admin/Zaposlenik/Index">Zaposlenici</a></li>
+                        
+                        <li class="@((controllerName == "Izvjestaj" && actionName == "Inventar") ? "active":  "")"><a href="/Admin/Izvjestaj/Inventar">Inventar</a></li>
+                        <li class="@((controllerName == "Izvjestaj" && actionName == "Obračun") ? "active":  "")"><a href="/Admin/Izvjestaj/Obračun">Obračun</a></li>
+                    }
+
+                    @if (korisnik?.Zaposlenik != null)
+                    {
+
+                        <p>Zaposlenik Panel</p>
+
+                        <li class="@(controllerName == "Narudzbe" ? "active":  "")"><a href="/Zaposlenik/Narudzbe/Index">Narudžbe</a></li>
+                        <li class="@(controllerName == "Termini" ? "active":  "")"><a href="/Zaposlenik/Termini/Index">Termini servisa</a></li>
+                        <li class="@(controllerName == "Iznajmljivanje" ? "active":  "")"><a href="/Zaposlenik/Iznajmljivanje/Index">Iznajmljivanje bicikala</a></li>
+                        <li class="@(controllerName == "Servis" ? "active":  "")"><a href="/Zaposlenik/Servis/Index">Servis</a></li>
+                        <li class="@(controllerName == "Bicikl" ? "active":  "")"><a href="/Zaposlenik/Bicikl/Index">Bicikl</a></li>
+                        <li class="@(controllerName == "BiciklGPSLokacije" ? "active":  "")"><a href="/Zaposlenik/BiciklGPSLokacije/Index">Praćenje GPS lokacija</a></li>
+                        <li class="@(controllerName == "Model" ? "active":  "")"><a href="/Zaposlenik/Model/Index">Model</a></li>
+                        <li class="@(controllerName == "Dio" ? "active":  "")"><a href="/Zaposlenik/Dio/Index">Dijelovi</a></li>
+                        <li class="@(controllerName == "Oprema" ? "active":  "")"><a href="/Zaposlenik/Oprema/Index">Oprema</a></li>
+                    }
+
+                </ul>
+            </nav>
+        }
+
+        <!-- ============================================================= HEADER ============================================================= -->
+        <div style="width: 100%;">
+
+            <header class="header">
+
+                <div class="container">
+                    <div class="row">
+                        @if (IsHome || !AdminOrZaposlenik)
+                        {
+                            <div class="col-md-3 col-sm-3 hidden-xs site-name">
+                                Fahrradladen Prinzenstrasse
+                            </div>
+                        }
+                        <div class="col-md-5 col-sm-5 col-xs-12">
+                            <!-- ============================================================= LOGO ============================================================= -->
+                            @if (IsHome || !AdminOrZaposlenik)
+                            {
+
+                                <h3 style="margin: 0;">
+                                    <div class="logo text-md-center">
+                                        <a asp-area="" asp-controller="Home" asp-action="Index">
+                                            <img src="/assets/images/logo_FP.png" />
+                                        </a>
+                                    </div><!-- /.logo -->
+
+                                </h3>
+                            }
+                            else
+                            {
+                                <h2 id="admin_header_placeholder"></h2>
+                            }
+                            <!-- ============================================================= LOGO : END ============================================================= -->
+                        </div><!-- /.col -->
+
+                        @if (!AdminOrZaposlenik || IsHome)
+                        {
+                            @*<div class="col-md-3 col-sm-3 col-xs-12">
+                                    <!-- ============================================================= SEARCH BAR ============================================================= -->
+
+                                    <form role="form" class="block-search">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="Pretraga" placeholder="Search..">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary-very-light search-button" type="button"><span class="icon glyphicon glyphicon-search"></span></button>
+                                            </span>
+                                        </div><!-- /input-group -->
+                                    </form><!-- /block-search -->
+                                    <!-- ============================================================= SEARCH BAR : END  ============================================================= -->
+                                </div>*@<!-- /.col -->
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <!-- ============================================================= BLOCK HEADER LINKS ============================================================= -->
+                                <!-- ============================================================= BLOCK HEADER LINKS : END ============================================================= -->
+                            </div><!-- /.col -->
+                        }
+                    </div><!-- /.row -->
+                </div><!-- /.container -->
+                <!-- ============================================================= NAVBAR PRIMARY ============================================================= -->
+                <nav class="yamm navbar navbar-primary animate-dropdown" id="main-navbar" role="navigation" style="@(IsHome || !AdminOrZaposlenik ? "" : "display: none;")">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <button id="btn-navbar-primary-collapse" type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-primary-collapse">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div><!-- /.navbar-header -->
+                        <div class="collapse navbar-collapse" id="navbar-primary-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a asp-area="" asp-controller="Home" asp-action="Index">Početna</a></li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Bicikli</a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Kupovina</span>
+                                                        <ul class="menu-items">
+                                                            <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Novo">Novi&nbsp;bicikli</a></li>
+                                                            <li><a asp-area="" asp-controller="Bicikli" asp-action="Index" asp-route-stanje="Polovno">Polovni&nbsp;bicikli</a></li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Iznajmljivanje</span>
+                                                        <ul class="menu-items">
+                                                            <li><a asp-area="" asp-controller="Iznajmljivanje" asp-action="Index">Rezerviši&nbsp;termin</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Servisi</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Termini</span>
+                                                        <ul class="menu-items">
+
+                                                            <li><a asp-area="" asp-controller="Servisi" asp-action="Index">Rezerviši&nbsp;termin</a></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Dijelovi</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Kupovina</span>
+                                                        <ul class="menu-items">
+
+                                                            <li><a asp-area="" asp-controller="Dijelovi" asp-action="Index">Kupovina&nbsp;dijelova</a></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
+
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Oprema</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <div class="yamm-content">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6">
+                                                        <span class="megamenu-title">Kupovina</span>
+                                                        <ul class="menu-items">
+
+                                                            <li><a asp-area="" asp-controller="Oprema" asp-action="Index">Kupovina&nbsp;opreme</a></li>
+                                                        </ul>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                @if (korisnik?.Administrator != null)
+                                {
+                                    <li class="dropdown">
+                                        <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Admin</a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/Admin/Bicikl/Index">Bicikl</a></li>
+                                            <li><a href="/Admin/Boja/Index">Boja</a></li>
+                                            <li><a href="/Admin/Dio/Index">Dio</a></li>
+                                            <li><a href="/Admin/Grad/Index">Grad</a></li>
+                                            <li><a href="/Admin/Lokacija/Index">Lokacija</a></li>
+                                            <li><a href="/Admin/Model/Index">Model</a></li>
+                                            <li><a href="/Admin/Oprema/Index">Oprema</a></li>
+                                            <li><a href="/Admin/Proizvodjac/Index">Proizvođač</a></li>
+                                            <li><a href="/Admin/Servis/Index">Servis</a></li>
+                                            <li><a href="/Admin/StarosnaGrupa/Index">Starosna Grupa</a></li>
+                                            <li><a href="/Admin/VelicinaOkvira/Index">Veličina Okvira</a></li>
+                                            <li><a href="/Admin/Zaposlenik/Index">Zaposlenik</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                            </ul><!-- /.nav -->
+                            <div class="navbar-right user-options">
+                                @*<div class="btn-group">
+                                        <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">USD <b class="caret"></b></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">EUR</a></li>
+                                            <li><a href="#">INR</a></li>
+                                        </ul>
+                                    </div>*@<!-- /.btn-group -->
+                                @*<div class="btn-group">
+                                        <button data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle btn btn-primary-very-light navbar-btn">EN <b class="caret"></b></button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">DE</a></li>
+                                            <li><a href="#">TA</a></li>
+                                        </ul>
+                                    </div>*@<!-- /.btn-group -->
+
+                                <div class="block-header-links">
+                                    <ul class="nav nav-header-link pull-right">
+
+
+
+                                        @if (korisnik?.Klijent != null)
+                                        {
+                                            <li>
+
+                                                <a href="/Klijent/Korpa/Stavke" style="padding-top: 5px; padding-bottom: 0;">
+                                                    Korpa: <span class="total-cart-amount">
+                                                        <span>@CijenaStavki.ToString("0.00") KM</span>
+                                                    </span>
+                                                </a>
+                                                <a href="/Klijent/Termin/Stavke" style="padding-top: 0; padding-bottom: 0;">
+                                                    Termini: <span class="total-termin-amount">
+                                                        <span>@CijenaTermina.ToString("0.00") KM</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            <li>
+
+                                                <a href="/Klijent/Korpa/Stavke">
+                                                    <img src="/assets/images/icon-cart.png" class="icon-cart" width="20" height="18" alt="Cart Icon" /> <span class="cart-items-count">@BrojStavki</span>
+                                                </a>
+                                            </li>
+                                            <li>
+
+
+                                                <a href="/Klijent/Termin/Stavke">
+                                                    <img src="/assets/images/icon-calendar.png" class="icon-calendar" width="24" height="24" alt="Calendar Icon" /> <span class="calendar-items-count">@BrojTermina</span>
+                                                </a>
+                                            </li>
+                                        }
+
+                                        @if (korisnik != null)
+                                        {
+
+                                            <li class="dropdown">
+                                                <a href="#" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle">Dobrodošli, @korisnik.Ime <span class="caret"></span></a>
+                                                <ul class="dropdown-menu">
+                                                    @if (AdminOrZaposlenik)
+                                                    {
+                                                        if (korisnik.Zaposlenik != null)
+                                                        {
+                                                            <li><a href="/Zaposlenik/Narudzbe">Dashboard</a></li>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <li><a href="/Admin/Bicikl">Dashboard</a></li>
+
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <li><a href="/Klijent/Profil">Profil</a></li>
+                                                        <li><a href="/Klijent/Rezervacije">Rezervacije</a></li>
+                                                    }
+                                                    <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Logout"><span class="glyphicon glyphicon-log-out"></span> Odjava</a></li>
+                                                </ul>
+                                            </li>
+                                        }
+                                        else
+                                        {
+
+                                            <li><a asp-area="" asp-controller="Registracija" asp-action="Dodaj"><span class="glyphicon glyphicon-user"></span> Registracija</a></li>
+                                            <li><a asp-area="" asp-controller="Autentifikacija" asp-action="Index"><span class="glyphicon glyphicon-log-in"></span> Prijava</a></li>
+                                        }
+
+                                    </ul><!-- /.nav-header-link -->
+                                </div><!-- /.block-header-links -->
+
+                            </div><!-- /.navbar-right -->
+                        </div><!-- /.collapse navbar-collapse -->
+                    </div><!-- /.container -->
+                </nav><!-- /.yamm -->
+                <!-- ============================================================= NAVBAR PRIMARY : END ============================================================= -->
+            </header><!-- /.header -->
+            <!-- ============================================================= HEADER : END ============================================================= -->
+            <div class="content">
+
+                @if (controllerName == "Home")
+                {
+                    @RenderBody()
+
+                }
+                else
+                {
+                    <div class="container">
+                        <!-- ========================================= CONTENT ========================================= -->
+                        @RenderBody()
+                        <!-- ========================================= CONTENT : END  ========================================= -->
+                    </div><!-- /.container -->
+                }
+            </div><!-- /.content -->
+
+        </div>
+        <!-- ============================================================= FOOTER ============================================================= -->
+
+        @if (IsHome || !AdminOrZaposlenik)
+        {
+            <footer class="footer">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <!-- ============================================================= FOLLOW US FOOTER ============================================================= -->
+                            <div class="module widget">
+                                <div class="module-header">
+                                  
+                                </div><!-- /.module-header -->
+                                <div class="module-body text-md-center">
+                                    <div class="row">
+                                        <div class="col-md-12 col-sm-6">
+
+                                        </div><!-- /.col -->
+                                        <div class="col-md-12 col-sm-6">
+                                            <address>
+                                                Adresa: <br />
+                                                <strong>Fahrradladen Prinzenstraße</strong><br />
+                                                Njemačka , 80639, Minhen <br />
+                                                (+49)89-9277-8875
+                                            </address>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+                                </div><!-- /.module-body -->
+                            </div><!-- /.module -->
+                            <!-- ============================================================= FOLLOW US FOOTER : END ============================================================= -->
+                        </div><!-- /.col -->
+
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-6">
+                                    <!-- ============================================================= NEWSLETTER FOOTER ============================================================= -->
+                                    <div class="module block-newsletter">
+                                        <div class="module-header">
+                                            <h4 class="module-title text-md-center">Kontak e-mail</h4>
+
+                                        </div><!-- /.module-header -->
+                                        <div class="module-body text-md-center">
+                                            <p>Za sva Vaša pitanja obratite nam se na e-mail:</p>
+                                            <form role="form">
+                                                <div class="input-group">
+                                                    <email> fpsupport@trash-mail.com </email>
+                                                </div><!-- /input-group -->
+                                            </form>
+                                        </div><!-- /.module-body -->
+                                    </div><!-- /.module -->
+                                    <!-- ============================================================= NEWSLETTER FOOTER : END ============================================================= -->
+                                </div><!-- /.col -->
+                            </div><!-- /.row -->
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12 col-xs-12">
+                                <!-- ============================================================= FOLLOW US FOOTER ============================================================= -->
+                                <div class="module widget">
+                                    <div class="module-header">
+                                        <h4 class="module-title text-md-center"></h4>
+                                    </div><!-- /.module-header -->
+                                    <div class="module-body text-md-center">
+                                        <div class="row">
+
+                                        </div><!-- /.col -->
+                                        <div class="col-md-12 col-sm-6">
+                                            <address>
+                                                <br />
+                                                <strong>Radno vrijeme:</strong><br />
+                                                Pon-Petak od 9 do 18<br />
+                                                Subota od 10 do 14
+                                            </address>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+                                </div><!-- /.module-body -->
+                            </div><!-- /.module -->
+
+                        </div><!-- /.row -->
+
+
+
+
+                    </div><!-- /.col -->
+
+                </div><!-- /.container -->
+
+                <div class="navbar navbar-footer">
+                    <!-- ============================================================= NAVBAR FOOTER ============================================================= -->
+                    <div class="container text-md-center">
+                        <ul class="navbar-nav nav hidden-sm hidden-xs">
+                        </ul><!-- /.navbar-nav -->
+                        <p class="navbar-text pull-right text-md-center copyright-text">copyright &copy; 2020 FP</p>
+                    </div><!-- /.container -->
+                    <!-- ============================================================= NAVBAR FOOTER : END ============================================================= -->
+                </div><!-- /.navbar -->
+
+            </footer>
+        }
+        <!-- ============================================================= FOOTER END  ============================================================= -->
+    </div><!-- /.wrapper -->
+    <!-- JavaScripts placed at the end of the document so the pages load faster -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/bootstrap-select.min.js"></script>
+    <script src="/assets/js/bootstrap-hover-dropdown.min.js"></script>
+    <script src="/assets/js/bootstrap-slider.js"></script>
+    <script src="/assets/js/echo.min.js"></script>
+    <script src="/assets/js/jquery.easing-1.3.min.js"></script>
+    <script src="/assets/js/flatui-controls.js"></script>
+    <script src="/assets/js/owl.carousel.min.js"></script>
+    <script src="/assets/js/wow.min.js"></script>
+    <script src="/assets/js/scripts.js"></script>
+
+    <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
+
+    @if (Klijent)
+    {
+        <script src="~/js/datepicker.js"></script>
+        <script src="~/js/datepicker.en.js"></script>
+    }
+    else if (korisnik?.Zaposlenik != null)
+    {
+        <script src="~/js/chosen.jquery.js"></script>
+
+    }
+    else if (korisnik?.Administrator != null && controllerName == "Izvjestaj")
+    {
+        <script src="~/js/chosen.jquery.js"></script>
+        <script src="~/js/chartist.min.js"></script>
+        <script src="~/js/chartist-plugin-tooltip.min.js"></script>
+        @*<script src="~/js/chartjs.min.js"></script>*@
+        @*<script src="~/js/demo.js"></script>*@
+    }
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

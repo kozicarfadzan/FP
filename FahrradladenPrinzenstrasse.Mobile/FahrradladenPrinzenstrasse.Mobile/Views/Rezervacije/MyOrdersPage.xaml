@@ -1,0 +1,286 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="FahrradladenPrinzenstrasse.Mobile.Views.Rezervacije.MyOrdersPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:border="clr-namespace:Syncfusion.XForms.Border;assembly=Syncfusion.Core.XForms"
+    xmlns:converter="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Converters"
+    xmlns:listView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+    xmlns:tabView="clr-namespace:Syncfusion.XForms.TabView;assembly=Syncfusion.SfTabView.XForms"
+    xmlns:view="clr-namespace:FahrradladenPrinzenstrasse.Mobile.Views.Rezervacije"
+    xmlns:viewmodels="clr-namespace:FahrradladenPrinzenstrasse.Mobile.ViewModels.Rezervacije"
+    BackgroundColor="{DynamicResource Gray-100}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:StringToColorConverter x:Key="StringToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+
+        <StackLayout>
+            <StackLayout>
+                <Grid
+                    Margin="0,16,0,16"
+                    BackgroundColor="{DynamicResource Gray-White}"
+                    ColumnSpacing="0"
+                    RowSpacing="0">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Text="Od:" Grid.Row="0" Grid.Column="0" Padding="10,10,10,5"/>
+                    <Label Text="Do:" Grid.Row="0" Grid.Column="1" Padding="10,10,10,5"/>
+
+                    <StackLayout Grid.Row="1" Grid.Column="0" Padding="10,5,10,10">
+                        <DatePicker Date="{Binding DatumOd}" />
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="1" Padding="10,5,10,10">
+                        <DatePicker Date="{Binding DatumDo}" />
+                    </StackLayout>
+                </Grid>
+            </StackLayout>
+
+            <tabView:SfTabView BackgroundColor="{DynamicResource Gray-White}" VisibleHeaderCount="4">
+                <tabView:SfTabView.SelectionIndicatorSettings>
+                    <tabView:SelectionIndicatorSettings StrokeThickness="3" Color="{DynamicResource PrimaryColor}" />
+
+                </tabView:SfTabView.SelectionIndicatorSettings>
+                <tabView:SfTabItem
+                Title="Sve rezervacije"
+                SelectionColor="{DynamicResource PrimaryColor}"
+                TitleFontColor="{DynamicResource Gray-700}"
+                TitleFontFamily="{StaticResource Montserrat-Medium}"
+                TitleFontSize="14">
+                    <tabView:SfTabItem.Content>
+
+                        <!--  My Order list  -->
+                        <listView:SfListView
+                        x:Name="myOrderList"
+                        AutoFitMode="DynamicHeight"
+                        BackgroundColor="{DynamicResource Gray-100}"
+                        ItemsSource="{Binding OrderDetails}"
+                        SelectionMode="None"
+                        TapCommand="{Binding ItemSelectedCommand}"
+                        VerticalOptions="Start">
+
+                            <listView:SfListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid
+                                    Margin="0,16,0,0"
+                                    BackgroundColor="{DynamicResource Gray-White}"
+                                    ColumnSpacing="0"
+                                    RowSpacing="0">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="{OnIdiom Default=1, Phone=0}" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="260" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!--  Product image  -->
+                                        <!--<Image
+                                        Grid.Row="0"
+                                        Grid.RowSpan="4"
+                                        Grid.Column="0"
+                                        Margin="16,8,16,16"
+                                        Aspect="Fill"
+                                        BackgroundColor="{DynamicResource Gray-200}"
+                                        HeightRequest="80"
+                                        WidthRequest="80">
+                                        <Image.Source>
+                                            <UriImageSource
+                                                CacheValidity="14"
+                                                CachingEnabled="true"
+                                                Uri="{Binding ProductImage}" />
+                                        </Image.Source>
+                                    </Image>-->
+
+                                        <BoxView WidthRequest="30" Grid.Row="0" Grid.Column="0" />
+
+                                        <!--  Product name  -->
+                                        <Label
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Margin="0,8,0,4"
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="StartAndExpand"
+                                        LineBreakMode="TailTruncation"
+                                        LineHeight="1.5"
+                                        MaxLines="1"
+                                        Text="{Binding Name}"
+                                        TextColor="{DynamicResource Gray-900}" />
+
+                                        <!--  Total price  -->
+                                        <Label
+                                        Grid.Row="0"
+                                        Grid.Column="2"
+                                        Margin="0,8,0,4"
+                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                        FontSize="14"
+                                        HorizontalOptions="StartAndExpand"
+                                        LineBreakMode="TailTruncation"
+                                        LineHeight="1.5"
+                                        MaxLines="1"
+                                        Text="{Binding TotalPrice, StringFormat='KM{0:0.00 }'}"
+                                        TextColor="{DynamicResource Gray-900}" />
+
+                                        <!--  Description label  -->
+                                        <Label
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Margin="0,0,0,8"
+                                        FontFamily="{StaticResource Montserrat-Medium}"
+                                        FontSize="12"
+                                        HorizontalOptions="StartAndExpand"
+                                        LineHeight="1.5"
+                                        Text="{Binding Description}"
+                                        TextColor="{DynamicResource Gray-700}" />
+
+                                        <StackLayout
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        Padding="0,0,0,10">
+                                            <Button
+                                            Text="Detalji"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MyOrdersPageViewModel}}, Path=DetaljiCommand}"
+                                            CommandParameter="{Binding .}"
+                                            WidthRequest="80"
+                                            HeightRequest="32"
+                                        />
+                                        </StackLayout>
+
+                                        <StackLayout
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Margin="0,4,0,0"
+                                        Padding="0"
+                                        HorizontalOptions="Start"
+                                        Orientation="Horizontal"
+                                        Spacing="0"
+                                        VerticalOptions="Start">
+
+                                            <!--  Order ID  -->
+                                            <Label
+                                            Margin="0"
+                                            FontFamily="{StaticResource Montserrat-Medium}"
+                                            FontSize="12"
+                                            Text="{Binding OrderID, StringFormat='Šifra: {0}'}"
+                                            VerticalOptions="Center" />
+
+                                            <!--  Order status  -->
+
+                                            <border:SfBorder
+                                            Margin="8,0"
+                                            Padding="0"
+                                            BorderColor="Transparent"
+                                            CornerRadius="12"
+                                            HasShadow="False"
+                                            HeightRequest="24"
+                                            HorizontalOptions="Start"
+                                            WidthRequest="96">
+
+                                                <border:SfBorder.Content>
+                                                    <Grid>
+                                                        <BoxView BackgroundColor="{Binding Status, Converter={x:StaticResource StringToColorConverter}, ConverterParameter=0}" Opacity="0.07" />
+
+                                                        <Label
+                                                        FontFamily="{StaticResource Montserrat-SemiBold}"
+                                                        FontSize="12"
+                                                        HorizontalOptions="CenterAndExpand"
+                                                        Text="{Binding Status}"
+                                                        TextColor="{Binding Status, Converter={x:StaticResource StringToColorConverter}, ConverterParameter=0}"
+                                                        VerticalOptions="Center" />
+                                                    </Grid>
+                                                </border:SfBorder.Content>
+                                            </border:SfBorder>
+
+                                        </StackLayout>
+
+                                        <StackLayout
+                                            Grid.Row="2"
+                                            Grid.Column="2"    
+                                            Orientation="Horizontal">
+
+                                            <Button
+                                            Text="Plati"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MyOrdersPageViewModel}}, Path=PlatiCommand}"
+                                            CommandParameter="{Binding .}"
+                                            WidthRequest="80"
+                                            IsVisible="{Binding IsPlatiButtonVisible}"
+                                            />
+                                            <Button
+                                            Text="Otkaži"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MyOrdersPageViewModel}}, Path=OtkaziCommand}"
+                                            CommandParameter="{Binding .}"
+                                            WidthRequest="80"
+                                            IsVisible="{Binding IsPlatiButtonVisible}"
+                                            />
+                                        </StackLayout>
+
+                                    </Grid>
+                                </DataTemplate>
+                            </listView:SfListView.ItemTemplate>
+
+                        </listView:SfListView>
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <tabView:SfTabItem
+                Title="Kupovina"
+                SelectionColor="{DynamicResource PrimaryColor}"
+                TitleFontColor="{DynamicResource Gray-700}"
+                TitleFontFamily="{StaticResource Montserrat-Medium}"
+                TitleFontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <view:MyOrdersViewKupovina BindingContext="{Binding .}" />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <tabView:SfTabItem
+                Title="Servis"
+                SelectionColor="{DynamicResource PrimaryColor}"
+                TitleFontColor="{DynamicResource Gray-700}"
+                TitleFontFamily="{StaticResource Montserrat-Medium}"
+                TitleFontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <view:MyOrdersViewServis BindingContext="{Binding .}" />
+                    </tabView:SfTabItem.Content>
+                </tabView:SfTabItem>
+
+                <tabView:SfTabItem
+                Title="Iznajmljivanje"
+                SelectionColor="{DynamicResource PrimaryColor}"
+                TitleFontColor="{DynamicResource Gray-700}"
+                TitleFontFamily="{StaticResource Montserrat-Medium}"
+                TitleFontSize="14">
+                    <tabView:SfTabItem.Content>
+                        <view:MyOrdersViewIznajmljivanje BindingContext="{Binding .}"/>
+                    </tabView:SfTabItem.Content>
+
+                </tabView:SfTabItem>
+
+            </tabView:SfTabView>
+
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

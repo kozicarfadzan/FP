@@ -1,0 +1,180 @@
+﻿@model PrikaziBiciklGPSLokacijeVM
+@{
+    ViewData["Title"] = "GPS praćenje bicikala";
+    int Count = Model.GPSLokacije.Count;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div style="position: relative;">
+    <form style="float: left;">
+
+        <table>
+            <tr>
+                <td style="width: 110px;">Bicikl:</td>
+                <td>@Html.DropDownListFor(x => x.BiciklId, Model.Bicikla, "Odaberite", new { @class = "form-control", onchange = "this.form.submit();" })</td>
+            </tr>
+            <tr>
+                <td>Datum:</td>
+                <td><input asp-for="Datum" class="form-control" style="width: 150px; display: inline-block" />&nbsp;<button onclick="javascript:Datum.value=''" class="btn btn-danger">X</button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button class="btn btn-success">Pretraga</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    <div class="clearfix"></div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Rb.</th>
+            <th>Datum</th>
+            <th>Vrijeme</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Akcija</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Count == 0)
+        {
+
+            <tr>
+                <td colspan="6">Nije pronađeno</td>
+            </tr>
+        }
+        else
+        {
+            var i = Count;
+            @foreach (var item in Model.GPSLokacije)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@item.DateReported.ToShortDateString()</td>
+                    <td>@item.DateReported.ToShortTimeString()</td>
+                    <td>@item.Latitude</td>
+                    <td>@item.Longitude</td>
+                    <td>
+                        <a class="btn btn-primary prikazi-lokaciju" data-index="@(Count - i)" data-rb="@i" data-latitude="@item.Latitude" data-longitude="@item.Longitude">Prikaži</a>
+                    </td>
+                </tr>
+                i--;
+            }
+        }
+    </tbody>
+</table>
+
+
+@if (Count > 0)
+{
+    <style>
+        .marker-label {
+            margin-top: -14px;
+        }
+    </style>
+
+    <div id="map" style="height: 400px; margin-bottom: 30px"></div>
+    <script>
+        const appendChild = Element.prototype.appendChild;
+
+        const urlCatchers = [
+            "/AuthenticationService.Authenticate?",
+            "/QuotaService.RecordEvent?"
+        ];
+
+        Element.prototype.appendChild = function (element) {
+            const isGMapScript = element.tagName === 'SCRIPT' && /maps\.googleapis\.com/i.test(element.src);
+            const isGMapAccessScript = isGMapScript && urlCatchers.some(function (url) {
+                return element.src.includes(url);
+            });
+            if (!isGMapAccessScript) {
+                return appendChild.call(this, element);
+            }
+            return element;
+        };
+
+    </script>
+    <script>
+        var map;
+        var prevHighlightedMarker = -1;
+        var allMarkers = [];
+
+        function initMap() {
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 19,
+                center: { lat: @Model.GPSLokacije[Count - 1].Latitude, lng: @Model.GPSLokacije[Count - 1].Longitude },
+            });
+
+            @{
+                var i = Count;
+            }
+            @foreach (var item in Model.GPSLokacije)
+            {
+                @Html.Raw("addLocationMarker('" + i-- + "', { lat: " + item.Latitude + ", lng: " + item.Longitude + "});\n");
+            }
+        }
+
+        function highlightLocationMarker(index, text, location) {
+            if (prevHighlightedMarker > -1) {
+                allMarkers[prevHighlightedMarker].setMap(null);
+
+                var label = allMarkers[prevHighlightedMarker].getLabel();
+                label.className = "";
+
+                allMarkers[prevHighlightedMarker] = new google.maps.Marker({
+                    position: allMarkers[prevHighlightedMarker].getPosition(),
+                    label: label,
+                    map: map
+                })
+            }
+
+            map.setCenter(location);
+            allMarkers[index] = new google.maps.Marker({
+                position: location,
+                label: {
+                    text: text,
+                    color: 'white',
+                    fontSize: "11px",
+                    className: 'marker-label'
+                },
+                icon: "/assets/images/blue_marker.png",
+                map: map
+            });
+            prevHighlightedMarker = index;
+        }
+
+        $('.prikazi-lokaciju').click(function () {
+            event.preventDefault();
+
+            $("html, body").scrollTop($('#map').offset().top);
+            var rb = $(this).data('rb').toString();
+            var index = parseInt($(this).data('index'));
+            var lat = parseFloat($(this).data('latitude'));
+            var lng = parseFloat($(this).data('longitude'));
+
+            allMarkers[index].setMap(null);
+            highlightLocationMarker(index, rb, { lat: lat, lng: lng });
+        });
+
+        function addLocationMarker(text, location) {
+            allMarkers.push(new google.maps.Marker({
+                position: location,
+                label: {
+                    text: text,
+                    color: 'white',
+                    fontSize: "11px"
+                },
+                map: map
+            }));
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCOjvfub2I68Mv7ZIqIpV7fg6i40wxbvRo&callback=initMap">
+    </script>
+}
