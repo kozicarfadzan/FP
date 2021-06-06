@@ -66,9 +66,9 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.Controllers
                           Proizvodjac = x.Model.Proizvodjac
                       },
                       NoznaKocnica = x.NoznaKocnica,
-                          //Slika = x.Slika,
-                          Stanje = x.Stanje,
-                      Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Count(),
+                      //Slika = x.Slika,
+                      Stanje = x.Stanje,
+                      Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Sum(x => x.Kolicina),
                       Aktivan = x.Aktivan
                   }
                ).ToList()
@@ -123,7 +123,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.Controllers
 
                 db.SaveChanges();
 
-                if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Sifre != null)
+                if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Kolicine != null)
                 {
                     for (int i = 0; i < model.BiciklStanja_Lokacije.Count; i++)
                     {
@@ -131,7 +131,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.Controllers
                         {
                             BiciklId = NoviBicikl.BiciklId,
                             LokacijaId = model.BiciklStanja_Lokacije[i],
-                            Sifra = model.BiciklStanja_Sifre[i]
+                            Kolicina = model.BiciklStanja_Kolicine[i]
                         };
                         db.BiciklStanje.Add(stanje);
                     }
@@ -171,7 +171,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.Controllers
                     {
                         BiciklStanjeId = y.BiciklStanjeId,
                         LokacijaId = y.LokacijaId,
-                        Sifra = y.Sifra,
+                        Kolicina = y.Kolicina,
                         Aktivan = y.Aktivan
                     }).ToList()
                 })
@@ -247,19 +247,19 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.Controllers
             bicikl.NoznaKocnica = model.NoznaKocnica;
             bicikl.Opis = model.Opis;
 
-            if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Sifre != null)
+            if (model.BiciklStanja_Lokacije != null && model.BiciklStanja_Kolicine != null)
             {
-                for (int i = 0; i < model.BiciklStanja_Sifre.Count; i++)
+                for (int i = 0; i < model.BiciklStanja_Kolicine.Count; i++)
                 {
-                    var novoStanje_Sifra = model.BiciklStanja_Sifre[i];
+                    var novoStanje_Kolicina = model.BiciklStanja_Kolicine[i];
                     var novoStanje_LokacijaId = model.BiciklStanja_Lokacije[i];
 
                     bool pronadjeno = false;
                     foreach (var postojeceStanje in bicikl.BiciklStanje)
                     {
-                        if (postojeceStanje.Sifra == novoStanje_Sifra)
+                        if (postojeceStanje.LokacijaId == novoStanje_LokacijaId)
                         {
-                            postojeceStanje.LokacijaId = novoStanje_LokacijaId;
+                            postojeceStanje.Kolicina = novoStanje_Kolicina;
                             pronadjeno = true;
                             break;
                         }
@@ -269,8 +269,8 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Zaposlenik.Controllers
                         db.BiciklStanje.Add(new BiciklStanje
                         {
                             BiciklId = bicikl.BiciklId,
-                            Sifra = novoStanje_Sifra,
-                            LokacijaId = novoStanje_LokacijaId
+                            LokacijaId = novoStanje_LokacijaId,
+                            Kolicina = novoStanje_Kolicina
                         });
                 }
             }

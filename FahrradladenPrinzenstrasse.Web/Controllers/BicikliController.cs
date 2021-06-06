@@ -42,7 +42,7 @@ namespace FahrradladenPrinzenstrasse.Web.Controllers
                 Stanje = VM.Stanje,
 
                 PopularniBicikli = db.Bicikl.Where(x => (x.Stanje == Stanje.Novo || x.Stanje == Stanje.Polovno) && x.OcjenaProizvoda.Any())
-                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Any(y => y.Kolicina > 0))
                 .Where(x => x.Aktivan)
                 .Include(x => x.Model.Proizvodjac)
                 .OrderByDescending(x => x.OcjenaProizvoda.Average(x => x.Ocjena))
@@ -64,7 +64,7 @@ namespace FahrradladenPrinzenstrasse.Web.Controllers
             PrikaziBiciklVM Model = new PrikaziBiciklVM();
 
             IQueryable<Bicikl> BiciklaQry = db.Bicikl
-                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Any(y => y.Kolicina > 0))
                 .Where(x => x.Aktivan)
                 .Where(x => x.Stanje != Stanje.Korišteno);
 
@@ -199,8 +199,8 @@ namespace FahrradladenPrinzenstrasse.Web.Controllers
                    NoznaKocnica = x.NoznaKocnica,
                    Slika = x.Slika,
                    Stanje = x.Stanje,
-                   Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Count(),
-                   Aktivan = x.Aktivan /*&& (x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Count() - HttpContext.GetLogiraniKorisnik() > 0)*/
+                   Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Sum(x => x.Kolicina),
+                   Aktivan = x.Aktivan
                }
             ).GetPaged(VM.Page, 6);
 

@@ -140,7 +140,7 @@
             <tbody></tbody>
             <tfoot>
                 <tr>
-                    <td><input type="text" id="AddStavka_Sifra" name="Sifra" class="form-control" data-val="true" data-val-length="Šifra mora sadrzavati minimalno 4 karaktera." data-val-length-min="4" /></td>
+                    <td><input type="text" id="AddStavka_Kolicina" name="Kolicina" class="form-control" data-val="true" data-val-number="Količina mora biti numerička." /></td>
                     <td>
                         <select id="AddStavka_LokacijaId" class="form-control">
                             <option value="">Odaberite lokaciju</option>
@@ -155,7 +155,7 @@
                 </tr>
                 <tr>
                     <td colspan="3">
-                        <div class="field-validation-valid" data-valmsg-for="Sifra" data-valmsg-replace="true"></div>
+                        <div class="field-validation-valid" data-valmsg-for="Kolicina" data-valmsg-replace="true"></div>
                     </td>
                 </tr>
             </tfoot>
@@ -199,24 +199,24 @@
             else
                 $("#AddStavka_LokacijaId").removeClass("border-red");
 
-            var Sifra = $.trim($("#AddStavka_Sifra").val());
-            if (Sifra.length == 0 || $('#AddStavka_Sifra').valid() == false) {
-                $("#AddStavka_Sifra").addClass("border-red");
+            var Kolicina = $.trim($("#AddStavka_Kolicina").val());
+            if (Kolicina.length === 0 || $('#AddStavka_Kolicina').valid() == false) {
+                $("#AddStavka_Kolicina").addClass("border-red");
                 has_errors = true;
             }
             else {
-                $("#AddStavka_Sifra").removeClass("border-red");
+                $("#AddStavka_Kolicina").removeClass("border-red");
             }
 
             if (has_errors)
                 return;
 
             var LokacijaNaziv = $("#AddStavka_LokacijaId option:selected").text();
-            $("#stavke_tabela tbody").append("<tr><td>" + Sifra + "</td><td>" + LokacijaNaziv + "</td</tr>");
-            $("#bicikl-stanja-list").append("<input type='hidden' name='BiciklStanja_Sifre[]' value='" + Sifra + "' />");
+            $("#stavke_tabela tbody").append("<tr><td>" + Kolicina + "</td><td>" + LokacijaNaziv + "</td</tr>");
+            $("#bicikl-stanja-list").append("<input type='hidden' name='BiciklStanja_Kolicine[]' value='" + Kolicina + "' />");
             $("#bicikl-stanja-list").append("<input type='hidden' name='BiciklStanja_Lokacije[]' value='" + LokacijaId + "' />");
 
-            $("#AddStavka_Sifra, #AddStavka_LokacijaId").val("");
+            $("#AddStavka_Kolicina, #AddStavka_LokacijaId").val("");
         });
 
         $("#ModelId").change(function () {
@@ -239,7 +239,7 @@
             else
                 $(this).removeClass("border-red");
         });
-        $("#AddStavka_Sifra").change(function () {
+        $("#AddStavka_Kolicina").change(function () {
             if ($(this).valid() == false) {
                 $(this).addClass("border-red");
                 return;

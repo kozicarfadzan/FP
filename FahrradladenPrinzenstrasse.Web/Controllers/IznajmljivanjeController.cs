@@ -166,8 +166,8 @@ namespace FahrradladenPrinzenstrasse.Web.Controllers
                    NoznaKocnica = x.NoznaKocnica,
                    Slika = x.Slika,
                    Stanje = x.Stanje,
-                   Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaIznajmljenaBicikla.Count() == 0).Count(),
-                   Aktivan = x.Aktivan /*&& (x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Count() - HttpContext.GetLogiraniKorisnik() > 0)*/
+                   Kolicina = x.BiciklStanje.Where(y => y.Aktivan).Sum(y => y.Kolicina),
+                   Aktivan = x.Aktivan
                }
             ).GetPaged(VM.Page, 6);
 

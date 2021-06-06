@@ -147,10 +147,7 @@
                 @foreach (var item in Model.BiciklStanje)
                 {
                     <tr>
-                        <td>
-                            <span>@item.Sifra</span>
-                            <input type="hidden" name="BiciklStanja_Sifre[]" value="@item.Sifra" />
-                        </td>
+                        <td><input type="text" value="@item.Kolicina" name="BiciklStanja_Kolicine[]" class="form-control" data-val="true" data-val-number="Količina mora biti numerička." /></td>
                         <td>
                             <select class="form-control" name="BiciklStanja_Lokacije[]">
                                 @foreach (SelectListItem item1 in listLokacije)
@@ -167,13 +164,8 @@
                             </select>
                         </td>
                         <td>
-                            @if (item.KupacId != null)
+                            @if (item.Aktivan)
                             {
-                                <a href="#" class="btn btn-warning">Prodano</a>
-                            }
-                            else if (item.Aktivan)
-                            {
-
                                 <a href="#" data-id="@item.BiciklStanjeId" class="btn btn-danger izmjenaBiciklStanja">Deaktiviraj</a>
                             }
                             else
@@ -186,7 +178,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td><input type="text" id="AddStavka_Sifra" name="Sifra" class="form-control" data-val="true" data-val-length="Šifra mora sadrzavati minimalno 4 karaktera." data-val-length-min="4" /></td>
+                    <td><input type="text" id="AddStavka_Kolicina" name="Kolicina" class="form-control" data-val="true" data-val-number="Količina mora biti numerička." /></td>
                     <td>
                         <select id="AddStavka_LokacijaId" name="BiciklStanja_Lokacije[]" class="form-control">
                             <option value="">Odaberite lokaciju</option>
@@ -201,7 +193,7 @@
                 </tr>
                 <tr>
                     <td colspan="3">
-                        <div class="field-validation-valid" data-valmsg-for="Sifra" data-valmsg-replace="true"></div>
+                        <div class="field-validation-valid" data-valmsg-for="Kolicina" data-valmsg-replace="true"></div>
                     </td>
                 </tr>
             </tfoot>
@@ -243,13 +235,13 @@
             else
                 $("#AddStavka_LokacijaId").removeClass("border-red");
 
-            var Sifra = $.trim($("#AddStavka_Sifra").val());
-            if (Sifra.length == 0 || $('#AddStavka_Sifra').valid() == false) {
-                $("#AddStavka_Sifra").addClass("border-red");
+            var Kolicina = $.trim($("#AddStavka_Kolicina").val());
+            if (Kolicina.length === 0 || $('#AddStavka_Kolicina').valid() == false) {
+                $("#AddStavka_Kolicina").addClass("border-red");
                 has_errors = true;
             }
             else {
-                $("#AddStavka_Sifra").removeClass("border-red");
+                $("#AddStavka_Kolicina").removeClass("border-red");
             }
 
             if (has_errors)
@@ -260,8 +252,8 @@
             CloneLokacijeDropdown.attr('name', 'BiciklStanja_Lokacije[]');
 
             $("#stavke_tabela tbody").append("<tr>\
-                <td>" + Sifra + "\
-                    <input type='hidden' name='BiciklStanja_Sifre[]' value='" + Sifra + "' />\
+                <td>" + Kolicina + "\
+                    <input type='hidden' name='BiciklStanja_Kolicine[]' value='" + Kolicina + "' />\
                 </td>\
                 <td> " + CloneLokacijeDropdown.prop('outerHTML') + "</td>\
                 <td><button class='btn btn-danger brisanjeTempBiciklStanja' type='button'>Obriši</button></td>\
@@ -270,7 +262,7 @@
 
             $("#bicikl-stanja-list").append("");
 
-            $("#AddStavka_Sifra, #AddStavka_LokacijaId").val("");
+            $("#AddStavka_Kolicina, #AddStavka_LokacijaId").val("");
         });
 
         $("#ModelId").change(function () {
@@ -329,7 +321,7 @@
             else
                 $(this).removeClass("border-red");
         });
-        $("#AddStavka_Sifra").change(function () {
+        $("#AddStavka_Kolicina").change(function () {
             if ($(this).valid() == false) {
                 $(this).addClass("border-red");
                 return;

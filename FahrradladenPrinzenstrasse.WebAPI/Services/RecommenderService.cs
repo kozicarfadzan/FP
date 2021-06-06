@@ -27,7 +27,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
             var PopularniProizvodi = new List<PreporuceniProizvod>();
 
             var popularna_bicikla = _context.Bicikl.Where(x => (x.Stanje == Data.EntityModels.Stanje.Novo || x.Stanje == Data.EntityModels.Stanje.Polovno) && x.OcjenaProizvoda.Any())
-                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Any(y => y.Kolicina > 0))
                 .Where(x => x.Aktivan)
                 .Include(x => x.Model.Proizvodjac)
                 .OrderByDescending(x => x.OcjenaProizvoda.Average(x => x.Ocjena))

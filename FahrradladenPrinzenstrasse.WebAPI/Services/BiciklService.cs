@@ -44,7 +44,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                         .Include(x => x.VelicinaOkvira)
                         .Include(x => x.StarosnaGrupa);
 
-            query = query.Where(x => x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+            query = query.Where(x => x.BiciklStanje.Where(y => y.Aktivan).Any(y=>y.Kolicina > 0))
                 .Where(x => x.Aktivan);
 
             #region Filteri
@@ -146,7 +146,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                 Data.EntityModels.Stanje ItemStanje = (Data.EntityModels.Stanje)item.Stanje;
                 var SizesQuery = _context.Bicikl.Where(x => x.ModelId == item.ModelId)
                     .Where(x => x.Stanje == ItemStanje)
-                    .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+                    .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Any(y=>y.Kolicina > 0))
                     .Where(x => x.Aktivan)
                     .AsQueryable();
 
@@ -208,7 +208,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                 }
             }
 
-            var ukupno_u_skladistu = _context.BiciklStanje.Count(x => x.BiciklId == Id && x.Aktivan == true && x.KupacId == null);
+            var ukupno_u_skladistu = _context.BiciklStanje.Where(x => x.BiciklId == Id && x.Aktivan == true).Sum(x => x.Kolicina);
             foreach (var item in broj_rezervacija_po_danima)
             {
                 DateTime date = item.Key;
@@ -244,7 +244,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
 
             var Klijent = korisnikService.GetCurrentUser().Klijent;
 
-            int ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            int ukupno_u_skladistu = Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x => x.Kolicina);
             int ukupno_u_kosarici = _context.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == request.Id)
                 .Where(x =>
                    (

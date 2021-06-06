@@ -47,7 +47,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
-            var ukupno_u_skladistu = VM.Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            var ukupno_u_skladistu = VM.Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x => x.Kolicina);
             var ukupno_u_kosarici = db.KorpaStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == Id).Sum(x => x.Kolicina);
 
             VM.KolicinaNaStanju = ukupno_u_skladistu - ukupno_u_kosarici;
@@ -77,7 +77,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
-            var ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            var ukupno_u_skladistu = Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x=>x.Kolicina);
             var ukupno_u_kosarici = db.KorpaStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == Id).Sum(x => x.Kolicina);
             if (kolicina > ukupno_u_skladistu - ukupno_u_kosarici)
             {

@@ -45,7 +45,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                 if (item.Bicikl != null)
                 {
                     item.Ocjena = _context.OcjenaProizvoda.Where(x => x.BiciklId == item.BiciklId).Average(x => (double?)x.Ocjena) ?? 0.0;
-                    item.Bicikl.Kolicina = _context.BiciklStanje.Where(x => x.BiciklId == item.BiciklId && x.Aktivan && x.KupacId == null).Count();
+                    item.Bicikl.Kolicina = _context.BiciklStanje.Where(x => x.BiciklId == item.BiciklId && x.Aktivan).Sum(x => x.Kolicina);
                 }
                 else if (item.Dio != null)
                 {
@@ -75,7 +75,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
             if (request.BiciklId != null)
             {
                 StavkaQry = StavkaQry.Where(x => x.BiciklId == request.BiciklId);
-                UkupnoUSkladistu = _context.BiciklStanje.Where(x => x.BiciklId == request.BiciklId && x.Aktivan && x.KupacId == null).Count();
+                UkupnoUSkladistu = _context.BiciklStanje.Where(x => x.BiciklId == request.BiciklId && x.Aktivan).Sum(x => x.Kolicina);
             }
 
             else if (request.DioId != null)
@@ -118,7 +118,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
             var UkupnoUSkladistu = 0;
             if (request.BiciklId != null)
             {
-                UkupnoUSkladistu = _context.BiciklStanje.Where(x => x.BiciklId == request.BiciklId && x.Aktivan && x.KupacId == null).Count();
+                UkupnoUSkladistu = _context.BiciklStanje.Where(x => x.BiciklId == request.BiciklId && x.Aktivan).Sum(x => x.Kolicina);
             }
             else if (request.DioId != null)
             {

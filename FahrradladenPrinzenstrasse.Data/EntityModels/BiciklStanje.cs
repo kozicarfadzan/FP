@@ -12,14 +12,12 @@ namespace FahrradladenPrinzenstrasse.Data.EntityModels
         public Bicikl Bicikl { get; set; }
         public int LokacijaId { get; set; }
         public Lokacija Lokacija { get; set; }
-        [DisplayName("Šifra bicikla")]
-        public string Sifra { get; set; }
-        
+        [DisplayName("Količina")]
+        public int Kolicina { get; set; }
+
         [DefaultValue(true)]
         public bool Aktivan { get; set; } = true;
 
-        public Klijent Kupac { get; set; }
-        public int? KupacId { get; set; }
 
         [DefaultValue(false)]
         public bool IsDeleted { get; set; } = false;

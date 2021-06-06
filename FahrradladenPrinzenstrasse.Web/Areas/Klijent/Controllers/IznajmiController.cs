@@ -46,7 +46,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
-            var ukupno_u_skladistu = VM.Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            var ukupno_u_skladistu = VM.Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x => x.Kolicina);
 
             VM.KolicinaNaStanju = ukupno_u_skladistu;
 
@@ -71,7 +71,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
-            var ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            var ukupno_u_skladistu = Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x => x.Kolicina);
 
             var RezervisaniTermini = GetDaneBezDostupnihTermina(Id, Klijent.Id, Kolicina, ukupno_u_skladistu);
 
@@ -146,7 +146,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
 
-            int ukupno_u_skladistu = Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+            int ukupno_u_skladistu = Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x => x.Kolicina);
             int ukupno_u_kosarici = db.TerminStavka.Where(x => x.KlijentId == Klijent.Id && x.BiciklId == VM.Id)
                 .Where(x =>
                    (
@@ -162,23 +162,23 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
             var broj_termina_kolizija = db.RezervacijaIznajmljenaBicikla
                 .Where(x => x.BiciklStanje.BiciklId == VM.Id)
-                .Where( x =>
-                    (
-                        (x.DatumPreuzimanja.Date >= VM.DatumPreuzimanja.Date && x.DatumPreuzimanja.Date <= VM.DatumVracanja.Date)
-                        || (x.DatumVracanja.Date >= VM.DatumPreuzimanja.Date && x.DatumVracanja.Date <= VM.DatumVracanja.Date)
-                    )
-                    ||
-                    (
-                        (VM.DatumPreuzimanja.Date >= x.DatumPreuzimanja.Date && VM.DatumPreuzimanja.Date <= x.DatumVracanja.Date)
-                        || (VM.DatumVracanja.Date >= x.DatumPreuzimanja.Date && VM.DatumVracanja.Date <= x.DatumVracanja.Date)
-                    )
+                .Where(x =>
+                   (
+                       (x.DatumPreuzimanja.Date >= VM.DatumPreuzimanja.Date && x.DatumPreuzimanja.Date <= VM.DatumVracanja.Date)
+                       || (x.DatumVracanja.Date >= VM.DatumPreuzimanja.Date && x.DatumVracanja.Date <= VM.DatumVracanja.Date)
+                   )
+                   ||
+                   (
+                       (VM.DatumPreuzimanja.Date >= x.DatumPreuzimanja.Date && VM.DatumPreuzimanja.Date <= x.DatumVracanja.Date)
+                       || (VM.DatumVracanja.Date >= x.DatumPreuzimanja.Date && VM.DatumVracanja.Date <= x.DatumVracanja.Date)
+                   )
                 )
                 .ToList();
 
             int ukupno_dostupno = ukupno_u_skladistu - ukupno_u_kosarici - broj_termina_kolizija.Count();
             if (VM.Kolicina > ukupno_dostupno)
             {
-                if(ukupno_dostupno == 0)
+                if (ukupno_dostupno == 0)
                     return new BadRequestResult(); // 400
 
                 return new StatusCodeResult(417);

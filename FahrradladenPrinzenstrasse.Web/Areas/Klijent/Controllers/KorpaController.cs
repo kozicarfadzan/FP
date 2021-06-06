@@ -111,21 +111,31 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
                         var bicikl_stanja = db.BiciklStanje
                             .Where(x => x.BiciklId == naruceno_biciklo.BiciklId)
                             .Where(x => x.Aktivan == true)
-                            .Where(x => x.KupacId == null)
-                            .Take(naruceno_biciklo.Kolicina)
+                            .Where(x => x.Kolicina > 0)
                             .ToList();
 
-                        if (bicikl_stanja.Count < naruceno_biciklo.Kolicina)
+                        if (bicikl_stanja.Sum(x => x.Kolicina) < naruceno_biciklo.Kolicina)
                             throw new Exception("Naručeno biciklo " + naruceno_biciklo.Bicikl.PuniNaziv + " nije dostupno u traženoj kolicini! Da bi ste nastavili narudžbu, uklonite proizvod iz košarice.");
+
+                        var trazena_kolicina = naruceno_biciklo.Kolicina;
 
                         foreach (var bicikl_na_stanju in bicikl_stanja)
                         {
-                            lista_rezervisanih_bicikala.Add(new RezervacijaProdajaBicikla
+                            var dostupna_kolicina = Math.Min(trazena_kolicina, bicikl_na_stanju.Kolicina);
+
+                            bicikl_na_stanju.Kolicina -= dostupna_kolicina;
+                            trazena_kolicina -= dostupna_kolicina;
+
+                            for (int i = 0; i < dostupna_kolicina; i++)
                             {
-                                BiciklStanjeId = bicikl_na_stanju.BiciklStanjeId
-                            });
-                            bicikl_na_stanju.Aktivan = false;
-                            bicikl_na_stanju.KupacId = Klijent.Id;
+                                lista_rezervisanih_bicikala.Add(new RezervacijaProdajaBicikla
+                                {
+                                    BiciklStanjeId = bicikl_na_stanju.BiciklStanjeId,
+                                });
+                            }
+
+                            if (trazena_kolicina == 0)
+                                break;
                         }
                     }
                     // Dijelovi
@@ -232,7 +242,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
                 {
                     return RedirectToAction("OnlineUplata", new { narudzba.RezervacijaId });
                 }
-              
+
                 else
                 {
                     var zaposlenici = db.Zaposlenik.Where(x => x.Korisnik.Aktivan == true).ToList();
@@ -250,7 +260,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
                     db.SaveChanges();
                     return RedirectToAction("KrajNarudzbe");
-                   
+
                 }
             }
             else
@@ -280,7 +290,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
         {
             var Klijent = HttpContext.GetLogiraniKorisnik().Klijent;
             var rezervacija_na_cekanju = db.Rezervacija.Where(x => x.KlijentId == Klijent.Id && x.StanjeRezervacije == StanjeRezervacije.Čekanje_uplate && x.RezervacijaId == RezervacijaId).FirstOrDefault();
- 
+
 
             return View("KrajNarudzbe");
         }
@@ -343,7 +353,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Klijent.Controllers
 
                 if (stavka.Bicikl != null)
                 {
-                    var ukupno_u_skladistu = stavka.Bicikl.BiciklStanje.Count(x => x.Aktivan == true && x.KupacId == null);
+                    var ukupno_u_skladistu = stavka.Bicikl.BiciklStanje.Where(x => x.Aktivan == true).Sum(x => x.Kolicina);
                     if (ukupno_u_skladistu < nova_kolicina)
                         return new BadRequestResult();
                 }

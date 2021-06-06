@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FahrradladenPrinzenstrasse.Data;
 using FahrradladenPrinzenstrasse.Data.EntityModels;
 using FahrradladenPrinzenstrasse.Web.Areas.Admin.ViewModels;
@@ -66,24 +67,23 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Admin.Controllers
 
                     stavke.AddRange(db.Bicikl.Where(x => x.Stanje == Stanje.Novo).Select(x => new InventarStavka
                     {
-                        Šifra = x.BiciklId.ToString(),
+                        Šifra = "B-" + x.BiciklId.ToString(),
                         Cijena = x.Cijena.Value,
                         Naziv = x.Model.Proizvodjac.Naziv + " " + x.Model.Naziv,
                         VrstaStavke = "Novo biciklo",
-                        KolicinaNaStanju = x.BiciklStanje.Count(y => y.LokacijaId == request.LokacijaId && y.KupacId == null && y.Aktivan)
+                        KolicinaNaStanju = x.BiciklStanje.Where(y => y.LokacijaId == request.LokacijaId && y.Aktivan).Sum(y=>y.Kolicina)
                     }).Where(x => x.KolicinaNaStanju > 0).ToList());
                 }
                 else
                 {
                     stavke.AddRange(db.BiciklStanje.Where(x => x.Bicikl.Stanje == Stanje.Novo)
-                        .Where(x => x.LokacijaId == request.LokacijaId && x.KupacId == null && x.Aktivan)
+                        .Where(x => x.LokacijaId == request.LokacijaId && x.Aktivan)
                         .Select(x => new InventarStavka
                         {
-                            Šifra = x.Sifra,
                             Cijena = x.Bicikl.Cijena.Value,
                             Naziv = x.Bicikl.Model.Proizvodjac.Naziv + " " + x.Bicikl.Model.Naziv,
                             VrstaStavke = "Novo biciklo",
-                            KolicinaNaStanju = 1
+                            KolicinaNaStanju = x.Kolicina
                         }).ToList());
                 }
             }
@@ -94,24 +94,23 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Admin.Controllers
 
                     stavke.AddRange(db.Bicikl.Where(x => x.Stanje == Stanje.Polovno).Select(x => new InventarStavka
                     {
-                        Šifra = x.BiciklId.ToString(),
+                        Šifra = "B-" + x.BiciklId.ToString(),
                         Cijena = x.Cijena.Value,
                         Naziv = x.Model.Proizvodjac.Naziv + " " + x.Model.Naziv,
                         VrstaStavke = "Polovno biciklo",
-                        KolicinaNaStanju = x.BiciklStanje.Count(y => y.LokacijaId == request.LokacijaId && y.KupacId == null && y.Aktivan)
+                        KolicinaNaStanju = x.BiciklStanje.Count(y => y.LokacijaId == request.LokacijaId && y.Aktivan)
                     }).Where(x => x.KolicinaNaStanju > 0).ToList());
                 }
                 else
                 {
                     stavke.AddRange(db.BiciklStanje.Where(x => x.Bicikl.Stanje == Stanje.Polovno)
-                        .Where(x => x.LokacijaId == request.LokacijaId && x.KupacId == null && x.Aktivan)
+                        .Where(x => x.LokacijaId == request.LokacijaId && x.Aktivan)
                         .Select(x => new InventarStavka
                         {
-                            Šifra = x.Sifra,
                             Cijena = x.Bicikl.Cijena.Value,
                             Naziv = x.Bicikl.Model.Proizvodjac.Naziv + " " + x.Bicikl.Model.Naziv,
                             VrstaStavke = "Polovno biciklo",
-                            KolicinaNaStanju = 1
+                            KolicinaNaStanju = x.Kolicina
                         }).ToList());
                 }
             }
@@ -121,24 +120,23 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Admin.Controllers
                 {
                     stavke.AddRange(db.Bicikl.Where(x => x.Stanje == Stanje.Korišteno).Select(x => new InventarStavka
                     {
-                        Šifra = x.BiciklId.ToString(),
+                        Šifra = "B-" + x.BiciklId.ToString(),
                         Cijena = x.CijenaPoDanu.Value,
                         Naziv = x.Model.Proizvodjac.Naziv + " " + x.Model.Naziv,
                         VrstaStavke = "Korišteno biciklo",
-                        KolicinaNaStanju = x.BiciklStanje.Count(y => y.LokacijaId == request.LokacijaId && y.KupacId == null && y.Aktivan)
+                        KolicinaNaStanju = x.BiciklStanje.Count(y => y.LokacijaId == request.LokacijaId && y.Aktivan)
                     }).Where(x => x.KolicinaNaStanju > 0).ToList());
                 }
                 else
                 {
                     stavke.AddRange(db.BiciklStanje.Where(x => x.Bicikl.Stanje == Stanje.Korišteno)
-                        .Where(x => x.LokacijaId == request.LokacijaId && x.KupacId == null && x.Aktivan)
+                        .Where(x => x.LokacijaId == request.LokacijaId && x.Aktivan)
                         .Select(x => new InventarStavka
                         {
-                            Šifra = x.Sifra,
                             Cijena = x.Bicikl.CijenaPoDanu.Value,
                             Naziv = x.Bicikl.Model.Proizvodjac.Naziv + " " + x.Bicikl.Model.Naziv,
                             VrstaStavke = "Korišteno biciklo",
-                            KolicinaNaStanju = 1
+                            KolicinaNaStanju = x.Kolicina
                         }).ToList());
                 }
             }
@@ -148,7 +146,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Admin.Controllers
                 {
                     stavke.AddRange(db.Dio.Where(x => x.IsDeleted == false).Select(x => new InventarStavka
                     {
-                        Šifra = x.DioId.ToString(),
+                        Šifra = "D-" + x.DioId.ToString(),
                         Cijena = x.Cijena,
                         Naziv = x.Naziv,
                         VrstaStavke = "Dio",
@@ -175,7 +173,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Admin.Controllers
                 {
                     stavke.AddRange(db.Oprema.Where(x => x.IsDeleted == false).Select(x => new InventarStavka
                     {
-                        Šifra = x.OpremaId.ToString(),
+                        Šifra = "O-" + x.OpremaId.ToString(),
                         Cijena = x.Cijena,
                         Naziv = x.Naziv,
                         VrstaStavke = "Oprema",

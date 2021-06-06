@@ -29,7 +29,7 @@ namespace FahrradladenPrinzenstrasse.Web.Controllers
             };
 
             var popularna_bicikla = db.Bicikl.Where(x => (x.Stanje == Stanje.Novo || x.Stanje == Stanje.Polovno) && x.OcjenaProizvoda.Any())
-                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+                .Where(x => x.BiciklStanje.Where(y => y.Aktivan).Any(y => y.Kolicina > 0))
                 .Where(x => x.Aktivan)
                 .Include(x=>x.Model.Proizvodjac)
                 .OrderByDescending(x => x.OcjenaProizvoda.Average(x => x.Ocjena))

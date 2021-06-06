@@ -32,11 +32,11 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
             var query = _context.Rezervacija
                 .Where(x => x.KlijentId == _korisnikService.GetCurrentUser().Klijent.Id);
 
-            if(request.DatumOd.HasValue)
+            if (request.DatumOd.HasValue)
             {
                 query = query.Where(x => x.DatumRezervacije.Date >= request.DatumOd.Value.Date);
             }
-            if(request.DatumDo.HasValue)
+            if (request.DatumDo.HasValue)
             {
                 query = query.Where(x => x.DatumRezervacije.Date <= request.DatumDo.Value.Date);
             }
@@ -111,21 +111,33 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                     var bicikl_stanja = _context.BiciklStanje
                         .Where(x => x.BiciklId == naruceno_biciklo.BiciklId)
                         .Where(x => x.Aktivan == true)
-                        .Where(x => x.KupacId == null)
-                        .Take(naruceno_biciklo.Kolicina)
+                        .Where(x => x.Kolicina > 0)
                         .ToList();
 
-                    if (bicikl_stanja.Count < naruceno_biciklo.Kolicina)
+                    if (bicikl_stanja.Sum(x => x.Kolicina) < naruceno_biciklo.Kolicina)
                         throw new UserException("Naručeno biciklo " + naruceno_biciklo.Bicikl.PuniNaziv + " nije dostupno u traženoj kolicini!");
+
+                    var trazena_kolicina = naruceno_biciklo.Kolicina;
 
                     foreach (var bicikl_na_stanju in bicikl_stanja)
                     {
-                        entity.RezervacijaIznajmljenaBicikla.Add(new Data.EntityModels.RezervacijaIznajmljenaBicikla
+                        var dostupna_kolicina = Math.Min(trazena_kolicina, bicikl_na_stanju.Kolicina);
+
+                        bicikl_na_stanju.Kolicina -= dostupna_kolicina;
+                        trazena_kolicina -= dostupna_kolicina;
+
+                        for (int i = 0; i < dostupna_kolicina; i++)
                         {
-                            BiciklStanjeId = bicikl_na_stanju.BiciklStanjeId,
-                            DatumPreuzimanja = naruceno_biciklo.DatumPreuzimanja,
-                            DatumVracanja = naruceno_biciklo.DatumVracanja
-                        });
+                            entity.RezervacijaIznajmljenaBicikla.Add(new Data.EntityModels.RezervacijaIznajmljenaBicikla
+                            {
+                                BiciklStanjeId = bicikl_na_stanju.BiciklStanjeId,
+                                DatumPreuzimanja = naruceno_biciklo.DatumPreuzimanja,
+                                DatumVracanja = naruceno_biciklo.DatumVracanja
+                            });
+                        }
+
+                        if (trazena_kolicina == 0)
+                            break;
                     }
                 }
             }
@@ -135,7 +147,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
 
                 foreach (var stavka in request.RezervacijaServis)
                 {
-                    var servis = _context.Servis.Where(x=>x.ServisId == stavka.ServisId)
+                    var servis = _context.Servis.Where(x => x.ServisId == stavka.ServisId)
                         .Where(x => x.IsDeleted == false).FirstOrDefault();
                     if (servis is null)
                         throw new UserException("Servis nije pronađen: " + stavka.ServisId);
@@ -196,22 +208,33 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                     var bicikl_stanja = _context.BiciklStanje
                         .Where(x => x.BiciklId == naruceno_biciklo.BiciklId)
                         .Where(x => x.Aktivan == true)
-                        .Where(x => x.KupacId == null)
-                        .Take(naruceno_biciklo.Kolicina)
+                        .Where(x => x.Kolicina > 0)
                         .ToList();
 
-                    if (bicikl_stanja.Count < naruceno_biciklo.Kolicina)
+                    if (bicikl_stanja.Sum(x => x.Kolicina) < naruceno_biciklo.Kolicina)
                         throw new UserException("Naručeno biciklo " + naruceno_biciklo.Bicikl.PuniNaziv + " nije dostupno u traženoj kolicini!");
+
+                    var trazena_kolicina = naruceno_biciklo.Kolicina;
 
                     foreach (var bicikl_na_stanju in bicikl_stanja)
                     {
-                        entity.RezervacijaProdajaBicikla.Add(new Data.EntityModels.RezervacijaProdajaBicikla
+                        var dostupna_kolicina = Math.Min(trazena_kolicina, bicikl_na_stanju.Kolicina);
+
+                        bicikl_na_stanju.Kolicina -= dostupna_kolicina;
+                        trazena_kolicina -= dostupna_kolicina;
+
+                        for (int i = 0; i < dostupna_kolicina; i++)
                         {
-                            BiciklStanjeId = bicikl_na_stanju.BiciklStanjeId
-                        });
-                        bicikl_na_stanju.Aktivan = false;
-                        bicikl_na_stanju.KupacId = entity.KlijentId;
+                            entity.RezervacijaProdajaBicikla.Add(new Data.EntityModels.RezervacijaProdajaBicikla
+                            {
+                                BiciklStanjeId = bicikl_na_stanju.BiciklStanjeId
+                            });
+                        }
+
+                        if (trazena_kolicina == 0)
+                            break;
                     }
+
                 }
                 // Dijelovi
                 foreach (var naruceno_dio in Stavke.Where(x => x.DioId != null).ToList())
@@ -281,7 +304,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                     _context.TerminStavka.Remove(item);
                 }
             }
-            else if(request.RezervacijaServis != null)
+            else if (request.RezervacijaServis != null)
             {
                 // do nothing
             }
@@ -293,7 +316,7 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
                     _context.KorpaStavka.Remove(item);
                 }
 
-                if(entity.NacinPlacanja != "online")
+                if (entity.NacinPlacanja != "online")
                 {
                     var zaposlenici = _context.Zaposlenik.Where(x => x.Korisnik.Aktivan == true).ToList();
                     foreach (var zaposlenik in zaposlenici)

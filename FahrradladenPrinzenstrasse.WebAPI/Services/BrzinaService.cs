@@ -19,8 +19,10 @@ namespace FahrradladenPrinzenstrasse.WebAPI.Services
         public List<int> Get(BrzinaSearchRequest request)
         {
             var query = _context.Bicikl
-                .Where(x => x.BiciklStanje.Where(y => y.Aktivan)
-                .Where(y => y.RezervacijaProdajaBicikla.Count() == 0).Any())
+                .Where(
+                    x =>x.BiciklStanje
+                    .Where(y => y.Aktivan)
+                    .Any(y => y.Kolicina > 0))
                 .Where(x => x.Aktivan);
 
             if (request.SamoIznajmljivanje)

@@ -32,7 +32,7 @@ namespace FahrradladenPrinzenstrasse.Web.Areas.Admin.ViewModels
         [DisplayName("Nožna kočnica")]
         public bool NoznaKocnica { get; set; }
 
-        public List<string> BiciklStanja_Sifre { get; set; }
+        public List<int> BiciklStanja_Kolicine { get; set; }
         public List<int> BiciklStanja_Lokacije { get; set; }
         public string Opis { get; set; }
     }
